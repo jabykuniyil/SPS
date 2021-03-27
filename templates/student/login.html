@@ -112,19 +112,19 @@
                     data : data,
                     dataType : 'json',
                     success : function(data){
-                        if(data == 'true'){
+                        if(data.status == 'true'){
                             window.location.replace('/feed/')
                         }
-                        if(data == 'email'){
+                        if(data.status == 'email'){
                             window.location.replace('/verify-email/')
                         }   
-                        if(data == 'login'){
+                        if(data.status == 'login'){
                             window.location.replace('/')
                         }   
-                        if(data == 'wait-for-approval'){
-                            window.location.replace('/wait-for-approval/')
+                        if(data.status == 'wait-for-approval'){
+                            window.location.replace('/wait-for-approval/' + data.id + '/')
                         }   
-                        if(data == 'false'){
+                        if(data.status == 'false'){
                             $('#error').html('Invalid username or password')
                         }
                     }

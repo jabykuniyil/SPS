@@ -44,6 +44,6 @@ class InvalidResponse(models.Model):
     
 class StudentUUID(models.Model):
     student = models.ForeignKey(Student, on_delete=models.CASCADE)
-    student_uuid = models.TextField(null=True, blank=True)
+    student_uuid = models.CharField(max_length=50, null=True, blank=True)
     uuid_expiry = models.DateField(null=True, blank=True)
     

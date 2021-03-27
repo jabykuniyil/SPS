@@ -29,7 +29,7 @@
                     <div class="card-body">
 
                         {% if request.user.admin_approval == 'pending' %}
-                        <h4 class="mt-0">Not Approved</h4>
+                        <h4 class="mt-0">Request Pending</h4>
                         <p class="text-muted mb-4">Your account registration request is pending, Try after sometime.</p>
                         {% endif %}
                         {% if request.user.admin_approval == 'terminated' %}
@@ -42,7 +42,7 @@
                         {% endif %}
                         {% if request.user.admin_approval == 'invalid' %}
                         <h4 class="mt-0">Not Valid</h4>
-                        <p class="text-muted mb-4">Your request for registration is not approved. Please check it out on this link. <a href="/edit-registration/{{student_uuid}}/"></a> </p>
+                        <p class="text-muted mb-4">Your request for registration is not approved. Please check it out on this link. <a href="/edit-registration/{{student_uuid}}/">Click here</a> </p>
                         {% endif %}
                         <!-- form -->
                         

@@ -2,7 +2,7 @@ from django.shortcuts import render, redirect
 from django.contrib.auth.models import auth
 from django.contrib.auth.decorators import login_required
 from django.http import JsonResponse, HttpResponseRedirect
-from . models import Student, CautionDeposit, EmailOTP, StudentUUID
+from . models import Student, CautionDeposit, EmailOTP, StudentUUID, InvalidResponse
 from django.urls import reverse
 from . decorators import payment_required, student_status
 from django.core.mail import send_mail
@@ -25,17 +25,23 @@ def login(request):
                 if user.email_verfied == True:
                     auth.login(request, user)
                     if user.admin_approval == 'approved' and user.payment == True:
-                        return JsonResponse('true', safe=False)
+                        context = {'status' : 'true'}
+                        return JsonResponse(context)
                     elif user.admin_approval == 'rejected':
-                        return JsonResponse('login')
+                        context = {'status' : 'login'}
+                        return JsonResponse(context)
                     else:
-                        return JsonResponse('wait-for-approval', safe=False)
+                        student = request.user
+                        context = {'status' : 'wait-for-approval', 'id' : student.id}
+                        return JsonResponse(context)
                 else:
                     otp_email_generation(user)
                     request.session['email'] = user.email
-                    return JsonResponse('email', safe=False)
+                    context = {'status' : 'email'}
+                    return JsonResponse(context)
             else:
-                return JsonResponse('false', safe=False)
+                context = {'status' : 'false'}
+                return JsonResponse(context)
         else:
             return render(request, 'student/login.html')
 
@@ -113,7 +119,7 @@ def verify_email(request, backend='django.contrib.auth.backends.ModelBackend'):
                             user = Student.objects.get(id=student.id)
                             student_otp.delete()
                             auth.login(request, user, backend='django.contrib.auth.backends.ModelBackend')
-                            return redirect(wait_for_approval)
+                            return redirect(wait_for_approval, id=user.id)
                         else:
                             student_otp.delete()
                             messages.error(request, 'OTP expired')
@@ -154,35 +160,31 @@ def wait_for_approval(request, id):
     
 @login_required(login_url='/')
 def edit_registration(request, id):
+    user = request.user
+    student = Student.objects.get(id=user.id)
     if request.method == 'POST':
-        fullname = request.POST['fullname']
-        email = request.POST['email']
-        phone = request.POST['phone']
-        domain = request.POST['domain']
-        age = request.POST['age']
-        dob = request.POST['dob']
-        father = request.POST['father']
-        mother = request.POST['mother']
-        address = request.POST['address']
-        photo = request.FILES.get('photo')
-        username = request.POST['username']
-        password = request.POST['password']
-        if Student.objects.filter(email=email).exists():
-            return JsonResponse('email', safe=False)
-        elif Student.objects.filter(username=username).exists():
-            return JsonResponse('username', safe=False)
-        elif Student.objects.filter(phone=phone).exists():
+        student.fullname = request.POST['fullname']
+        Student.objects.filter(phone=student.phone).delete()
+        student.phone = request.POST['phone']
+        student.domain = request.POST['domain']
+        student.age = request.POST['age']
+        student.dob = request.POST['dob']
+        student.father = request.POST['father']
+        student.mother = request.POST['mother']
+        student.address = request.POST['address']
+        student.photo = request.FILES.get('inputprofileimage')
+        if Student.objects.filter(phone=student.phone).exists():
             return JsonResponse('phone', safe=False)
         else:
-            student = Student.objects.create_user(fullname=fullname, email=email, phone=phone, domain=domain, age=age, dob=dob, father=father, mother=mother, address=address, photo=photo, username=username, password=password, admin_approval='pending')
-            otp_email_generation(student)
-            request.session['email'] = email
+            student.save()
+            request.session['email'] = student.email
+            Student.objects.filter(admin_approval='invalid', id=user.id, is_superuser=False).update(admin_approval='pending')
             return JsonResponse('true', safe=False)
     else:
-        user = request.user
-        student = Student.objects.get(id=user.id)
-        student_uuid = StudentUUID.objects.get(student=student, student_uuid=id)
-        context = {'student_uuid' : student_uuid}
+        invalid_reason = InvalidResponse.objects.filter(student=student).first()
+        messages.error(request, invalid_reason.reason)
+        student_context = StudentUUID.objects.filter(student=student, student_uuid=id).first()
+        context = {'student' : student_context}
         return render(request, 'student/edit-registration.html', context)
         
 @login_required(login_url='/')

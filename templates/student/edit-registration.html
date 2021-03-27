@@ -32,20 +32,27 @@
 
 
                         <h4 class="mt-0">SPS wants to you to re-submit the registration</h4>
-                        <p class="text-muted mb-4">{{message}}</p>
-                    </div>
+                        
+                        {% if messages %}
+                        <ul>
+                        {% for message in messages %}
+                        <p class=" mb-4 text-red" style="color: red;">{{message}}</p>
+                        {% endfor %}
+                        </ul>
+                        {% endif %}
                         <!-- form -->
+                        
                         <form action="#">
                             <div class="form-group">
                                 <label for="fullname">Full Name</label>
-                                <input class="form-control" type="text" id="fullname" value="{{student.fullname}}" placeholder="Enter your name">
+                                <input class="form-control" type="text" id="fullname" value="{{student.student.fullname}}" placeholder="Enter your name">
                                 <span id="errorname" style="color: red; text-align: center;"></span>
 
                             </div>
 
                             <div class="form-group">
                                 <label for="phone">Phone</label>
-                                <input class="form-control" type="number" value="{{student.phone}}" id="phone" placeholder="Enter your Mobile Number">
+                                <input class="form-control" type="number" value="{{student.student.phone}}" id="phone" placeholder="Enter your Mobile Number">
                                 <span id="errorphone" style="color: red; text-align: center;"></span>
 
                             </div>
@@ -53,11 +60,11 @@
                             <!-- social-->
                           
                         </form>
-                       
+                    </div>
+
 
                     </div> <!-- end .card-body -->
                 </div> <!-- end .align-items-center.d-flex.h-100-->
-            </div>
             <div class="auth-fluid-form-box">
                 <div class="align-items-center d-flex h-100">
                     <div class="card-body">
@@ -65,32 +72,32 @@
                         <form action="#">
                             <div class="form-group">
                                 <label for="domain">Domain</label>
-                                <input class="form-control" type="text" id="domain" placeholder="Enter your Domain" value="{{student.domain}}">
+                                <input class="form-control" type="text" id="domain" placeholder="Enter your Domain" value="{{student.student.domain}}">
                                 <span id="errordomain" style="color: red; text-align: center;"></span>
 
                             </div>
                             <div class="form-group">
                                 <label for="dob">Date Of Birth</label>
-                                <input class="form-control" type="date" id="dob" value="{{student.dob}}" placeholder="Enter your DOB">
+                                <input class="form-control" type="date" id="dob" value="{{student.student.dob}}" placeholder="Enter your DOB">
                                 <span id="errordob" style="color: red; text-align: center;"></span>
 
                             </div>
                             <div class="form-group">
                                 <label for="age">Age</label>
-                                <input class="form-control" type="number" value="{{student.age}}" id="age" placeholder="Enter your Age">
+                                <input class="form-control" type="number" value="{{student.student.age}}" id="age" placeholder="Enter your Age">
                                 <span id="errorage" style="color: red; text-align: center;"></span>
 
                             </div>
 
                             <div class="form-group">
                                 <label for="father">Father's Name</label>
-                                <input class="form-control" type="text" id="father" value="{{student.father}}" placeholder="Enter your Father's name">
+                                <input class="form-control" type="text" id="father" value="{{student.student.father}}" placeholder="Enter your Father's name">
                                 <span id="errorfather" style="color: red; text-align: center;"></span>
 
                             </div>
                             <div class="form-group">
                                 <label for="mother">Mother's Name</label>
-                                <input class="form-control" type="text" value="{{student.mother}}" id="mother" placeholder="Enter your Mother's name">
+                                <input class="form-control" type="text" value="{{student.student.mother}}" id="mother" placeholder="Enter your Mother's name">
                                 <span id="errormother" style="color: red; text-align: center;"></span>
 
                             </div>
@@ -103,6 +110,7 @@
                 </div> <!-- end .align-items-center.d-flex.h-100-->
             </div>
             <div class="auth-fluid-form-box">
+                
                 <div class="align-items-center d-flex h-100">
                     <div class="card-body">
 
@@ -115,16 +123,16 @@
                         <form action="#">
                             <div class="form-group">
                                 <label for="fullname">Address</label>
-                                <input class="form-control" style="height: 5rem;" type="textarea" id="address" placeholder="Enter your Address" value="{{student.address}}">
+                                <input class="form-control" style="height: 5rem;" type="textarea" id="address" placeholder="Enter your Address" value="{{student.student.address}}">
                                 <span id="erroraddress" style="color: red; text-align: center;"></span>
 
                             </div>
-                            <div class="m-1">
-                                <img src="{{student.student_photo}}" alt="">
-                            </div>
+                            
                             <div class="form-group">
-                                <label for="photo">Photo</label>
-                                <input class="form-control" type="file" id="photo" value="{{student.photo}}" placeholder="Choose a photo">
+                                <label for="photo">Photo(Click to edit)</label>
+                                <br>
+                                <img class="rounded-circle" id="studentphoto" style="height: 5rem; width: 5rem;" src="{{student.student.student_photo}}" alt="">
+                                <input type="file" name="inputprofileimage" id="inputprofileimage" hidden>
                                 <span id="errorphoto" style="color: red; text-align: center;"></span>
 
                             </div>
@@ -162,7 +170,7 @@
                 formData.append("address", document.getElementById("address").value);
                 formData.append("father", document.getElementById("father").value);
                 formData.append("mother", document.getElementById("mother").value);
-                formData.append("photo", document.getElementById("photo").files[0]);
+                formData.append("inputprofileimage", document.getElementById("inputprofileimage").files[0]);
                 formData.append('csrfmiddlewaretoken', '{{ csrf_token }}')
                 
                 let error = false
@@ -223,16 +231,9 @@
                 else{
                     $('#errormother').html('')
                 }
-                if(photo.value == ''){
-                    $('#errorphoto').html('Please choose any of the photo')
-                    error = true
-                }
-                else{
-                    $('#errorphoto').html('')
-                }
                 if(!error){
                     $.ajax({
-                        url : '/edit-registration/{{student_uuid}}/',
+                        url : '/edit-registration/{{student.student_uuid}}/',
                         method : 'POST',
                         data : formData,
                         cache : false,
@@ -253,8 +254,30 @@
                     })
                 }
                 })
+
+                
+$('#studentphoto').click(function(){
+    $('#inputprofileimage').click()
+    function readURL(input) {
+    if (input.files && input.files[0]) {
+        var reader = new FileReader();
+        
+        reader.onload = function(e) {
+        $('#studentphoto').attr('src', e.target.result);
+        }
+        
+        reader.readAsDataURL(input.files[0]); // convert to base64 string
+    }
+}
+
+$("#inputprofileimage").change(function() {
+    readURL(this);
+});
+
+  })
         </script>
     </body>
+
 
 
 <!-- Mirrored from coderthemes.com/hyper/saas/pages-register-2.html by HTTrack Website Copier/3.x [XR&CO'2014], Tue, 16 Mar 2021 05:16:55 GMT -->
