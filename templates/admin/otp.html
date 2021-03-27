@@ -1,0 +1,97 @@
+<!DOCTYPE html>
+<html lang="en">
+
+  {% load static %}
+
+<!-- Mirrored from coderthemes.com/hyper/saas/pages-login-2.html by HTTrack Website Copier/3.x [XR&CO'2014], Tue, 16 Mar 2021 05:16:55 GMT -->
+<head>
+        <meta charset="utf-8" />
+        <title>S P S</title>
+        <meta name="viewport" content="width=device-width, initial-scale=1.0">
+        <meta content="A fully featured admin theme which can be used to build CRM, CMS, etc." name="description" />
+        <meta content="Coderthemes" name="author" />
+        <!-- App favicon -->
+        <link rel="shortcut icon" href="{% static 'assets/images/favicon.ico' %}">
+
+        <!-- App css -->
+        <link href="{% static 'assets/css/icons.min.css' %}" rel="stylesheet" type="text/css" />
+        <link href="{% static 'assets/css/app.min.css' %}" rel="stylesheet" type="text/css" id="light-style" />
+        <link href="{% static 'assets/css/app-dark.min.css' %}" rel="stylesheet" type="text/css" id="dark-style" />
+
+    </head>
+
+    <body class="authentication-bg pb-0" data-layout-config='{"darkMode":false}'>
+
+        <div class="auth-fluid">
+            <!--Auth fluid left content -->
+            <div class="auth-fluid-form-box">
+
+                <div class="align-items-center d-flex h-100">
+                    <div class="card-body">
+
+
+                        <!-- title-->
+                        <h4 class="mt-0">Enter the OTP sent to your Mobile Number <br>+91 </h4>
+                        <br>
+                        <!-- form -->
+                        <form action="">
+                            <div class="form-group">
+                                <label for="otp">OTP</label>
+                                <input class="form-control" type="number" id="otp"  placeholder="Enter OTP here" required>
+                            </div>
+                            <span id="error" style="color: red; text-align: center;"></span>
+                            <br>
+                            <br>
+                            <div class="form-group mb-0 text-center">
+                                <button class="btn btn-primary btn-block" id="send" type="button"><i class="mdi mdi-login"></i> Verify OTP </button>
+                            </div>
+                        </form>
+
+                    </div> <!-- end .card-body -->
+                </div>
+            </div>
+
+            <div class="auth-fluid-right text-center">
+                <div class="auth-user-testimonial">
+                    <h2 class="mb-3">School of Practical Studies!</h2>
+                    <p class="lead"><i class="mdi mdi-format-quote-open"></i> Discipline equals Freedom! . <i class="mdi mdi-format-quote-close"></i>
+                    </p>
+                    <p>
+                        - Jocko Willink
+                    </p>
+                </div>
+            </div>
+
+        </div>
+
+        <script src="{% static 'assets/js/vendor.min.js' %}"></script>
+        <script src="{% static 'assets/js/app.min.js' %}"></script>
+        
+        <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.6.0/jquery.min.js" integrity="sha512-894YE6QWD5I59HgZOGReFYm4dnWc1Qt5NtvYSaNcOP+u1T9qYdvdihz0PPSiiqn/+/3e7Jo4EaG7TubfWGUrMQ==" crossorigin="anonymous"></script>
+        
+        <script>
+            $('#send').click(function(){
+                var otp = $('#otp').val()
+                var data = {
+                    'csrfmiddlewaretoken' : '{{csrf_token}}',
+                    'otp' : otp,
+                }
+                $.ajax({
+                        url : '/spsadmin/otp/',
+                        method : 'POST',
+                        data : data,
+                        dataType : 'json',
+                        success : function(data){
+                            if (data == 'true'){
+                                window.location.replace('/spsadmin/feed/')
+                            }
+                            if (data == 'false'){
+                                $('#error').html('Invalid OTP')
+                            }
+                        }
+                    })
+                })
+        </script>
+    </body>
+
+    </html>

@@ -1,0 +1,186 @@
+{% extends 'coordinator/base.html' %}
+{% block content %}
+{% load static %}
+                    <!-- Start Content-->
+                    <div class="container-fluid">
+                        <div class="row">
+                            <div class="col-12">
+                                <div class="page-title-box">
+                                    
+                                    <h4 class="page-title">Feed</h4>
+                                </div>
+                            </div>
+                        </div>
+                        <!-- end page title -->
+                        <div class="row">
+                                <!-- end new post -->
+
+                                <!-- start news feeds -->
+                                <div class="card">
+                                    <div class="card-body pb-1">
+                                        <div class="media">
+                                            <img class="mr-2 rounded" src="{% static 'assets/images/users/avatar-3.jpg' %}" alt="Generic placeholder image" height="32">
+                                            <div class="media-body">
+                                                <h5 class="m-0">Jeremy Tomlinson</h5>
+                                                <p class="text-muted"><small>about 2 minuts ago <span class="mx-1">⚬</span> <span>Public</span></small></p>
+                                            </div>
+                                        </div>
+
+                                        <hr class="m-0" />
+
+                                        <div class="font-16 text-center text-dark my-3">
+                                            <i class="mdi mdi-format-quote-open font-20"></i> Leave one wolf alive and the sheep are never safe. When people ask you
+                                            what happened here, tell them the North remembers. Tell them winter came for
+                                            House Frey.
+                                        </div>
+
+                                        <hr class="m-0" />
+
+                                        <div class="my-1">
+                                            <a href="javascript: void(0);" class="btn btn-sm btn-link text-muted pl-0"><i class='mdi mdi-heart text-danger'></i> 2k Likes</a>
+                                            <a href="javascript: void(0);" class="btn btn-sm btn-link text-muted"><i class='uil uil-comments-alt'></i> 200 Comments</a>
+                                            <a href="javascript: void(0);" class="btn btn-sm btn-link text-muted"><i class='uil uil-share-alt'></i> Share</a>
+                                        </div>
+
+                                        <hr class="m-0" />
+
+                                        <div class="mt-3">
+                                            <div class="media">
+                                                <img class="mr-2 rounded" src="{% static 'assets/images/users/avatar-9.jpg' %}" alt="Generic placeholder image" height="32">
+                                                <div class="media-body">
+                                                    <h5 class="m-0">Sansa Stark </h5>
+                                                    <p class="text-muted mb-0"><small>2 mins ago</small></p>
+
+                                                    <p class="my-1">This is awesome! Proud of sis :) Waiting for you to
+                                                            come back to winterfall</p>
+
+                                                    <div>
+                                                        <a href="javascript: void(0);" class="btn btn-sm btn-link text-muted p-0">
+                                                            <i class='uil uil-heart mr-1'></i> Like
+                                                        </a>
+                                                        <a href="javascript: void(0);" class="btn btn-sm btn-link text-muted p-0 pl-2">
+                                                            <i class='uil uil-comments-alt mr-1'></i> Reply
+                                                        </a>
+                                                    </div>
+
+                                                    <div class="media mt-3">
+                                                        <img class="mr-2 rounded" src="{% static 'assets/images/users/avatar-8.jpg' %}" alt="Generic placeholder image" height="32">
+                                                        <div class="media-body">
+                                                            <h5 class="m-0">Cersei Lannister </h5>
+                                                            <p class="text-muted mb-0"><small>1 min ago</small></p>
+            
+                                                            <p class="my-1">I swear! She won't be able to reach to winterfall</p>
+                                                        </div> <!-- end media-body -->
+                                                    </div> <!-- end media-->
+                                                </div> <!-- end media-body -->
+                                            </div> <!-- end media-->
+
+                                            <hr/>
+
+                                            <div class="media mb-2">
+                                                <img src="{% static 'assets/images/users/avatar-1.jpg' %}" height="32" class="align-self-start rounded mr-2" alt="Arya Stark" />
+                                                <div class="media-body">
+                                                    <input type="text" class="form-control border-0 form-control-sm" placeholder="Write a comment">
+                                                </div> <!-- end medi-body -->
+                                            </div> <!-- end media-->
+
+                                        </div>
+                                    </div> <!-- end card-body -->
+                                </div> <!-- end card -->
+
+                                <div class="card">
+                                    <div class="card-body pb-1">
+                                        <div class="media">
+                                            <img class="mr-2 rounded" src="{% static 'assets/images/users/avatar-5.jpg' %}" alt="Generic placeholder image" height="32">
+                                            <div class="media-body">
+                                                <div class="dropdown float-right text-muted">
+                                                    <a href="#" class="dropdown-toggle arrow-none card-drop"
+                                                        data-toggle="dropdown" aria-expanded="false">
+                                                        <i class="mdi mdi-dots-horizontal"></i>
+                                                    </a>
+                                                    <div class="dropdown-menu dropdown-menu-right">
+                                                        <!-- item-->
+                                                        <a href="javascript:void(0);" class="dropdown-item">Edit</a>
+                                                        <!-- item-->
+                                                        <a href="javascript:void(0);" class="dropdown-item">Delete</a>
+                                                    </div>
+                                                </div>
+                                                <h5 class="m-0">Jon Snow</h5>
+                                                <p class="text-muted"><small>20 min ago <span class="mx-1">⚬</span> <span>Public</span></small></p>
+                                            </div> <!-- end media body-->
+                                        </div> <!-- end media -->
+
+                                        <hr class="m-0"/>
+
+                                        <div class="my-3">
+                                            <p>"Feeling awesome at the wall!"</p>
+                                            <div class="row">
+                                                <div class="col-sm-8">
+                                                    <img src="{% static 'assets/images/small/small-4.jpg' %}" alt="post-img" class="rounded mr-1 mb-3 mb-sm-0 img-fluid"/>
+                                                </div>
+                                                <div class="col">
+                                                    <img src="{% static 'assets/images/small/small-2.jpg' %}" alt="post-img" class="rounded mr-1 img-fluid mb-3" />
+                                                    <img src="{% static 'assets/images/small/small-3.jpg' %}" alt="post-img" class="rounded mr-1 img-fluid" />
+                                                </div>
+                                            </div>
+                                        </div>
+
+                                        <div class="mt-1 mb-1">
+                                            <a href="javascript: void(0);" class="btn btn-sm btn-link text-muted pl-0"><i class='mdi mdi-heart text-danger'></i> 1.2k Likes</a>
+                                            <a href="javascript: void(0);" class="btn btn-sm btn-link text-muted"><i class='uil uil-comments-alt'></i> 148 Comments</a>
+                                            <a href="javascript: void(0);" class="btn btn-sm btn-link text-muted"><i class='uil uil-share-alt'></i> Share</a>
+                                        </div>
+                                        <hr class="m-0" />
+
+                                        <div class="mt-3">
+                                            <div class="media">
+                                                <img class="mr-2 rounded" src="{% static 'assets/images/users/avatar-9.jpg' %}" alt="Generic placeholder image" height="32">
+                                                <div class="media-body">
+                                                    <h5 class="m-0">Sansa Stark </h5>
+                                                    <p class="text-muted mb-0"><small>2 mins ago</small></p>
+
+                                                    <p class="my-1">This is awesome! Proud of sis :) Waiting for you to
+                                                            come back to winterfall</p>
+
+                                                    <div>
+                                                        <a href="javascript: void(0);" class="btn btn-sm btn-link text-muted p-0">
+                                                            <i class='uil uil-heart mr-1'></i> Like
+                                                        </a>
+                                                        <a href="javascript: void(0);" class="btn btn-sm btn-link text-muted p-0 pl-2">
+                                                            <i class='uil uil-comments-alt mr-1'></i> Reply
+                                                        </a>
+                                                    </div>
+                                                </div> <!-- end media-body -->
+                                            </div> <!-- end media-->
+
+                                            <hr/>
+
+                                            <div class="media mb-2">
+                                                <img src="{% static 'assets/images/users/avatar-1.jpg' %}" height="32" class="align-self-start rounded mr-2" alt="Arya Stark" />
+                                                <div class="media-body">
+                                                    <input type="text" class="form-control border-0 form-control-sm" placeholder="Write a comment">
+                                                </div> <!-- end medi-body -->
+                                            </div> <!-- end media-->
+                                        </div>
+                                    </div> <!-- end card-body -->
+                                </div> <!-- end card -->
+                                <!-- end news feeds -->
+
+                                <!-- loader -->
+                                <div class="text-center mb-3">
+                                    <a href="javascript:void(0);" class="text-danger"><i class="mdi mdi-spin mdi-loading mr-1 font-16"></i> Load more </a>
+                                </div>
+                                <!-- end loader -->
+                            </div>
+
+                        
+                        </div> <!--end row -->
+
+                    </div> <!-- container -->
+
+                </div> <!-- content -->
+
+                <!-- Footer Start -->
+               
+                <!-- end Footer -->
+{% endblock %}

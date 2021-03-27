@@ -1,0 +1,327 @@
+{% extends 'coordinator/base.html' %}
+{% block content %}
+{% load static %}
+        <div class="auth-fluid">
+            <!--Auth fluid left content -->
+            <div class="auth-fluid-form-box">
+                <div class="align-items-center d-flex h-100">
+                    <div class="card-body">
+
+                        <!-- Logo -->
+                        <h2 class="mb-3">School of Practical Studies!</h2>
+
+
+                        <!-- title-->
+                        <h4 class="mt-0">Register here</h4>
+                        <p class="text-muted mb-4">Don't have an account? Create an account for Student, it takes less than a minute</p>
+
+                        <!-- form -->
+                        <form action="#">
+                            <div class="form-group">
+                                
+                                <label for="fullname">Full Name</label>
+                                <input class="form-control" type="text" id="fullname" placeholder="Enter the name" required>
+                                <span id="errorname" style="color: red; text-align: center;"></span>
+
+                            </div>
+                            <div class="form-group">
+                                <label for="emailaddress">Email address</label>
+                                <input class="form-control" type="email" id="email" required placeholder="Enter the email">
+                                <span id="erroremail" style="color: red; text-align: center;"></span>
+
+                            </div>
+                            <div class="form-group">
+                                <label for="phone">Phone</label>
+                                <input class="form-control" type="number" required id="phone" placeholder="Enter the Mobile Number">
+                                <span id="errorphone" style="color: red; text-align: center;"></span>
+
+                            </div>
+                          
+                            <!-- social-->
+                          
+                        </form>
+                       
+
+                    </div> <!-- end .card-body -->
+                </div> <!-- end .align-items-center.d-flex.h-100-->
+            </div>
+            <div class="auth-fluid-form-box">
+                <div class="align-items-center d-flex h-100">
+                    <div class="card-body">
+
+                        <!-- Logo -->
+                       
+
+                        <!-- title-->
+                       
+                        <!-- form -->
+                        <form action="#">
+                            <div class="form-group">
+                                <label for="batch">Batch</label>
+                                <select class="form-control" name="batch" id="batch">
+                                    <option value="choose...">choose the batch...</option>
+                                    {% for batch in batches %}
+                                    <option value="Male">{{batch.name}}</option>
+                                    {% endfor %}
+                                </select>                                
+                                <span id="errorbatch" style="color: red; text-align: center;"></span>
+
+                            </div>
+                            <div class="form-group">
+                                <label for="dob">Date Of Birth</label>
+                                <input class="form-control" type="date" id="dob" required placeholder="Enter your DOB">
+                                <span id="errordob" style="color: red; text-align: center;"></span>
+
+                            </div>
+                            <div class="form-group">
+                                <label for="age">Age</label>
+                                <input class="form-control" type="number" required id="age" placeholder="Enter the Age">
+                                <span id="errorage" style="color: red; text-align: center;"></span>
+
+                            </div>
+                            <div class="form-group">
+                                <label for="gender">Gender</label>
+                                <select class="form-control" name="gender" id="gender">
+                                    <option value="choose...">choose...</option>
+                                    <option value="Male">Male</option>
+                                    <option value="Female">Female</option>
+                                    <option value="Other">Other</option>
+                                </select>
+                            
+                                <span id="errorgender" style="color: red; text-align: center;"></span>
+                            </div>
+                            <div class="form-group">
+                                <label for="father">Father's Name</label>
+                                <input class="form-control" type="text" id="father" required placeholder="Enter your Father's name">
+                                <span id="errorfather" style="color: red; text-align: center;"></span>
+
+                            </div>
+                            <div class="form-group">
+                                <label for="mother">Mother's Name</label>
+                                <input class="form-control" type="text" required id="mother" placeholder="Enter your Mother's name">
+                                <span id="errormother" style="color: red; text-align: center;"></span>
+
+                            </div>
+                          
+                            <!-- social-->
+                          
+                        </form>
+                        <!-- end form-->
+
+                        <!-- Footer-->
+                       
+
+                    </div> <!-- end .card-body -->
+                </div> <!-- end .align-items-center.d-flex.h-100-->
+            </div>
+            <div class="auth-fluid-form-box">
+                <div class="align-items-center d-flex h-100">
+                    <div class="card-body">
+
+                        <!-- Logo -->
+                       
+
+                        <!-- title-->
+                      
+                        <!-- form -->
+                        <form action="#">
+                            <div class="form-group">
+                                <label for="fullname">Address</label>
+                                <input class="form-control" style="height: 5rem;" type="textarea" id="address" placeholder="Enter your Address" required>
+                                <span id="erroraddress" style="color: red; text-align: center;"></span>
+
+                            </div>
+                            <div class="form-group">
+                                <label for="education">Domain</label>
+                                <input class="form-control" type="text" id="domain" required placeholder="Which domain student prefer to..">
+                                <span id="errordomain" style="color: red; text-align: center;"></span>
+
+                            </div>
+                            <div class="form-group">
+                                <label for="photo">Photo</label>
+                                <input class="form-control" type="file" name="photo" accept="image/*" id="photo" placeholder="Choose your Photo">
+                                <span id="errorphoto" style="color: red; text-align: center;"></span>
+                            </div>
+                            <div class="form-group">
+                                <label for="username">username</label>
+                                <input class="form-control" type="text" required id="username" placeholder="Enter your username">
+                                <span id="errorusername" style="color: red; text-align: center;"></span>
+
+                            </div>
+                            
+                            <div class="form-group">
+                                <label for="password">Password</label>
+                                <input class="form-control" type="password" required id="password" placeholder="Enter the Password">
+                                <span id="errorpassword" style="color: red; text-align: center;"></span>
+
+                            </div>
+                          
+                            <!-- social-->
+                          
+                        </form>
+                        <!-- end form-->
+
+                        <!-- Footer-->
+                        <div class="form-group mb-0 text-center">
+                            <button class="btn btn-primary btn-block" type="button" id="register"><i class="mdi mdi-login"></i> Register </button>
+                        </div>
+
+                    </div> <!-- end .card-body -->
+                </div> <!-- end .align-items-center.d-flex.h-100-->
+            </div>
+            
+           
+        </div>
+        <!-- end auth-fluid-->
+
+        <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.6.0/jquery.min.js" integrity="sha512-894YE6QWD5I59HgZOGReFYm4dnWc1Qt5NtvYSaNcOP+u1T9qYdvdihz0PPSiiqn/+/3e7Jo4EaG7TubfWGUrMQ==" crossorigin="anonymous"></script>
+        
+        <script>
+            $('#register').click(function(){
+                var formData = new FormData();
+                formData.append("fullname", document.getElementById("fullname").value);
+                formData.append("email", document.getElementById("email").value);
+                formData.append("phone", document.getElementById("phone").value);
+                formData.append("batch", document.getElementById("batch").value);
+                formData.append("age", document.getElementById("age").value);
+                formData.append("dob", document.getElementById("dob").value);
+                formData.append("gender", document.getElementById("gender").value);
+                formData.append("address", document.getElementById("address").value);
+                formData.append("father", document.getElementById("father").value);
+                formData.append("mother", document.getElementById("mother").value);
+                formData.append("domain", document.getElementById("domain").value);
+                formData.append("photo", document.getElementById("photo").files[0]);
+                formData.append("username", document.getElementById("username").value);
+                formData.append("password", document.getElementById("password").value);
+                formData.append('csrfmiddlewaretoken', '{{ csrf_token }}')
+                
+                let error = false
+                if(fullname.value == ''){
+                    $('#errorname').html('Please enter the Name')
+                    error = true
+                }
+                else{
+                    $('#errorname').html('')
+                }
+                if (email.value == ''){  
+                    $('#erroremail').html('Please enter valid email')
+                    error = true
+                }  
+                else{
+                    $('#erroremail').html('')
+                }
+                if (phone.value == ''){
+                    $('#errorphone').html('Please enter proper phone number')
+                    error = true
+                }
+                else{
+                    $('#errorphone').html('')
+                }
+                if (batch.value == 'choose...'){
+                    $('#errorbatch').html('Batch required')
+                    error = true
+                }
+                else{
+                    $('#errorbatch').html('')
+                }
+                if(age.value == ''){
+                    $('#errorage').html('Age required')
+                    error = true
+                }
+                else{
+                    $('#errorage').html('')
+                }
+                if(dob.value == ''){
+                    $("#errordob").html('DOB required')
+                    error = true
+                }
+                else{
+                    $('#errordob').html('')
+                }
+                if(gender.value == 'choose...'){
+                    $('#errorgender').html('Gender required')
+                    error = true
+                }
+                else{
+                    $('#errorgender').html('')
+                }
+                if(address.value == ''){
+                    $('#erroraddress').html('Address required')
+                    error = true
+                }
+                else{
+                    $('#erroraddress').html('')
+                }
+                if(father.value == '')
+                {
+                    $('#errorfather').html('Father name required')
+                    error = true
+                }
+                else{
+                    $('#errorfather').html('')
+                }
+                if(mother.value == ''){
+                    $('#errormother').html('Mother name required')
+                    error = true
+                }
+                else{
+                    $('#errormother').html('')
+                }
+                if(domain.value == ''){
+                    $('#errordomain').html('Plese enter any domain name')
+                    error = true
+                }
+                else{
+                    $('#errordomain').html('')
+                }
+                if(photo.value == ''){
+                    $('#errorphoto').html('Please choose any of the photo')
+                    error = true
+                }
+                else{
+                    $('#errorphoto').html('')
+                }
+                if(username.value == ''){
+                    $('#errorusername').html('username required')
+                    error = true
+                }
+                else{
+                    $('#errorusername').html('')
+                }
+                if(password.value == ''){
+                    $('#errorpassword').html('password required')
+                }
+                else{
+                    $('#errorpassword').html('')
+                }
+                if(!error){
+                    $.ajax({
+                        url : '/coordinator/add-student/',
+                        method : 'POST',
+                        data : formData,
+                        cache : false,
+                        contentType : false,
+                        processData : false,
+                        dataType : 'json',
+                        success : function(data){
+                            if (data == 'true'){
+                                window.location.replace('/coordinator/students/')
+                            }
+                            if (data == 'false'){
+                                $('#error').html('Invalid Credentials')
+                            }
+                            if(data == 'phone'){
+                                $('#errorphone').html('Mobile Number already exists')
+                            }
+                            if(data == 'username'){
+                                $('#errorusername').html('username already exists')
+                            }
+                            if (data == 'email'){
+                                $('#erroremail').html('Email already exists')
+                            }
+                        }
+                    })
+                }
+                })
+        </script>
+{% endblock %}

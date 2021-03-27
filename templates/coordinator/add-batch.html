@@ -1,0 +1,139 @@
+{% extends 'coordinator/base.html' %}
+{% block content %}
+<div class="auth-fluid">
+    <!--Auth fluid left content -->
+    <div class="auth-fluid-form-box">
+        <div class="align-items-center d-flex h-100">
+            <div class="card-body">
+
+                <!-- Logo -->
+                <h2 class="mb-3">School of Practical Studies!</h2>
+
+
+                <!-- title-->
+                <h4 class="mt-0">Create here</h4>
+                <p class="text-muted mb-4">Create a new Batch, it takes less than a minute</p>
+
+                <!-- form -->
+                
+               
+
+            </div> <!-- end .card-body -->
+        </div> <!-- end .align-items-center.d-flex.h-100-->
+    </div>
+    <div class="auth-fluid-form-box">
+        <div class="align-items-center d-flex h-100">
+            <div class="card-body">
+
+                <!-- Logo -->
+               
+
+                <!-- title-->
+               
+                <!-- form -->
+                <form action="#" aria-required="true">
+                   
+                    <div class="form-group">
+                        <label for="age">Batch Name</label>
+                        <input class="form-control" type="text" required id="batchname" placeholder="Enter the Batch Name">
+                        <span id="errorname" style="color: red; text-align: center;"></span>
+
+                    </div>
+                    
+                    <div class="form-group">
+                        <label for="father">Batch Coordinator</label>
+                        <select class="form-control" name="coordiantor" id="coordinator">
+                            <option value="choose...">choose...</option>
+                            {% for coordinator in coordinators %}
+                            <option value="{{coordinator.name}}" id="{{coordinator.name}}">{{ coordinator.name }}</option>
+                            {% endfor %}
+                        </select>                        
+                        <span id="errorcoordinator" style="color: red; text-align: center;"></span>
+
+                    </div>
+                    <div class="form-group">
+                        <label for="mother">Number of Students</label>
+                        <input class="form-control" type="number" required id="numberofstudents" placeholder="Enter the number of Students">
+                        <span id="errornumberofstudents" style="color: red; text-align: center;"></span>
+
+                    </div>
+                  
+                    <!-- social-->
+                  
+                </form>
+                <!-- end form-->
+
+                <!-- Footer-->
+               
+
+            </div> <!-- end .card-body -->
+        </div> <!-- end .align-items-center.d-flex.h-100-->
+    </div>
+    <div class="auth-fluid-form-box">
+        <div class="align-items-center d-flex h-100">
+            <div class="card-body">
+
+                <!-- Logo -->
+               
+
+                <!-- title-->
+              
+                <!-- form -->
+                <form action="#">
+                    
+                    <div class="form-group">
+                        <label for="photo">Batch start Date</label>
+                        <input class="form-control" type="date" name="startdate"  id="startdate" placeholder="select the start date" required>
+                        <span id="errordate" style="color: red; text-align: center;"></span>
+                    </div>
+                    
+                  
+                    <!-- social-->
+                  
+                </form>
+                <!-- end form-->
+
+                <!-- Footer-->
+                <div class="form-group mb-0 text-center">
+                    <button class="btn btn-primary btn-block" type="button" id="create"><i class="mdi mdi-login"></i> Create </button>
+                </div>
+
+            </div> <!-- end .card-body -->
+        </div> <!-- end .align-items-center.d-flex.h-100-->
+    </div>
+    
+   
+</div>
+<!-- end auth-fluid-->
+<script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.6.0/jquery.min.js" integrity="sha512-894YE6QWD5I59HgZOGReFYm4dnWc1Qt5NtvYSaNcOP+u1T9qYdvdihz0PPSiiqn/+/3e7Jo4EaG7TubfWGUrMQ==" crossorigin="anonymous"></script>
+
+
+<script>
+    $('#create').click(function(){
+        console.log('hello');
+        var name = $('#batchname').val()
+        var coordinator = $('#coordinator').find(":selected").text()
+        var number = $('#numberofstudents').val()
+        var startdate = $('#startdate').val()
+        var data = {
+            'csrfmiddlewaretoken' : '{{csrf_token}}',
+            'name' : name,
+            'coordinator' : coordinator,
+            'number' : number,
+            'startdate' : startdate
+        }
+            $.ajax({
+            url : '/coordinator/add-batch/',
+            method : 'POST',
+            data : data,
+            dataType : 'json',
+            success : function(data){
+                if (data == 'true'){
+                    window.location.replace('/coordinator/batches/')
+                }
+            }
+        
+    })
+    })
+</script>
+{% endblock %}

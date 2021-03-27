@@ -1,0 +1,82 @@
+{% extends 'admin/base.html' %}
+{% block content %}
+ <!-- Start Content-->
+ <div class="container-fluid">
+                        
+    <!-- start page title -->
+    <div class="row">
+        <div class="col-12">
+            <div class="page-title-box">
+                
+                <h4 class="page-title">Rejected Requests</h4>
+            </div>
+        </div>
+    </div>     
+    <!-- end page title --> 
+    
+    <div class="row">
+        {% for student in students %}
+        <div class="col-xl-4 col-md-6 col-lg-4 col-12">
+            
+            <div class="card text-center">
+                <div class="dropdown float-right text-right m-2">
+                    <a href="#" class="dropdown-toggle arrow-none card-drop" data-toggle="dropdown" aria-expanded="false">
+                        <i class="mdi mdi-dots-horizontal"></i>
+                    </a>
+                    <div class="dropdown-menu dropdown-menu-right">
+                        <a href="/spsadmin/student-specific/{{student.id}}/" class="dropdown-item">View</a>
+                        <a href="/spsadmin/approve-student/{{student.id}}/" class="dropdown-item">Approve</a>
+                        <a href="" data-target="#invalid" data-toggle="modal" id="invalidrequest" class="dropdown-item">Approve with Video Call</a>
+                        <a href="" data-target="#invalid" data-toggle="modal" id="invalidrequest" class="dropdown-item">Invalid-Request</a>
+
+                    </div>
+                   
+                
+                    <!-- Modal -->
+                    <div class="modal fade" id="invalid" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">
+                        <div class="modal-dialog">
+                            <div class="modal-content" >
+                                <div class="modal-header">
+                                    </div>
+                                    <div class="modal-body">
+                                        <input type="textarea" style="margin: 1rem; display: block; margin: auto; height: 8rem; width: -webkit-fill-available;" name="reason" id="reason" required="required">
+                                            <span id="errorreason" style="color: red;"></span>
+                                    </div>
+                                    <div class="modal-footer">
+                                    <button type="button" class="btn btn-default" data-dismiss="modal">Close</button>
+                                    <button class="btn btn-primary" type="button" onclick="reason('{{student.id}}')"  id="submit">Submit</button>
+                                </div>
+                            </div>
+                        </div>
+                    </div> 
+                <div class="card-body text-center">
+                    
+                    <img src="{{ student.student_photo }}" class="rounded-circle avatar-lg img-thumbnail"
+                    alt="profile-image">
+
+                    <h4 class="mb-0 mt-2">{{student.fullname}}</h4>
+                    <p class="text-muted font-14">{{student.username}}</p>
+
+                    <a href="/coordinator/edit-student/"><button type="button" class="btn btn-primary btn-sm mb-2">Edit</button></a>
+
+                    <div class="text-left mt-3">
+
+                        <p class="text-muted mb-2 font-13"><strong>username :</strong> <span class="ml-2">
+                                {{student.username}}</span></p>
+
+                        <p class="text-muted mb-2 font-13"><strong>Mobile :</strong><span class="ml-2"></span>
+                                {{student.phone}}</span></p>
+
+                        <p class="text-muted mb-2 font-13"><strong>Email :</strong> <span class="ml-2 ">{{student.email}}</span></p>
+
+                        <p class="text-muted mb-1 font-13"><strong>Location :</strong> <span class="ml-2">{{student.address}}</span></p>
+                    </div>
+
+                </div> <!-- end card-body -->
+            </div> <!-- end card -->
+            
+        </div>
+    </div> 
+{% endfor %}
+ </div>
+{% endblock %}

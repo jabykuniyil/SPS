@@ -1,0 +1,261 @@
+<!DOCTYPE html>
+<html lang="en">
+
+    {% load static %}
+<!-- Mirrored from coderthemes.com/hyper/saas/pages-register-2.html by HTTrack Website Copier/3.x [XR&CO'2014], Tue, 16 Mar 2021 05:16:55 GMT -->
+<head>
+        <meta charset="utf-8" />
+        <title>S P S</title>
+        <meta name="viewport" content="width=device-width, initial-scale=1.0">
+        <meta content="A fully featured admin theme which can be used to build CRM, CMS, etc." name="description" />
+        <meta content="Coderthemes" name="author" />
+        <!-- App favicon -->
+        <link rel="shortcut icon" href="{% static 'assets/images/favicon.ico' %}">
+
+        <!-- App css -->
+        <link href="{% static 'assets/css/icons.min.css' %}" rel="stylesheet" type="text/css" />
+        <link href="{% static 'assets/css/app.min.css' %}" rel="stylesheet" type="text/css" id="light-style" />
+        <link href="{% static 'assets/css/app-dark.min.css' %}" rel="stylesheet" type="text/css" id="dark-style" />
+
+    </head>
+
+    <body class="authentication-bg pb-0" data-layout-config='{"darkMode":false}'>
+
+        <div class="auth-fluid">
+            <!--Auth fluid left content -->
+            <div class="auth-fluid-form-box">
+                <div class="align-items-center d-flex h-100">
+                    <div class="card-body">
+
+                        <!-- Logo -->
+                        <h2 class="mb-3">School of Practical Studies!</h2>
+
+
+                        <h4 class="mt-0">SPS wants to you to re-submit the registration</h4>
+                        <p class="text-muted mb-4">{{message}}</p>
+                    </div>
+                        <!-- form -->
+                        <form action="#">
+                            <div class="form-group">
+                                <label for="fullname">Full Name</label>
+                                <input class="form-control" type="text" id="fullname" value="{{student.fullname}}" placeholder="Enter your name">
+                                <span id="errorname" style="color: red; text-align: center;"></span>
+
+                            </div>
+
+                            <div class="form-group">
+                                <label for="phone">Phone</label>
+                                <input class="form-control" type="number" value="{{student.phone}}" id="phone" placeholder="Enter your Mobile Number">
+                                <span id="errorphone" style="color: red; text-align: center;"></span>
+
+                            </div>
+                          
+                            <!-- social-->
+                          
+                        </form>
+                       
+
+                    </div> <!-- end .card-body -->
+                </div> <!-- end .align-items-center.d-flex.h-100-->
+            </div>
+            <div class="auth-fluid-form-box">
+                <div class="align-items-center d-flex h-100">
+                    <div class="card-body">
+
+                        <form action="#">
+                            <div class="form-group">
+                                <label for="domain">Domain</label>
+                                <input class="form-control" type="text" id="domain" placeholder="Enter your Domain" value="{{student.domain}}">
+                                <span id="errordomain" style="color: red; text-align: center;"></span>
+
+                            </div>
+                            <div class="form-group">
+                                <label for="dob">Date Of Birth</label>
+                                <input class="form-control" type="date" id="dob" value="{{student.dob}}" placeholder="Enter your DOB">
+                                <span id="errordob" style="color: red; text-align: center;"></span>
+
+                            </div>
+                            <div class="form-group">
+                                <label for="age">Age</label>
+                                <input class="form-control" type="number" value="{{student.age}}" id="age" placeholder="Enter your Age">
+                                <span id="errorage" style="color: red; text-align: center;"></span>
+
+                            </div>
+
+                            <div class="form-group">
+                                <label for="father">Father's Name</label>
+                                <input class="form-control" type="text" id="father" value="{{student.father}}" placeholder="Enter your Father's name">
+                                <span id="errorfather" style="color: red; text-align: center;"></span>
+
+                            </div>
+                            <div class="form-group">
+                                <label for="mother">Mother's Name</label>
+                                <input class="form-control" type="text" value="{{student.mother}}" id="mother" placeholder="Enter your Mother's name">
+                                <span id="errormother" style="color: red; text-align: center;"></span>
+
+                            </div>
+                          
+                            <!-- social-->
+                          
+                        </form>
+
+                    </div> <!-- end .card-body -->
+                </div> <!-- end .align-items-center.d-flex.h-100-->
+            </div>
+            <div class="auth-fluid-form-box">
+                <div class="align-items-center d-flex h-100">
+                    <div class="card-body">
+
+                        <!-- Logo -->
+                       
+
+                        <!-- title-->
+                      
+                        <!-- form -->
+                        <form action="#">
+                            <div class="form-group">
+                                <label for="fullname">Address</label>
+                                <input class="form-control" style="height: 5rem;" type="textarea" id="address" placeholder="Enter your Address" value="{{student.address}}">
+                                <span id="erroraddress" style="color: red; text-align: center;"></span>
+
+                            </div>
+                            <div class="m-1">
+                                <img src="{{student.student_photo}}" alt="">
+                            </div>
+                            <div class="form-group">
+                                <label for="photo">Photo</label>
+                                <input class="form-control" type="file" id="photo" value="{{student.photo}}" placeholder="Choose a photo">
+                                <span id="errorphoto" style="color: red; text-align: center;"></span>
+
+                            </div>
+                            <!-- social-->
+                          
+                        </form>
+                        <!-- end form-->
+
+                        <!-- Footer-->
+                        <div class="form-group mb-0 text-center">
+                            <button class="btn btn-primary btn-block" id="register" type="button"><i class="mdi mdi-login"></i> Register </button>
+                        </div>
+
+                    </div> <!-- end .card-body -->
+                </div> <!-- end .align-items-center.d-flex.h-100-->
+            </div>
+            
+           
+        </div>
+        <!-- end auth-fluid-->
+
+        <!-- bundle -->
+        <script src="{% static 'assets/js/vendor.min.js' %}"></script>
+        <script src="{% static 'assets/js/app.min.js' %}"></script>
+        <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.6.0/jquery.min.js" integrity="sha512-894YE6QWD5I59HgZOGReFYm4dnWc1Qt5NtvYSaNcOP+u1T9qYdvdihz0PPSiiqn/+/3e7Jo4EaG7TubfWGUrMQ==" crossorigin="anonymous"></script>
+
+        <script>
+            $('#register').click(function(){
+                var formData = new FormData();
+                formData.append("fullname", document.getElementById("fullname").value);
+                formData.append("phone", document.getElementById("phone").value);
+                formData.append("domain", document.getElementById("domain").value);
+                formData.append("age", document.getElementById("age").value);
+                formData.append("dob", document.getElementById("dob").value);
+                formData.append("address", document.getElementById("address").value);
+                formData.append("father", document.getElementById("father").value);
+                formData.append("mother", document.getElementById("mother").value);
+                formData.append("photo", document.getElementById("photo").files[0]);
+                formData.append('csrfmiddlewaretoken', '{{ csrf_token }}')
+                
+                let error = false
+                if(fullname.value == ''){
+                    $('#errorname').html('Please enter the Name')
+                    error = true
+                }
+                else{
+                    $('#errorname').html('')
+                }
+                if (phone.value == ''){
+                    $('#errorphone').html('Please enter proper phone number')
+                    error = true
+                }
+                else{
+                    $('#errorphone').html('')
+                }
+                if (domain.value == ''){
+                    $('#errordomain').html('Domain required')
+                    error = true
+                }
+                else{
+                    $('#errordomain').html('')
+                }
+                if(age.value == ''){
+                    $('#errorage').html('Age required')
+                    error = true
+                }
+                else{
+                    $('#errorage').html('')
+                }
+                if(dob.value == ''){
+                    $("#errordob").html('DOB required')
+                    error = true
+                }
+                else{
+                    $('#errordob').html('')
+                }
+                if(address.value == ''){
+                    $('#erroraddress').html('Address required')
+                    error = true
+                }
+                else{
+                    $('#erroraddress').html('')
+                }
+                if(father.value == '')
+                {
+                    $('#errorfather').html('Father name required')
+                    error = true
+                }
+                else{
+                    $('#errorfather').html('')
+                }
+                if(mother.value == ''){
+                    $('#errormother').html('Mother name required')
+                    error = true
+                }
+                else{
+                    $('#errormother').html('')
+                }
+                if(photo.value == ''){
+                    $('#errorphoto').html('Please choose any of the photo')
+                    error = true
+                }
+                else{
+                    $('#errorphoto').html('')
+                }
+                if(!error){
+                    $.ajax({
+                        url : '/edit-registration/{{student_uuid}}/',
+                        method : 'POST',
+                        data : formData,
+                        cache : false,
+                        contentType : false,
+                        processData : false,
+                        dataType : 'json',
+                        success : function(data){
+                            if (data == 'true'){
+                                window.location.replace('/verify-email/')
+                            }
+                            if (data == 'false'){
+                                $('#error').html('Invalid Credentials')
+                            }
+                            if(data == 'phone'){
+                                $('#errorphone').html('Mobile Number already exists')
+                            }
+                        }
+                    })
+                }
+                })
+        </script>
+    </body>
+
+
+<!-- Mirrored from coderthemes.com/hyper/saas/pages-register-2.html by HTTrack Website Copier/3.x [XR&CO'2014], Tue, 16 Mar 2021 05:16:55 GMT -->
+</html>

@@ -1,0 +1,64 @@
+{% extends 'admin/base.html' %}
+{% block content %}
+
+ <!-- Start Content-->
+ <div class="container-fluid">
+    <!-- start page title -->
+    <div class="row">
+        <div class="col-12">
+            <div class="page-title-box">
+                
+                <h4 class="page-title">Staffs</h4>
+            </div>
+        </div>
+    </div>    
+    
+    <div class="row">
+        {% for coordinator_details in coordinator_details %}
+        <div class="col-xl-4 col-lg-4 col-12">
+            
+            <div class="card text-center">
+                <div class="dropdown float-right text-right m-2">
+                    <a href="#" class="dropdown-toggle arrow-none card-drop" data-toggle="dropdown" aria-expanded="false">
+                        <i class="mdi mdi-dots-horizontal"></i>
+                    </a>
+                    <div class="dropdown-menu dropdown-menu-right">
+                       
+                        <a href="/spsadmin/delete-coordinator/{{coordinator_details.id}}/" class="dropdown-item">Remove</a>
+                    </div>
+                <div class="card-body text-center">
+                    
+                    <img src="{{ coordinator_details.ImageURL }}" class="rounded-circle avatar-lg img-thumbnail"
+                    alt="profile-image">
+
+                    <h4 class="mb-0 mt-2">{{coordinator_details.name}}</h4>
+                    <p class="text-muted font-14">{{coordinator_details.username}}</p>
+
+                    <a href="/spsadmin/edit-coordinator/{{coordinator_details.id}}/"><button type="button" class="btn btn-info btn-sm mb-2">Edit</button></a>
+
+                    <div class="text-left mt-3">
+
+                        <p class="text-muted mb-2 font-13"><strong>username :</strong> <span class="ml-2">
+                                {{coordinator_details.username}}</span></p>
+
+                        <p class="text-muted mb-2 font-13"><strong>Mobile :</strong><span class="ml-2"></span>
+                                {{coordinator_details.phone}}</span></p>
+
+                        <p class="text-muted mb-2 font-13"><strong>Email :</strong> <span class="ml-2 ">{{coordinator_details.email}}</span></p>
+
+                        <p class="text-muted mb-1 font-13"><strong>Location :</strong> <span class="ml-2">{{coordinator_details.address}}</span></p>
+                    </div>
+
+                </div> <!-- end card-body -->
+            </div> <!-- end card -->
+
+            <!-- Messages-->
+           
+
+        </div>
+    </div> 
+    <!-- end page title -->
+    {% endfor %}
+
+ </div>
+{% endblock %}

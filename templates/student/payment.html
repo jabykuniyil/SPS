@@ -1,0 +1,285 @@
+{% extends 'coordinator/base.html' %}
+{% block content %}
+{% load static %}
+<div class="container-fluid">
+<div class="row">
+    <div class="col-12">
+        <div class="page-title-box">
+            
+            <h4 class="page-title">Payment methods</h4>
+        </div>
+    </div>
+    <!-- Payment Content-->
+    <div class="tab-pane" id="payment-information">
+         <!-- start page title -->
+    
+    </div>  
+        <div class="row">
+
+            <div class="col-lg-8">
+               
+                <!-- Pay with Paypal box-->
+                <div class="border p-3 mb-3 rounded">
+                    <div class="row">
+                        <div class="col-sm-8">
+                            <div class="custom-control custom-radio">
+                                <input type="radio" id="BillingOptRadio2" value="Paypal" name="paymentmode" class="custom-control-input">
+                                <label class="custom-control-label font-16 font-weight-bold" for="BillingOptRadio2">Pay with Paypal</label>
+                            </div>
+                            <p class="mb-0 pl-3 pt-1">You will be redirected to PayPal website to complete your purchase securely.</p>
+                        </div>
+                        <div class="col-sm-4 text-sm-right mt-3 mt-sm-0">
+                            <img src="{% static 'assets/images/payments/paypal.png' %}" height="25" alt="paypal-img">
+                        </div>
+                    </div>
+                    <div id="paypal-button-container"></div>
+                </div>
+
+                <div class="border p-3 mb-3 rounded">
+                    <div class="row">
+                        <div class="col-sm-8">
+                            <div class="custom-control custom-radio">
+                                <input type="radio" id="BillingOptRadio3" value="Razorpay" name="paymentmode" class="custom-control-input">
+                                <label class="custom-control-label font-16 font-weight-bold" for="BillingOptRadio3">Pay with Razorpay</label>
+                            </div>
+                            <p class="mb-0 pl-3 pt-1">You will be redirected to Razorpay website to complete your purchase securely.</p>
+                        </div>
+                        <div class="col-sm-4 text-sm-right mt-3 mt-sm-0">
+                            <img src="{% static 'assets/images/payments/razorpayicon.png' %}" height="100" alt="paypal-img">
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Cash on Delivery box-->
+                <div class="border p-3 mb-3 rounded">
+                    <div class="row">
+                        <div class="col-sm-8">
+                            <div class="custom-control custom-radio">
+                                <input type="radio" id="BillingOptRadio4" value="Pay at Spot" name="paymentmode" class="custom-control-input">
+                                <label class="custom-control-label font-16 font-weight-bold" for="BillingOptRadio4">Pay at Spot</label>
+                            </div>
+                            <p class="mb-0 pl-3 pt-1">Pay with cash when you are physically available.</p>
+                        </div>
+                        <div class="col-sm-4 text-sm-right mt-3 mt-sm-0">
+                            <img src="{% static 'assets/images/payments/cod.png' %}" height="22" alt="paypal-img">
+                        </div>
+                    </div>
+                </div>
+                <!-- end Cash on Delivery box-->
+
+                
+
+            </div> <!-- end col -->
+
+            <div class="col-lg-4">
+                <div class="border p-3 mt-4 mt-lg-0 rounded">
+                    <h4 class="header-title mb-3">Payment Summary</h4>
+
+                    <div class="table-responsive">
+                        <table class="table table-centered mb-0">
+                            <tbody>
+                                <tr>
+                                    <td>
+                                        
+                                        <p class="m-0 d-inline-block align-middle">
+                                            <a href=""
+                                                class="text-body font-weight-semibold">Admission Fee</a>
+                                            <br>
+                                            
+                                        </p>
+                                    </td>
+                                    <td class="text-right">
+                                        Rs. 7000.00
+                                    </td>
+                                </tr>
+                                <tr>
+                                    <td>
+                                        
+                                        <p class="m-0 d-inline-block align-middle">
+                                            <a href=""
+                                                class="text-body font-weight-semibold">Tution Fee</a>
+                                            <br>
+                                        </p>
+                                    </td>
+                                    <td class="text-right">
+                                        Rs. 2000.00
+                                    </td>
+                                </tr>
+                                <tr>
+                                    <td>
+                                        
+                                        <p class="m-0 d-inline-block align-middle">
+                                            <a href=""
+                                                class="text-body font-weight-semibold">Extra Fee</a>
+                                            <br>
+                                        </p>
+                                    </td>
+                                    <td class="text-right">
+                                        Rs. 1000.00
+                                    </td>
+                                </tr>
+                                <tr class="text-right">
+                                    <td>
+                                        <h5 class="m-0">Total:</h5>
+                                    </td>
+                                    <td class="text-right font-weight-semibold">
+                                        Rs. 10000.00
+                                    </td>
+                                </tr>
+                            </tbody>
+                        </table>
+                    </div>
+                    <!-- end table-responsive -->
+                </div> <!-- end .border-->
+                <br>
+                <span class="text-center" style="color: red;" id="errorpayment"></span>
+
+
+                <div class="row mt-4">
+                    <div class="col-sm-6 col-lg-12">
+                        <div class="text-center">
+                            <button class="btn btn-danger" id="pay">
+                                <i class="mdi mdi-cash-multiple mr-1"></i> Confirm to Pay </button>
+                        </div>
+                    </div> <!-- end col -->
+                </div> <!-- end row-->
+            </div> <!-- end col -->     
+                   
+        </div> <!-- end row-->
+        
+    </div>
+</div>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.6.0/jquery.min.js" integrity="sha512-894YE6QWD5I59HgZOGReFYm4dnWc1Qt5NtvYSaNcOP+u1T9qYdvdihz0PPSiiqn/+/3e7Jo4EaG7TubfWGUrMQ==" crossorigin="anonymous"></script>
+<script src="https://checkout.razorpay.com/v1/checkout.js"></script>
+
+<script>
+    $('#pay').click(function(){
+        var payment = document.getElementsByName('paymentmode')
+        for(i = 0; i < payment.length; i++) { 
+                if(payment[i].checked) 
+                var paymentMode = payment[i].value
+            } 
+            console.log(paymentMode);
+            var data = {
+                'csrfmiddlewaretoken' : '{{csrf_token}}',
+                'paymentMode' : paymentMode,
+            }
+            if (paymentMode == null){
+                $('#errorpayment').html('Please choose any of the payment option')
+            }
+            else if(paymentMode == 'Razorpay')
+            {
+                razorpay(paymentMode)
+            }
+            else if(paymentMode == 'Paypal')
+            {
+                $('#pay').hide()
+                    paypal.Buttons({
+                        
+                        style: {
+                            color:  'blue',
+                            shape:  'pill',
+                            label:  'pay',
+                            height: 40,
+                        },
+                        // Set up the transaction
+                        createOrder: function(data, actions) {
+                        
+                            return actions.order.create({
+                            purchase_units: [{
+                                amount: {
+                                    value: 700
+                                }
+                                }]
+                            });
+                        },
+                
+                        // Finalize the transaction
+                        onApprove: function(data, actions) {
+                            return actions.order.capture().then(function(details) {
+                                alert('success paypal')
+                                $.ajax({
+                                    url:'/payment/',
+                                    method:'POST',
+                                    data:booking_data,
+                                    dataTypes:'json',
+                                    success:function(data){
+                                        if (data=='true'){
+                                            window.location.replace('/feed/')
+                                        }
+                                       
+                                    }
+                                })
+                            });
+                        }
+                    }).render('#paypal-button-container');
+
+            }
+            else if(paymentMode == 'Pay at Spot')
+            {
+                $.ajax({
+                    url : '/payment/',
+                    method : 'POST',
+                    data : data,
+                    dataType : 'json',
+                    success : function(data){
+                        if(data == 'true'){
+                            window.location.replace('/feed/')
+                        }
+                    }
+                })
+            }
+            else{
+                console.log('hello');
+            }
+    })
+    function razorpay(paymentMode){
+        
+        var payment_status = 'razorpay'
+        var options = {
+        "key": "rzp_test_UA2D6H6WCA7Gpn", // Enter the Key ID generated from the Dashboard
+        "amount": 1000000, // Amount is in currency subunits. Default currency is INR. Hence, 50000 refers to 50000 paise
+        "currency": "INR",
+        "name": "SPS Admin",
+        "description": "Student registraiton Fee",
+        "image": "https://www.iconpacks.net/icons/2/free-hotel-icon-1880-thumb.png",
+        "order_id": "{{payment.id}}", //This is a sample Order ID. Pass the `id` obtained in the response of Step 1
+        "handler": function (response) {
+        alert('Transaction completed..!!!');
+            
+            console.log(paymentMode);
+            var payment_data = {
+                'csrfmiddlewaretoken' : '{{csrf_token}}',
+                'paymentMode' : paymentMode
+            }
+            $.ajax({
+                url : '/payment/',
+                method : 'POST',
+                data : payment_data,
+                dataType : 'json', 
+                success : function(data){
+                    if (data == 'true'){
+                        window.location.replace('/feed/')
+                    }
+                }
+            })
+        },
+        "prefill": {
+            "name": "jaby",
+            "email": "spsstudent@gmail.com",
+            "contact": "8547494184"
+        },
+        "notes": {
+            "address": "Razorpay Corporate Office"
+        },
+        "theme": {
+            "color": "#F37254"
+        }
+    };
+    var rzp1 = new Razorpay(options);
+    
+        rzp1.open();
+    }
+</script>
+{% endblock %}
+                                                

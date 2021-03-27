@@ -1,0 +1,40 @@
+{% extends 'coordinator/base.html' %}
+{% block content %}
+
+<div class="container-fluid">
+                        
+    <!-- start page title -->
+    <div class="row">
+        <div class="col-12">
+            <div class="page-title-box">
+                
+                <h4 class="page-title">Batches</h4>
+            </div>
+        </div>
+    </div>   
+<div class="row">
+    <div class="col-12">
+        <div class="card widget-inline">
+            <div class="card-body p-0">
+                <div class="row no-gutters">
+                    {% for batch in batches %}
+                    <div class="col-sm-6 col-xl-3">
+                        <div class="card shadow-none m-0">
+                            <div class="card-body text-center">
+                                <a href=""><i class="dripicons-graph-line text-muted" style="font-size: 24px;"></i>
+                                <h3><span>29</span></h3>
+                                <p class="text-uppercase font-15 mb-0">{{batch.name}}</p></a>
+                            </div>
+                        </div>
+                    </div>
+                    {% endfor %}
+
+
+                </div> <!-- end row -->
+            </div>
+        </div> <!-- end card-box-->
+    </div> <!-- end col-->
+</div>
+<!-- end row-->
+</div>
+{% endblock %}
