@@ -25,30 +25,12 @@
                     </a>
                     <div class="dropdown-menu dropdown-menu-right">
                         <a href="/spsadmin/student-specific/{{student.id}}/" class="dropdown-item">View</a>
-                        <a href="/spsadmin/approve-student/{{student.id}}/" class="dropdown-item">Approve</a>
-                        <a href="" data-target="#invalid" data-toggle="modal" id="invalidrequest" class="dropdown-item">Approve with Video Call</a>
-                        <a href="" data-target="#invalid" data-toggle="modal" id="invalidrequest" class="dropdown-item">Invalid-Request</a>
-
+                        
                     </div>
                    
                 
                     <!-- Modal -->
-                    <div class="modal fade" id="invalid" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">
-                        <div class="modal-dialog">
-                            <div class="modal-content" >
-                                <div class="modal-header">
-                                    </div>
-                                    <div class="modal-body">
-                                        <input type="textarea" style="margin: 1rem; display: block; margin: auto; height: 8rem; width: -webkit-fill-available;" name="reason" id="reason" required="required">
-                                            <span id="errorreason" style="color: red;"></span>
-                                    </div>
-                                    <div class="modal-footer">
-                                    <button type="button" class="btn btn-default" data-dismiss="modal">Close</button>
-                                    <button class="btn btn-primary" type="button" onclick="reason('{{student.id}}')"  id="submit">Submit</button>
-                                </div>
-                            </div>
-                        </div>
-                    </div> 
+                   
                 <div class="card-body text-center">
                     
                     <img src="{{ student.student_photo }}" class="rounded-circle avatar-lg img-thumbnail"

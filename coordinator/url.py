@@ -15,5 +15,11 @@ urlpatterns = [
     path('batches/', views.batches, name = 'batches'),
     path('batch-specific/', views.batch_specific, name = 'batch-specific'),
     path('add-batch/', views.add_batch, name = 'add-batch'),
+    path('batch-tasks/', views.batch_tasks, name = 'batch-tasks'),
+    path('choose-week/<int:id>/', views.choose_week, name = 'choose-week'),
+    path('add-week/<int:id>/', views.add_week, name = 'add-week'),
+    path('<int:batchid>/task-specific/<int:weekid>/', views.task_specific, name = 'task-specific'),
+    path('<int:batchid>/task-specific/<int:weekid>/delete-task/<int:taskid>/', views.delete_task, name = 'delete-task'),
+    path('<int:batchid>/task-specific/<int:weekid>/edit-task/<int:taskid>/', views.edit_task, name = 'edit-task'),
     path('logout/', views.logout, name = 'logout')
 ]

@@ -47,3 +47,8 @@ class StudentUUID(models.Model):
     student_uuid = models.CharField(max_length=50, null=True, blank=True)
     uuid_expiry = models.DateField(null=True, blank=True)
     
+class VideocallShedule(models.Model):
+    student = models.ForeignKey(Student, on_delete=models.CASCADE)
+    date = models.DateField(null=True, blank=True)
+    time = models.TimeField(null=True, blank=True)
+    

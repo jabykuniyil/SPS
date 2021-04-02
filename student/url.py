@@ -12,5 +12,7 @@ urlpatterns = [
     path('edit-registration/<str:id>/', views.edit_registration, name = 'edit-registration'),
     path('feed/', views.feed, name = 'student-feed'),
     path('dashboard/', views.dashboard, name = 'dashboard'),
+    path('choose-week/', views.choose_week, name = 'choose-week'),
+    path('task-specific/<int:id>/', views.task_specific, name = 'task-specific'),
     path('logout/', views.logout, name = 'logout')
 ]

@@ -1,9 +1,10 @@
 from django.shortcuts import render, redirect
-from . models import CoordinatorDetails, Batches
+from . models import CoordinatorDetails, Batches, Week, Task
 from student.models import Student
 from django.contrib.auth.hashers import check_password
 from django.core.files import File
 from django.http import JsonResponse
+import json
 
 # Create your views here.
 
@@ -89,7 +90,9 @@ def edit_student(request):
     
 def students_requests(request):
     if request.session.has_key('is_coordinator'):
-        return render(request, 'coordinator/students-requests.html')
+        students = Student.objects.filter(admin_approval='pending', is_superuser=False)
+        context = {'students' : students}
+        return render(request, 'coordinator/students-requests.html', context)
     else:
         return redirect(login)
     
@@ -120,6 +123,79 @@ def add_batch(request):
             coordinators = CoordinatorDetails.objects.all()
             context = {'coordinators' : coordinators}
             return render(request, 'coordinator/add-batch.html', context)
+    else:
+        return redirect(login)
+    
+def batch_tasks(request):
+    if request.session.has_key('is_coordinator'):
+        batches = Batches.objects.all()
+        context = {'batches' : batches}
+        return render(request, 'coordinator/batch-tasks.html', context)
+    else:
+        return redirect(login)
+    
+def choose_week(request, id):
+    if request.session.has_key('is_coordinator'):
+        batch = Batches.objects.get(id=id)
+        weeks = Week.objects.filter(batch=batch)
+        context = {'id' : batch.id, 'weeks' : weeks}
+        return render(request, 'coordinator/choose-week.html', context)
+    else:
+        return redirect(login)
+    
+def add_week(request, id):
+    if request.session.has_key('is_coordinator'):
+        if request.method == 'POST':
+            week = request.POST['week']
+            batch = Batches.objects.get(id=id)
+            Week.objects.create(batch=batch, week=week)
+            return JsonResponse('true', safe=False)
+    else:
+        return redirect(login)
+    
+def task_specific(request, batchid, weekid):
+    if request.session.has_key('is_coordinator'):
+        if request.method == 'POST':
+            qeustion = request.POST['textareaValue']
+            type_of_task = request.POST['typeOfTask']
+            Task.objects.create(question=qeustion, week_id=weekid, batch_id=batchid, type_of_task=type_of_task)
+            return JsonResponse('true', safe=False)
+        else:
+            week_id = Week.objects.get(id=weekid)
+            batch_id = Batches.objects.get(id=batchid)
+            miscelleneous_task = Task.objects.filter(batch=batch_id, week=week_id, type_of_task='Miscelleneuos Task')
+            personal_development = Task.objects.filter(batch=batch_id, week=week_id, type_of_task='Personal Development')
+            technical_task = Task.objects.filter(batch=batch_id, week=week_id, type_of_task='Technical Task')
+            miscelleneous_task_dict = {}
+            personal_development_dict = {}
+            technical_task_dict = {}
+            for x in technical_task:
+                technical_task_dict[x.id] = x.question
+            for x in miscelleneous_task:
+                miscelleneous_task_dict[x.id] = x.question
+            for x in personal_development:
+                personal_development_dict[x.id] = x.question
+            context = {'weekid' : week_id.id, 'batchid' : batch_id.id, 'miscelleneousTask' : miscelleneous_task_dict, 'personalDevelopment' : personal_development_dict, 'technicalTask' : technical_task_dict}
+            return render(request, 'coordinator/task-specific.html', context)
+    else:
+        return redirect(login)
+
+def edit_task(request, weekid, batchid, taskid):
+    if request.session.has_key('is_coordinator'):
+        if request.method == 'POST':
+            question = request.POST['editareaValue']
+            Task.objects.filter(week_id=weekid, batch_id=batchid, id=taskid).update(question=question)
+            return JsonResponse('true', safe=False)
+        else:
+            return JsonResponse('true', safe=False)
+    else:   
+        return redirect(login)
+    
+def delete_task(request, batchid, weekid, taskid):
+    if request.session.has_key('is_coordinator'):
+        task = Task.objects.filter(batch_id=batchid, week_id=weekid, id=taskid)
+        task.delete()
+        return redirect(task_specific, batchid=batchid, weekid=weekid)
     else:
         return redirect(login)
     

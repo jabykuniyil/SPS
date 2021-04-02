@@ -5,7 +5,7 @@ from django.contrib.auth.models import auth, User
 from coordinator.models import CoordinatorDetails
 from django.core.files import File
 from django.contrib.auth.hashers import make_password
-from student.models import Student, InvalidResponse, StudentUUID
+from student.models import Student, InvalidResponse, StudentUUID, VideocallShedule
 from coordinator.models import Batches
 from django.contrib.auth.decorators import login_required
 import uuid
@@ -142,13 +142,17 @@ def student_register(request):
 @login_required(login_url='/spsadmin/')
 def students_requests(request):
     students = Student.objects.filter(admin_approval='pending', is_superuser=False)
-    context = {'students' : students}
+    today = datetime.date.today()
+    formated = datetime.date.strftime(today, '%Y-%m-%d')
+    batches = Batches.objects.all()
+    context = {'students' : students, 'today' : formated, 'batches' : batches}
     return render(request, 'admin/students-requests.html', context)
 
 @login_required(login_url='/spsadmin/')
 def invalid_student_requests(request):
     students = Student.objects.filter(admin_approval='invalid', is_superuser=False)
-    context = {'students' : students}
+    batches = Batches.objects.all()
+    context = {'students' : students, 'batches' : batches}
     return render(request, 'admin/invalid-requests.html', context)
 
 @login_required(login_url='/spsadmin/')
@@ -159,8 +163,24 @@ def student_specific(request, id):
     
 @login_required(login_url='/spsadmin/')
 def approve_student(request, id):
-    Student.objects.filter(admin_approval__in=['pending', 'terminated', 'rejected'], id=id, is_superuser=False).update(admin_approval='approved')
-    return redirect(students)
+    if request.method == 'POST':
+        batch = request.POST['batch']
+        Student.objects.filter(admin_approval__in=['pending', 'terminated', 'rejected'], id=id, is_superuser=False).update(admin_approval='approved', batch=batch)
+        return JsonResponse('true', safe=False)
+    else:
+        return JsonResponse('true', safe=False)
+
+@login_required(login_url='/spsadmin/')
+def approve_videocall(request, id):
+    if request.method == 'POST':
+        student = Student.objects.get(id=id)
+        date = request.POST['date']
+        time = request.POST['time']
+        Student.objects.filter(id=id, admin_approval='pending').update(admin_approval='videocall')
+        VideocallShedule.objects.create(student=student, date=date, time=time)
+        return JsonResponse('true', safe=False)
+    else:
+        return JsonResponse('true', safe=False)
 
 @login_required(login_url='/spsadmin/')
 def reject_student(request, id):
@@ -175,11 +195,8 @@ def invalid_request(request, id):
         InvalidResponse.objects.create(student=student, reason=reason)
         Student.objects.filter(admin_approval='pending', id=id, is_superuser=False).update(admin_approval='invalid')
         student_uuid  = uuid.uuid4()
-        print(student_uuid)
         today = datetime.datetime.now().date()
-        print(today)
         uuid_expiry = today + datetime.timedelta(days=1)
-        print(uuid_expiry)
         StudentUUID.objects.create(student=student, student_uuid=student_uuid, uuid_expiry=uuid_expiry)
         return JsonResponse('true', safe=False)
     else:
@@ -195,7 +212,27 @@ def rejected_requests(request):
     students = Student.objects.filter(admin_approval='rejected', is_superuser=False)
     context = {'students' : students}
     return render(request, 'admin/rejected-requests.html', context)
+
+@login_required(login_url='/spsadmin/')
+def student_videocall(request):
+    if request.method == 'POST':
+        id = request.POST['id']
+        batch = request.POST['batch']
+        Student.objects.filter(admin_approval='videocall', id = id).update(admin_approval='approved', batch=batch)
+        return JsonResponse('true', safe=False)
+    else:
+        pending_students = VideocallShedule.objects.filter(student__admin_approval='videocall')
+        schedule_list = {}
+        for student in pending_students:
+            videocall_date = str(student.date)
+            videocall_time = str(student.time)
+            date_and_time = videocall_date +" "+ videocall_time
+            schedule_list[student.student.id] = date_and_time
+        batches = Batches.objects.all()
+        context = {'students' : pending_students, 'schedules' : schedule_list, 'batches' : batches}
+        return render(request, 'admin/student-videocall.html', context)
     
+@login_required(login_url='/spsadmin/')
 def staffs(request):
     coordinator_details = CoordinatorDetails.objects.all()
     context = {'coordinator_details' : coordinator_details}

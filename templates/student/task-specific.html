@@ -1,0 +1,290 @@
+{% extends 'student/base.html' %}
+{% block content %}
+
+<style>
+    .modal-dialog {
+  width: 100%;
+  margin: 1;
+  padding: 0;
+}
+
+.modal-content {
+  height: auto;
+  border-radius: 0;
+}
+section {
+  width: 50%;
+  min-height: inherit;
+
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  flex-direction: column;
+
+  position: relative;
+}
+
+section::before,
+section::after {
+  content: "";
+  display: block;
+
+  border-radius: 100%;
+
+  position: absolute;
+}
+
+
+.light {
+  --primary: hsl(250, 100%, 44%);
+  --other: hsl(0, 0%, 14%);
+
+  background: hsl(0, 0%, 98%);
+}
+
+.dark {
+  --primary: hsl(1, 100%, 68%);
+  --other: hsl(0, 0%, 90%);
+
+  background: hsl(0, 0%, 10%);
+}
+
+
+/* h1 */
+h1 {
+  color: var(--other);
+  padding: 8px 4px;
+  border-bottom: 2px solid var(--other);
+}
+
+
+/* label */
+label {
+  display: flex;
+  justify-content: flex-start;
+  align-items: center;
+  flex-wrap: nowrap;
+
+  margin: 12px 0;
+
+  cursor: pointer;
+  position: relative;
+}
+
+
+/* input */
+input {
+  opacity: 0;
+  position: absolute;
+  left: 50%;
+  top: 50%;
+  transform: translate(-50%, -50%);
+  z-index: -1;
+}
+
+
+/* .design */
+.design {
+  width: 16px;
+  height: 16px;
+
+  border: 1px solid var(--other);
+  border-radius: 100%;
+  margin-right: 16px;
+
+  position: relative;
+}
+
+.design::before,
+.design::after {
+  content: "";
+  display: block;
+
+  width: inherit;
+  height: inherit;
+
+  border-radius: inherit;
+
+  position: absolute;
+  transform: scale(0);
+  transform-origin: center center;
+}
+
+.design:before {
+  background: var(--other);
+  opacity: 0;
+  transition: .3s;
+}
+
+.design::after {
+  background: var(--primary);
+  opacity: .4;
+  transition: .6s;
+}
+
+
+/* .text */
+.text {
+  color: var(--other);
+  font-weight: bold;
+}
+
+
+/* checked state */
+input:checked+.design::before {
+  opacity: 1;
+  transform: scale(.6);
+}
+
+
+/* other states */
+input:hover+.design,
+input:focus+.design {
+  border: 1px solid var(--primary);
+}
+
+input:hover+.design:before,
+input:focus+.design:before {
+  background: var(--primary);
+}
+
+input:hover~.text {
+  color: var(--primary);
+}
+
+input:focus+.design::after,
+input:active+.design::after {
+  opacity: .1;
+  transform: scale(2.6);
+}
+
+.abs-site-link {
+  position: fixed;
+  bottom: 20px;
+  left: 20px;
+  color: hsla(0, 0%, 0%, .6);
+  background: hsla(0, 0%, 98%, .6);
+  font-size: 16px;
+}   
+</style>
+<div class="container-fluid">
+    <div class="row">
+        <div class="col-12">
+            <div class="page-title-box">
+                <h4 class="page-title">Tasks</h4>
+            </div>
+        </div>
+    </div>
+    
+    <div class="row">
+    <div class="col-12">
+        <div class="card">
+            <div class="card-body">
+
+                <!-- Checkout Steps -->
+                <ul class="nav nav-pills bg-nav-pills nav-justified mb-3">
+                    <li class="nav-item">
+                        <a href="#personal-development-questions" data-toggle="tab" aria-expanded="false"
+                            class="nav-link rounded-0 active">
+                            <i class="mdi mdi-account-circle font-18"></i>
+                            <span class="d-none d-lg-block">Personal Development</span>
+                        </a>
+                    </li>
+                    <li class="nav-item">
+                        <a href="#technical-questions" data-toggle="tab" aria-expanded="true" class="nav-link rounded-0">
+                            <i class="mdi mdi-laptop font-18"></i>
+                            <span class="d-none d-lg-block">Technical Tasks</span>
+                        </a>
+                    </li>
+                    <li class="nav-item">
+                        <a href="#miscelleneous-task-questions" data-toggle="tab" aria-expanded="false" class="nav-link rounded-0">
+                            <i class="mdi mdi-more font-18"></i>
+                            <span class="d-none d-lg-block">Miscelleneuos Tasks</span>
+                        </a>
+                    </li>
+                </ul>
+
+                <!-- Steps Information -->
+                <div class="tab-content">
+
+                    <!-- Billing Content-->
+                    <div class="tab-pane show active" id="personal-development-questions">
+                        <div class="row">
+                        </div> <!-- end row-->
+                    </div>
+                    <!-- End Billing Information Content-->
+
+                    <!-- Shipping Content-->
+                    <div class="tab-pane" id="technical-questions">
+                        <div class="row">
+                                      
+                        </div> <!-- end row-->
+                    </div>
+                    <!-- End Shipping Information Content-->
+
+                    <!-- Payment Content-->
+                    <div class="tab-pane" id="miscelleneous-task-questions">
+                        <div class="row">
+      
+                        </div> <!-- end row-->
+                    </div>
+                    <!-- End Payment Information Content-->
+
+                </div> <!-- end tab content-->
+
+            </div> <!-- end card-body-->
+        </div> <!-- end card-->
+    </div> <!-- end col -->
+</div>
+    
+<div id="answer" class="modal fade" tabindex="-1" role="dialog" aria-labelledby="fullWidthModalLabel" aria-hidden="true">
+    <div class="modal-dialog modal-full-width">
+      <div class="modal-content">
+        <div class="modal-header">
+          <h4 class="modal-title" id="fullWidthModalLabel">Edit the Task</h4>
+        </div>
+        <div class="modal-body" id="task-answer">
+        </div>
+        <div class="tab-content" id="task-buttons">
+          <button style="margin-bottom:3rem;" class=" btn btn-danger float-right m-1" id="submitBtn"  class="btn btn-lg font-16 btn-danger btn-block" value="Submit" id="submit" ><i class="mdi mdi-plus-circle-outline"></i>Submit</button>
+          <button  class="btn btn-info float-right m-1 "style="margin-bottom:3rem;" data-dismiss="modal" class=" btn btn-lg font-16 btn-danger btn-block" value="Cancel" id="cancel" ><i class="mdi mdi-plus-circle-outline"></i>Cancel</button>
+          <span id="erroranswer" style="color:  red;"></span>
+        </div>
+      </div>
+    </div>
+</div>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.6.0/jquery.min.js" integrity="sha512-894YE6QWD5I59HgZOGReFYm4dnWc1Qt5NtvYSaNcOP+u1T9qYdvdihz0PPSiiqn/+/3e7Jo4EaG7TubfWGUrMQ==" crossorigin="anonymous"></script>
+    <!-- <button class="btn btn-lg font-16 btn-danger btn-block" type="button" id="submit">Submit</button> -->
+    
+    <script>
+        function htmlDecode(input){
+  var e = document.createElement('div');
+  e.innerHTML = input;
+  return e.childNodes[0].nodeValue;
+}
+count = 0;
+function answerModal(){
+    if (count == 0){
+    var div = $('<div>').appendTo($("#task-answer"));
+        div.summernote().addClass('summernote');
+        count++;
+    }
+}
+
+        {% for task in personal_tasks %}
+        var personalQuestion = htmlDecode('{{task}}')
+        console.log(personalQuestion);
+        $('#personal-development-questions').append('<hr style="border-top: 1px dashed red;"><div class="float-right">', '<i onclick="answerModal()" style="font-size: 1.5em; color: green" data-toggle = "modal" data-target="#answer" class="dripicons-document-edit ml-2 float-right"></i>', personalQuestion)
+        {% endfor %}
+        {% for task in technical_tasks %}
+        var technicalQuestion = htmlDecode('{{task}}')
+        $('#technical-questions').append('<hr style="border-top: 1px dashed red;"><div class="float-right">', '<i style="font-size: 1.5em; color: green" data-toggle = "modal" data-target="#answer" class="dripicons-document-edit ml-2 float-right"></i>', technicalQuestion)
+        {% endfor %}
+        {% for task in miscelleneous_tasks %}
+        var miscelleneousQuestion = htmlDecode('{{task}}')
+        $('#miscelleneous-task-questions').append('<hr style="border-top: 1px dashed red;"><div class="float-right">', '<i style="font-size: 1.5em; color: green" data-toggle = "modal" data-target="#answer" class="dripicons-document-edit ml-2 float-right"></i>', miscelleneousQuestion)
+        {% endfor %}
+
+
+    </script>
+{% endblock %}

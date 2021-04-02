@@ -1,6 +1,10 @@
 {% extends 'admin/base.html' %}
 {% block content %}
-
+<style>
+    .datepicker-input{
+        border: groove;
+    }
+</style>
  <!-- Start Content-->
  <div class="container-fluid">
     <!-- start page title -->
@@ -23,8 +27,8 @@
                         <i class="mdi mdi-dots-horizontal"></i>
                     </a>
                     <div class="dropdown-menu dropdown-menu-right">
-                        <a href="/spsadmin/approve-student/{{student.id}}/" class="dropdown-item">Approve</a>
-                        <!-- <a href="" data-target="#invalid" data-toggle="modal" id="invalidrequest" class="dropdown-item">Approve with Video Call</a> -->
+                        <a href="" data-target="#batch" data-toggle="modal" id="batchchoose" class="dropdown-item">Approve</a>
+                        <a href="" data-target="#schedule" data-toggle="modal" id="scheduletime" class="dropdown-item">Approve with Video Call</a>
                         <a href="" data-target="#invalid" data-toggle="modal" id="invalidrequest" class="dropdown-item">Invalid-Request</a>
                         <a href="/spsadmin/reject-student/{{student.id}}/" class="dropdown-item">Reject</a>
                     </div>
@@ -43,6 +47,47 @@
                                     <div class="modal-footer">
                                     <button type="button" class="btn btn-default" data-dismiss="modal">Close</button>
                                     <button class="btn btn-primary" type="button" onclick="reason('{{student.id}}')"  id="submit">Submit</button>
+                                </div>
+                            </div>
+                        </div>
+                    </div> 
+                    <div class="modal fade" id="batch" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">
+                        <div class="modal-dialog">
+                            <div class="modal-content" >
+                                <div class="modal-header">
+                                    </div>
+                                    <div class="modal-body" style="margin: auto;">
+                                        <h3 style="margin:1rem;">Choose the batch</h3>
+                                        <select class="form-control"  name="batch" id="batchselect">
+                                            <option value="choose...">choose the batch...</option>
+                                            {% for batch in batches %}
+                                            <option value="{{batch.name}}">{{batch.name}}</option>
+                                            {% endfor %}
+                                        </select>         
+                                        <span id="errorbatch" style="color: red;"></span>
+                                    </div>
+                                    <div class="modal-footer">
+                                    <button type="button" class="btn btn-default" data-dismiss="modal">Close</button>
+                                    <button class="btn btn-primary" type="button" onclick="batch('{{student.id}}')"  id="batchapprove">Select and Approve</button>
+                                </div>
+                            </div>
+                        </div>
+                    </div> 
+                    <div class="modal fade" id="schedule" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">
+                        <div class="modal-dialog">
+                            <div class="modal-content" >
+                                <div class="modal-header">
+                                    </div>
+                                    <div class="modal-body" style="margin: auto;">
+                                        <h3 style="margin:1rem;">Choose a date and time</h3>
+                                        <input type="date" class="form-control" min="{{today}}" class="datepicker-input"   name="date" id="date" required="required">
+                                            <span id="errordate" style="color: red;"></span>
+                                        <input type="time" class="form-control" name="time"  id="time" required>
+                                        <span id="errortime" style="color: red;"></span>
+                                    </div>
+                                    <div class="modal-footer">
+                                    <button type="button" class="btn btn-default" data-dismiss="modal">Close</button>
+                                    <button class="btn btn-primary" type="button" onclick="approve('{{student.id}}')"  id="approve">Approve</button>
                                 </div>
                             </div>
                         </div>
@@ -101,6 +146,68 @@
                 dataType : 'json',
                 success : function(data){
                     if(data == 'true'){
+                        window.location.reload()
+                    }
+                }
+            })
+        }
+    }
+
+    function approve(id){
+        var date = $('#date').val()
+        var time = $('#time').val()
+        var data = {
+            'csrfmiddlewaretoken' : '{{csrf_token}}',
+            'date' : date,
+            'time' : time
+        }
+        let error = false
+        if (date == ''){
+            $('#errordate').html('Please choose a date')
+            error = true
+        }
+        else{
+            $('#errordate').html('')
+        }
+        if(time == ''){
+            $('#errortime').html('Please choose a time that suit for you')
+            error = true
+        }
+        else{
+            $('#errortime').html('')
+        }
+        if(!error){
+            $.ajax({
+                url : '/spsadmin/approve-videocall/'+id+'/',
+                method : 'POST',
+                data : data,
+                dataType : 'json',
+                success : function(data){
+                    if (data == 'true'){
+                        window.location.reload()
+                    }
+                }
+            })
+        }
+    }
+
+    function batch(id){
+        var batch = $('#batchselect').val()
+        var data = {
+            'csrfmiddlewaretoken' : '{{csrf_token}}',
+            'batch' : batch
+        }
+        if(batch == 'choose the batch...'){
+            $('#errorbatch').html('Please choose a batch')
+        }
+        else{
+            $.ajax({
+                url : '/spsadmin/approve-student/' + id + '/',
+                method : 'POST',
+                data : data,
+                dataType : 'json',
+                success : function(data){
+                    if (data == 'true'){
                         window.location.reload()
                     }
                 }

@@ -1,0 +1,483 @@
+{% extends 'coordinator/base.html' %}
+{% block content %}
+{% load static %}
+<style>
+    .modal-dialog {
+  width: 100%;
+  margin: 1;
+  padding: 0;
+}
+
+.modal-content {
+  height: auto;
+  border-radius: 0;
+}
+section {
+  width: 50%;
+  min-height: inherit;
+
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  flex-direction: column;
+
+  position: relative;
+}
+
+section::before,
+section::after {
+  content: "";
+  display: block;
+
+  border-radius: 100%;
+
+  position: absolute;
+}
+
+
+.light {
+  --primary: hsl(250, 100%, 44%);
+  --other: hsl(0, 0%, 14%);
+
+  background: hsl(0, 0%, 98%);
+}
+
+.dark {
+  --primary: hsl(1, 100%, 68%);
+  --other: hsl(0, 0%, 90%);
+
+  background: hsl(0, 0%, 10%);
+}
+
+
+/* h1 */
+h1 {
+  color: var(--other);
+  padding: 8px 4px;
+  border-bottom: 2px solid var(--other);
+}
+
+
+/* label */
+label {
+  display: flex;
+  justify-content: flex-start;
+  align-items: center;
+  flex-wrap: nowrap;
+
+  margin: 12px 0;
+
+  cursor: pointer;
+  position: relative;
+}
+
+
+/* input */
+input {
+  opacity: 0;
+  position: absolute;
+  left: 50%;
+  top: 50%;
+  transform: translate(-50%, -50%);
+  z-index: -1;
+}
+
+
+/* .design */
+.design {
+  width: 16px;
+  height: 16px;
+
+  border: 1px solid var(--other);
+  border-radius: 100%;
+  margin-right: 16px;
+
+  position: relative;
+}
+
+.design::before,
+.design::after {
+  content: "";
+  display: block;
+
+  width: inherit;
+  height: inherit;
+
+  border-radius: inherit;
+
+  position: absolute;
+  transform: scale(0);
+  transform-origin: center center;
+}
+
+.design:before {
+  background: var(--other);
+  opacity: 0;
+  transition: .3s;
+}
+
+.design::after {
+  background: var(--primary);
+  opacity: .4;
+  transition: .6s;
+}
+
+
+/* .text */
+.text {
+  color: var(--other);
+  font-weight: bold;
+}
+
+
+/* checked state */
+input:checked+.design::before {
+  opacity: 1;
+  transform: scale(.6);
+}
+
+
+/* other states */
+input:hover+.design,
+input:focus+.design {
+  border: 1px solid var(--primary);
+}
+
+input:hover+.design:before,
+input:focus+.design:before {
+  background: var(--primary);
+}
+
+input:hover~.text {
+  color: var(--primary);
+}
+
+input:focus+.design::after,
+input:active+.design::after {
+  opacity: .1;
+  transform: scale(2.6);
+}
+
+.abs-site-link {
+  position: fixed;
+  bottom: 20px;
+  left: 20px;
+  color: hsla(0, 0%, 0%, .6);
+  background: hsla(0, 0%, 98%, .6);
+  font-size: 16px;
+}   
+</style>
+<div class="container-fluid">
+    <div class="row">
+        <div class="col-12">
+            <div class="page-title-box">
+              <div class="dropdown float-right text-right mt-3">
+                <a href="#" class="dropdown-toggle arrow-none card-drop" data-toggle="dropdown" aria-expanded="false">
+                    <i class="dripicons-view-apps noti-icon"></i>
+                </a>
+                <div class="dropdown-menu dropdown-menu-right">
+                    <a href="" data-target="#questionModal" data-toggle="modal" id="weekchoose" class="dropdown-item">Create New Question</a>
+    
+                </div>
+            </div>
+                <h4 class="page-title">Tasks</h4>
+            </div>
+        </div>
+    </div>
+    
+    <div class="row">
+    <div class="col-12">
+        <div class="card">
+            <div class="card-body">
+
+                <!-- Checkout Steps -->
+                <ul class="nav nav-pills bg-nav-pills nav-justified mb-3">
+                    <li class="nav-item">
+                        <a href="#personal-development-questions" data-toggle="tab" aria-expanded="false"
+                            class="nav-link rounded-0 active">
+                            <i class="mdi mdi-account-circle font-18"></i>
+                            <span class="d-none d-lg-block">Personal Development</span>
+                        </a>
+                    </li>
+                    <li class="nav-item">
+                        <a href="#technical-questions" data-toggle="tab" aria-expanded="true" class="nav-link rounded-0">
+                            <i class="mdi mdi-laptop font-18"></i>
+                            <span class="d-none d-lg-block">Technical Tasks</span>
+                        </a>
+                    </li>
+                    <li class="nav-item">
+                        <a href="#miscelleneous-task-questions" data-toggle="tab" aria-expanded="false" class="nav-link rounded-0">
+                            <i class="mdi mdi-more font-18"></i>
+                            <span class="d-none d-lg-block">Miscelleneuos Tasks</span>
+                        </a>
+                    </li>
+                </ul>
+
+                <!-- Steps Information -->
+                <div class="tab-content">
+
+                    <!-- Billing Content-->
+                    <div class="tab-pane show active" id="personal-development-questions">
+                        <div class="row">
+                                     
+                        </div> <!-- end row-->
+                    </div>
+                    <!-- End Billing Information Content-->
+
+                    <!-- Shipping Content-->
+                    <div class="tab-pane" id="technical-questions">
+                        <div class="row">
+                                      
+                        </div> <!-- end row-->
+                    </div>
+                    <!-- End Shipping Information Content-->
+
+                    <!-- Payment Content-->
+                    <div class="tab-pane" id="miscelleneous-task-questions">
+                        <div class="row">
+      
+                        </div> <!-- end row-->
+                    </div>
+                    <!-- End Payment Information Content-->
+
+                </div> <!-- end tab content-->
+
+            </div> <!-- end card-body-->
+        </div> <!-- end card-->
+    </div> <!-- end col -->
+</div>
+
+
+
+   <!-- Modal -->
+                    <div class="modal fade" id="questionModal" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">
+                        <div class="modal-dialog">
+                            <div class="modal-content" >
+                                <div class="modal-header">
+                                    <button type="button" class="close" data-dismiss="modal"><span aria-hidden="true">&times;</span><span class="sr-only">Close</span></button>
+                                    <h4 class="modal-title" id="myModalLabel">Close</h4>
+                                    </div>
+                                    <div class="modal-body">
+                                        
+                                    <section class="light" style="align-items: flex-start;">
+
+                                      
+                                        <label>
+                                          <input type="radio" value="Personal Development" id="task"  name="task" checked >
+                                          <span class="design"></span>
+                                          <span class="text">Personal Development Task</span>
+                                        </label>
+                                      
+                                        <label>
+                                          <input type="radio" value="Technical Task" id="task" name="task">
+                                          <span class="design"></span>
+                                          <span class="text">Technical Task</span>
+                                        </label>
+                                      
+                                        <label>
+                                          <input type="radio" value="Miscelleneuos Task" id="task" name="task">
+                                          <span class="design"></span>
+                                          <span class="text">Miscelleneuos Task</span>
+                                        </label>
+                                      
+                                      </section>
+                                    </div>
+                                    <div class="modal-footer">
+                                    <button type="button" class="btn btn-default" data-dismiss="modal">Close</button>
+                                    <button type="button"  data-toggle="modal" data-target="#full-width-modal" class="btn btn-danger" data-dismiss="modal" id="select">Select</button>
+                                </div>
+                            </div>
+                        </div>
+            </div>
+        
+    
+            <div id="full-width-modal" class="modal fade" tabindex="-1" role="dialog" aria-labelledby="fullWidthModalLabel" aria-hidden="true">
+              <div class="modal-dialog modal-full-width">
+                  <div class="modal-content">
+                      <div class="modal-header">
+                          <h4 class="modal-title" id="fullWidthModalLabel">Create New Task</h4>
+                      </div>
+                      <div class="modal-body">
+                        
+              <div class="tab-content">
+                <!-- basic summernote-->
+                <div class="tab-pane show active" id="basic-preview">
+                
+                <!-- <div id="summernote"></div>    -->
+                
+              </div>
+              
+              
+            </div>
+                           </div>
+                     
+                  </div><!-- /.modal-content -->
+              </div><!-- /.modal-dialog -->
+          </div><!-- /.modal -->
+          <div id="danger-alert-modal" class="modal fade" tabindex="-1" role="dialog" aria-hidden="true">
+            <div class="modal-dialog modal-sm">
+                <div class="modal-content modal-filled bg-danger">
+                    <div class="modal-body p-4">
+                        <div class="text-center">
+                            <i class="dripicons-wrong h1"></i>
+                            <h4 class="mt-2">Deleted!</h4>
+                            <p class="mt-3">The Question has Deleted from the week.</p>
+                            <button type="button" class="btn btn-light my-2" data-dismiss="modal">OK</button>
+                        </div>
+                    </div>
+                </div><!-- /.modal-content -->
+            </div><!-- /.modal-dialog -->
+        </div><!-- /.modal -->
+
+        <div id="edit-question" class="modal fade" tabindex="-1" role="dialog" aria-labelledby="fullWidthModalLabel" aria-hidden="true">
+          <div class="modal-dialog modal-full-width">
+            <div class="modal-content">
+              <div class="modal-header">
+                <h4 class="modal-title" id="fullWidthModalLabel">Edit the Task</h4>
+              </div>
+              <div class="modal-body" id="task-modal">
+              </div>
+              <div class="tab-content" id="task-buttons">
+                <button style="margin-bottom:3rem;" class=" btn btn-danger float-right m-1" id="submitBtn" onclick="editSubmit()" class="btn btn-lg font-16 btn-danger btn-block" value="Submit" id="submit" ><i class="mdi mdi-plus-circle-outline"></i>Submit</button>
+                <button  class="btn btn-info float-right m-1 "style="margin-bottom:3rem;" data-dismiss="modal" class=" btn btn-lg font-16 btn-danger btn-block" value="Cancel" id="cancel" ><i class="mdi mdi-plus-circle-outline"></i>Cancel</button>
+                <span id="editerror" style="color:  red;"></span>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    <!-- <button class="btn btn-lg font-16 btn-danger btn-block" type="button" id="submit">Submit</button> -->
+    
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.6.0/jquery.min.js" integrity="sha512-894YE6QWD5I59HgZOGReFYm4dnWc1Qt5NtvYSaNcOP+u1T9qYdvdihz0PPSiiqn/+/3e7Jo4EaG7TubfWGUrMQ==" crossorigin="anonymous"></script>
+<script>
+  let a;
+  function htmlDecode(input){
+  var e = document.createElement('div');
+  e.innerHTML = input;
+  return e.childNodes[0].nodeValue;
+}
+var technicalquestion = {{technicalTask|safe}}
+for(var techid in technicalquestion){
+  var type = 'Technical Task'
+  $('#technical-questions').append('<hr style="border-top: 1px dashed red;"><div class="float-right"><i data-toggle = "modal" data-target="#edit-question" style="font-size: 1.5em; color: #ffbc00" onclick="edit('+techid+', \''+type+'\')" class="dripicons-document-edit ml-2"></i><a href="/coordinator/{{batchid}}/task-specific/{{weekid}}/delete-task/'+techid+'/"><i data-toggle="modal" data-target="#danger-alert-modal" style="font-size: 1.5em; color: red;  float:right;" class="dripicons-document-delete  ml-2"></i></a></div>')
+  $('#technical-questions').append(technicalquestion[techid]);
+
+}
+
+var personalquestion = {{personalDevelopment|safe}}
+  for(var persid in personalquestion) {
+    var type = 'Personal Development'
+  $('#personal-development-questions').append('<hr style="border-top: 1px dashed red;"><div class="float-right"><i style="font-size: 1.5em; color: #ffbc00" data-toggle = "modal" data-target="#edit-question" onclick="edit('+persid+', \''+type+'\')" class="dripicons-document-edit ml-2"></i><a href="/coordinator/{{batchid}}/task-specific/{{weekid}}/delete-task/'+persid+'/"><i data-toggle="modal" data-target="#danger-alert-modal"style="font-size: 1.5em; float:right; color: red;" class="dripicons-document-delete  ml-2"></i></a></div>')
+  $('#personal-development-questions').append(personalquestion[persid]);
+  }
+  
+  var miscelleneousquestion = {{miscelleneousTask|safe}}
+  for(var miscid in miscelleneousquestion){
+    var type = 'Miscelleneuos Task'
+  $('#miscelleneous-task-questions').append('<hr style="border-top: 1px dashed red;"><div class="float-right"><i onclick="edit('+miscid+', \''+type+'\')" style="font-size: 1.5em; color: #ffbc00" data-toggle = "modal" data-target="#edit-question" class="dripicons-document-edit ml-2"></i><a href="/coordinator/{{batchid}}/task-specific/{{weekid}}/delete-task/'+miscid+'/"><i data-toggle="modal" data-target="#danger-alert-modal" style="font-size: 1.5em; color: red; float:right;" class="dripicons-document-delete  ml-2"></i></a></div>')
+  $('#miscelleneous-task-questions').append(miscelleneousquestion[miscid]);
+}
+var typeOfTask;
+  $('#select').click(function(){
+      var ele = document.getElementsByName('task'); 
+      for(i = 0; i < ele.length; i++) { 
+              if(ele[i].checked) 
+               typeOfTask = ele[i].value
+          } 
+  })
+   var incrementValue=0
+     $(function () {
+  $("#select").on('click', function () {
+if(incrementValue == 0){
+       var div = $('<div>').appendTo($("#basic-preview"));
+        $("#basic-preview").append(`<button style="margin-bottom:3rem;" class=" btn btn-danger float-right m-1" id="submitBtn" onclick="submit()" class="btn btn-lg font-16 btn-danger btn-block" value="Submit" id="submit" ><i class="mdi mdi-plus-circle-outline"></i>Submit</button>`);
+        $("#basic-preview").append('<button  class="btn btn-info float-right m-1 "style="margin-bottom:3rem;" data-dismiss="modal" class=" btn btn-lg font-16 btn-danger btn-block" value="Cancel" id="cancel" ><i class="mdi mdi-plus-circle-outline"></i>Cancel</button> <br><br><br>');
+        $("#basic-preview").append(`<span id="errorquestion" color="red"></span>`);
+        div.summernote().addClass('hello');
+        incrementValue++;
+       }
+    });
+ });
+ var personalcount = 0;
+ var techcount = 0;
+ var miscelleneouscount = 0;
+ function edit(id, typ){
+   a=id
+   typeOfTask = typ;
+   $("#task-modal").html($('<div>')).summernote().addClass('editSummernote');
+  if (typ == 'Personal Development'){
+    
+    let val1 = personalquestion[id]
+    let editText =  $(".editSummernote").summernote("code", val1);
+   
+}
+  else if (typ == 'Technical Task'){
+   let val2 = technicalquestion[id]
+    console.log(val2);
+   let editText1 =  $(".editSummernote").summernote("code", val2);
+   
+  } 
+  else if (typ == 'Miscelleneuos Task'){
+    
+    let val3 = miscelleneousquestion[id]
+   let editText2 =  $(".editSummernote").summernote("code", val3);
+  }
+  else{
+    console.log('hello');
+  }
+}
+function editSubmit(){
+  console.log("The A",a)
+  var editAreaValue = $('.editSummernote').summernote('code')
+  let token = '{{csrf_token}}';
+  var data = {
+    'csrfmiddlewaretoken' : '{{csrf_token}}',
+    'editareaValue' : editAreaValue,
+    'typeOfTask' : typeOfTask
+  }
+  if(editAreaValue.length < 15){
+    $('#editerror').html('Please enter proper question')
+  }
+  else{
+    $.ajax({
+      headers: { "X-CSRFToken": token },
+      url : '/coordinator/{{batchid}}/task-specific/{{weekid}}/edit-task/'+a+'/',
+      type : 'POST',
+      data : data,
+      dataType : 'json',
+      success : function(data){
+        if(data == 'true'){
+          window.location.reload()
+        }
+        }
+    })
+  }
+}
+ function submit() {
+        var textareaValue = $('.hello').summernote('code')
+          let token = '{{csrf_token}}';
+        var data = {
+          'textareaValue' : textareaValue,
+          'typeOfTask' : typeOfTask,
+        }
+        
+        if (textareaValue.length < 15){
+          $('#errorquestion').html('Please enter valid question')
+        }
+        else{
+          $.ajax({
+            headers: { "X-CSRFToken": token },
+            url : '/coordinator/{{batchid}}/task-specific/{{weekid}}/',
+            method : 'POST',
+            data : data,
+            dataType : 'json',
+            success : function(data){
+              if(data == 'true'){
+                window.location.reload()
+              }
+            }
+          })
+        }
+    }
+</script>
+{% endblock %}

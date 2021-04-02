@@ -2,7 +2,7 @@ from django.shortcuts import render, redirect
 from django.contrib.auth.models import auth
 from django.contrib.auth.decorators import login_required
 from django.http import JsonResponse, HttpResponseRedirect
-from . models import Student, CautionDeposit, EmailOTP, StudentUUID, InvalidResponse
+from . models import Student, CautionDeposit, EmailOTP, StudentUUID, InvalidResponse, VideocallShedule
 from django.urls import reverse
 from . decorators import payment_required, student_status
 from django.core.mail import send_mail
@@ -11,6 +11,7 @@ import random
 from django.contrib import messages
 import datetime
 from django.conf import settings
+from coordinator.models import Week, Task
 
 # Create your views here.
 def login(request):
@@ -153,6 +154,12 @@ def wait_for_approval(request, id):
             student_uuid = StudentUUID.objects.filter(student=student).first()
             context = {'student_uuid' : student_uuid.student_uuid}
             return render(request, 'student/waiting-for-approval.html', context)
+        elif user.admin_approval == 'videocall':
+            student = VideocallShedule.objects.get(student=user)
+            date_and_time = str(student.date) + " " + str(student.time)
+            print(date_and_time)
+            context = {'datetime' : date_and_time}
+            return render(request, 'student/waiting-for-approval.html', context)
         else:
             return render(request, 'student/waiting-for-approval.html')            
     else:
@@ -192,6 +199,33 @@ def edit_registration(request, id):
 @student_status
 def feed(request):
     return render(request, 'student/feed.html')
+
+@login_required(login_url='/')
+@payment_required
+@student_status
+def choose_week(request):
+    weeks = Week.objects.all()
+    context = {'weeks' : weeks}
+    return render(request, 'student/choose-week.html', context)
+    
+@login_required(login_url='/')
+@payment_required
+@student_status
+def task_specific(request, id):
+    week = Week.objects.get(id=id)
+    tasks = Task.objects.filter(week=week)
+    personal_tasks = []
+    technical_tasks = []
+    miscelleneous_tasks = []
+    for x in tasks:
+        if x.type_of_task == 'Personal Development':
+            personal_tasks.append(x.question)
+        elif x.type_of_task == 'Technical Task':
+            technical_tasks.append(x.question)
+        else:
+            miscelleneous_tasks.append(x.question)
+    context = {'personal_tasks' : personal_tasks, 'technical_tasks' : technical_tasks, 'miscelleneous_tasks' : miscelleneous_tasks}
+    return render(request, 'student/task-specific.html', context)
     
 @login_required(login_url='/')
 @payment_required

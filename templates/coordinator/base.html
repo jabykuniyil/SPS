@@ -16,6 +16,8 @@
         <link href="{% static 'assets/css/app.min.css' %}" rel="stylesheet" type="text/css" id="light-style" />
         <link href="{% static 'assets/css/app-dark.min.css' %}" rel="stylesheet" type="text/css" id="dark-style" />
         <link href="{% static 'assets/css/vendor/summernote-bs4.css' %}" rel="stylesheet" type="text/css" />
+        <!-- fontawesome -->
+        <script src="https://use.fontawesome.com/d4ef3f77e2.js"></script>
 
     </head>
 
@@ -98,13 +100,13 @@
                         
                         <li class="side-nav-item">
                             <a href="javascript: void(0);" class="side-nav-link">
-                                <i class="dripicons-user-group"></i>
+                                <i class="uil-notes"></i>
                                 <span> Tasks </span>
                                 <span class="menu-arrow"></span>
                             </a>
                             <ul class="side-nav-second-level" aria-expanded="false">
                                 <li>
-                                    <a href="/coordinator/tasks/">All Tasks</a>
+                                    <a href="/coordinator/batch-tasks/">All Tasks</a>
                                 </li>
                                 <li>
                                     <a href="/coordinator/add-task/">Add New Task</a>
@@ -114,28 +116,6 @@
                                 </li> -->
                             </ul>
                         </li>
-                        
-                        <li class="side-nav-item">
-                            <a href="/coordinator/host-meeting/" class="side-nav-link">
-                                <i class=" uil-users-alt"></i>
-                                <span> Host Meeting </span>
-                            </a>
-                        </li>
-                        
-                        
-                        <li class="side-nav-item">
-                            <a href="/coordinator/branches/" class="side-nav-link">
-                                <i class="uil-location-point"></i>
-                                <span> Branches </span>
-                            </a>
-                        </li>
-                        <li class="side-nav-item">
-                            <a href="/coordinator/tasks/" class="side-nav-link">
-                                <i class=" uil-notes"></i>
-                                <span> Tasks </span>
-                            </a>
-                        </li>
-                        
                         <li class="side-nav-item">
                             <a href="/coordinator/logout/" class="side-nav-link">
                                 <i class=" uil-sign-out-alt"></i>

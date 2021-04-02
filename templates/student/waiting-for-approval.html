@@ -44,6 +44,16 @@
                         <h4 class="mt-0">Not Valid</h4>
                         <p class="text-muted mb-4">Your request for registration is not approved. Please check it out on this link. <a href="/edit-registration/{{student_uuid}}/">Click here</a> </p>
                         {% endif %}
+                        {% if request.user.admin_approval == 'videocall' %}
+                        <div class="row" style="margin: auto; display:inline-flex;" style="text-align: center;">
+                            <p id="days" style="color: green; margin-left: 1em;"></p>
+                            <p id="hours" style="color: green; margin-left: 1em;"></p>
+                            <p id="mins"style="color: green; margin-left: 1em;"></p>
+                            <p id="secs"style="color: green; margin-left: 1em;"></p>
+                        </div>
+                        <h4 id="end" class="mt-0"></h4>
+                        <p class="text-muted mb-4">It's Videocall time. Chat with our one and only NIKHIL Sir. </p>
+                        {% endif %}
                         <!-- form -->
                         
 
@@ -75,7 +85,38 @@
         <!-- bundle -->
         <script src="{% static 'assets/js/vendor.min.js' %}"></script>
         <script src="{% static 'assets/js/app.min.js' %}"></script>
-       
+       <script>
+           var countDownDate = new Date("{{datetime}}").getTime();
+     console.log("{{datetime}}");
+// Run myfunc every second
+var myfunc = setInterval(function() {
+
+var now = new Date().getTime();
+var timeleft = countDownDate - now;
+    
+// Calculating the days, hours, minutes and seconds left
+var days = Math.floor(timeleft / (1000 * 60 * 60 * 24));
+var hours = Math.floor((timeleft % (1000 * 60 * 60 * 24)) / (1000 * 60 * 60));
+var minutes = Math.floor((timeleft % (1000 * 60 * 60)) / (1000 * 60));
+var seconds = Math.floor((timeleft % (1000 * 60)) / 1000);
+    
+// Result is output to the specific element
+document.getElementById("days").innerHTML = days + "d "
+document.getElementById("hours").innerHTML = hours + "h " 
+document.getElementById("mins").innerHTML = minutes + "m " 
+document.getElementById("secs").innerHTML = seconds + "s " 
+    
+// Display the message when countdown is over
+if (timeleft < 0) {
+    clearInterval(myfunc);
+    document.getElementById("days").innerHTML = ""
+    document.getElementById("hours").innerHTML = "" 
+    document.getElementById("mins").innerHTML = ""
+    document.getElementById("secs").innerHTML = ""
+    document.getElementById("end").innerHTML = "TIME UP!!";
+}
+}, 1000);
+       </script>
     </body>
 
 

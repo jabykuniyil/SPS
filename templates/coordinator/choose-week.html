@@ -1,0 +1,91 @@
+{% extends 'coordinator/base.html' %}
+{% block content %}
+<div class="container-fluid">
+    <!-- start page title -->
+    <div class="row">
+        <div class="col-12">
+            <div class="page-title-box">
+                <div class="dropdown float-right text-right mt-3">
+                    <a href="#" class="dropdown-toggle arrow-none card-drop" data-toggle="dropdown" aria-expanded="false">
+                        <i class="dripicons-view-apps noti-icon"></i>
+                    </a>
+                    <div class="dropdown-menu dropdown-menu-right">
+                        <a href="" data-target="#week" data-toggle="modal" id="weekchoose" class="dropdown-item">Add New Week</a>
+        
+                    </div>
+                </div>
+                <h4 class="page-title">Choose the Week</h4>
+                
+            </div>
+            
+        </div>
+        
+    </div>    
+    <div class="row">
+        <div class="col-12">
+            <div class="card widget-inline">
+                <div class="card-body p-0">
+                    <div class="row no-gutters">
+                        {% for week in weeks %}
+                        <div class="col-sm-6 col-xl-3">
+                            <div class="card shadow-none m-0">
+                                <div class="card-body text-center">
+                                    <a href="/coordinator/{{id}}/task-specific/{{week.id}}/"><i class="dripicons-graph-line text-muted" style="font-size: 24px;"></i>
+                                    <h3><span>29</span></h3>
+                                    <p class=" font-15 mb-0">Week {{week.week}}</p></a>
+                                </div>
+                            </div>
+                        </div>
+                        {% endfor %}
+    
+    
+                    </div> <!-- end row -->
+                </div>
+            </div> <!-- end card-box-->
+        </div> <!-- end col-->
+    </div>
+    <div class="modal fade" id="week" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">
+        <div class="modal-dialog">
+            <div class="modal-content" >
+                <div class="modal-header">
+                    </div>
+                    <div class="modal-body" style="margin: auto;">
+                        <h3 style="margin:1rem;">Enter the week Number</h3>
+                                <input type="number" name="weeknumber" class="form-control" id="weeknumber">
+                        <span id="errorweek" style="color: red;"></span>
+                    </div>
+                    <div class="modal-footer">
+                    <button type="button" class="btn btn-default" data-dismiss="modal">Close</button>
+                    <button class="btn btn-primary" type="button"   id="addweek">Submit</button>
+                </div>
+            </div>
+        </div>
+    </div> 
+</div>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.6.0/jquery.min.js" integrity="sha512-894YE6QWD5I59HgZOGReFYm4dnWc1Qt5NtvYSaNcOP+u1T9qYdvdihz0PPSiiqn/+/3e7Jo4EaG7TubfWGUrMQ==" crossorigin="anonymous"></script>
+<script>
+    $('#addweek').click(function(){
+        var week = $('#weeknumber').val()
+        var data = {
+            'csrfmiddlewaretoken' : '{{csrf_token}}',
+            'week' : week
+        }
+        if(week < 0){
+            $('#errorweek').html('Please enter a valid number')
+        }
+        else{
+            $.ajax({
+                url : '/coordinator/add-week/{{id}}/',
+                method : 'POST',
+                data : data,
+                dataType : 'json',
+                success : function(data){
+                    if (data == 'true'){
+                        window.location.reload()
+                    }
+                }
+            })
+        }
+    })
+</script>
+{% endblock %}

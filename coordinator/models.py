@@ -31,3 +31,14 @@ class Batches(models.Model):
     coordinator = models.CharField(max_length=30, null=True, blank=True)
     capacity = models.IntegerField(null=True, blank=True)
     start_date = models.DateField(null=True, blank=True)
+    
+class Week(models.Model):
+    week = models.IntegerField(null=True, blank=True)
+    batch = models.ForeignKey(Batches, on_delete=models.CASCADE)
+    
+class Task(models.Model):
+    week = models.ForeignKey(Week, on_delete=models.CASCADE)
+    batch = models.ForeignKey(Batches, on_delete=models.CASCADE)
+    question = models.TextField(null=True, blank=True)
+    type_of_task = models.CharField(null=True, blank=True, max_length=30)
+    answer = models.TextField(null=True, blank=True)

@@ -16,8 +16,6 @@ def student_status(view_func):
         if user.is_superuser == False:
             if user.admin_approval == 'approved':
                 return view_func(request, *args, **kwargs)
-            elif user.admin_approval == 'invalid':
-                return redirect('edit-registration')
             else:
                 return render(request, 'student/waiting-for-approval.html')
         else:

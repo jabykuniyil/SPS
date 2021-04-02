@@ -1,0 +1,41 @@
+{% extends 'student/base.html' %}
+{% block content %}
+<div class="container-fluid">
+    <!-- start page title -->
+    <div class="row">
+        <div class="col-12">
+            <div class="page-title-box">
+                <h4 class="page-title">Choose the Week</h4>
+                
+            </div>
+            
+        </div>
+        
+    </div>    
+    <div class="row">
+        <div class="col-12">
+            <div class="card widget-inline">
+                <div class="card-body p-0">
+                    <div class="row no-gutters">
+                        {% for week in weeks %}
+                        <div class="col-sm-6 col-xl-3">
+                            <div class="card shadow-none m-0">
+                                <div class="card-body text-center">
+                                    <a href="/task-specific/{{week.id}}/"><i class="dripicons-graph-line text-muted" style="font-size: 24px;"></i>
+                                    <h3><span>29</span></h3>
+                                    <p class=" font-15 mb-0">Week {{week.week}}</p></a>
+                                </div>
+                            </div>
+                        </div>
+                        {% endfor %}
+    
+    
+                    </div> <!-- end row -->
+                </div>
+            </div> <!-- end card-box-->
+        </div> <!-- end col-->
+    </div>
+</div>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.6.0/jquery.min.js" integrity="sha512-894YE6QWD5I59HgZOGReFYm4dnWc1Qt5NtvYSaNcOP+u1T9qYdvdihz0PPSiiqn/+/3e7Jo4EaG7TubfWGUrMQ==" crossorigin="anonymous"></script>
+
+{% endblock %}
