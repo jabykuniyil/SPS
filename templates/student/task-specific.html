@@ -209,14 +209,14 @@ input:active+.design::after {
 
                     <!-- Billing Content-->
                     <div class="tab-pane show active" id="personal-development-questions">
-                        <div class="row">
+                        <div class="row text-muted bg-light p-1" id="personal-answers" style="color: grey;" >
                         </div> <!-- end row-->
                     </div>
                     <!-- End Billing Information Content-->
 
                     <!-- Shipping Content-->
                     <div class="tab-pane" id="technical-questions">
-                        <div class="row">
+                        <div class="row text-muted bg-light" id="technical-answers" style="color: grey;">
                                       
                         </div> <!-- end row-->
                     </div>
@@ -224,7 +224,7 @@ input:active+.design::after {
 
                     <!-- Payment Content-->
                     <div class="tab-pane" id="miscelleneous-task-questions">
-                        <div class="row">
+                        <div class="row text-muted bg-light" id="miscelleneous-answers" style="color: grey;">
       
                         </div> <!-- end row-->
                     </div>
@@ -246,9 +246,7 @@ input:active+.design::after {
         <div class="modal-body" id="task-answer">
         </div>
         <div class="tab-content" id="task-buttons">
-          <button style="margin-bottom:3rem;" class=" btn btn-danger float-right m-1" id="submitBtn"  class="btn btn-lg font-16 btn-danger btn-block" value="Submit" id="submit" ><i class="mdi mdi-plus-circle-outline"></i>Submit</button>
-          <button  class="btn btn-info float-right m-1 "style="margin-bottom:3rem;" data-dismiss="modal" class=" btn btn-lg font-16 btn-danger btn-block" value="Cancel" id="cancel" ><i class="mdi mdi-plus-circle-outline"></i>Cancel</button>
-          <span id="erroranswer" style="color:  red;"></span>
+          
         </div>
       </div>
     </div>
@@ -262,29 +260,82 @@ input:active+.design::after {
   e.innerHTML = input;
   return e.childNodes[0].nodeValue;
 }
-count = 0;
-function answerModal(){
+var count = 0;
+var typeOfTask;
+function answerModal(id, type){
+   typeOfTask = type;
+  var taskId = id;
     if (count == 0){
     var div = $('<div>').appendTo($("#task-answer"));
         div.summernote().addClass('summernote');
         count++;
     }
 }
+var typ;
+function submit(taskId){
+  console.log(typeOfTask);
+      var answerValue = $('.summernote').summernote('code')
+      var data = {
+        'csrfmiddlewaretoken' : '{{csrf_token}}',
+        'answer' : answerValue,
+        'type' : typeOfTask
+      }
+      if(answerValue.length < 10){
+        $('#erroranswer').html('Please inout valid answer')
+      }
+      else{
+        $.ajax({
+          url : '/task-specific/'+taskId+'/',
+          method : 'POST',
+          data : data,
+          dataType : 'json',
+          success : function(data){
+            if(data == 'true')
+            {
+              window.location.reload()
+            }
+          }
+        })
+      }
+}
+        var button1 = 0;
+        personalQuestions = {{personal_tasks|safe}}
+        for(var persid in personalQuestions){
+        var personaltype = 'Personal Development';
+        $('#personal-development-questions').append('<hr style="border-top: 1px dashed red;"><div class="float-right">', '<i onclick="answerModal('+persid+',  \''+personaltype+'\')" style="font-size: 1.5em; color: green" data-toggle = "modal" data-target="#answer" class="dripicons-document-edit ml-2 float-right"></i>', personalQuestions[persid])
+          if(button1 == 0){
+          $('#task-buttons').append('<button style="margin-bottom:3rem;" class=" btn btn-danger float-right m-1" id="submitBtn"  class="btn btn-lg font-16 btn-danger btn-block" value="Submit" id="submit" onclick="submit('+persid+',  \''+personaltype+'\')" ><i class="mdi mdi-plus-circle-outline"></i>Submit</button><button  class="btn btn-info float-right m-1 "style="margin-bottom:3rem;" data-dismiss="modal" class=" btn btn-lg font-16 btn-danger btn-block" value="Cancel" id="cancel" ><i class="mdi mdi-plus-circle-outline"></i>Cancel</button><span id="erroranswer" style="color:  red;"></span>')
+          button1++;
+          }
+        }
+        technicalQuestions = {{technical_tasks|safe}}
+        for(var techid in technicalQuestions){
+        var technicaltype = 'Technical Task';
+        $('#technical-questions').append('<hr style="border-top: 1px dashed red;"><div class="float-right">', '<i style="font-size: 1.5em; color: green" onclick="answerModal('+techid+',\''+technicaltype+'\')" data-toggle = "modal" data-target="#answer" class="dripicons-document-edit ml-2 float-right"></i>', technicalQuestions[techid])
+          if( button1 == 0){
+          $('#task-buttons').append('<button style="margin-bottom:3rem;" class=" btn btn-danger float-right m-1" id="submitBtn"  class="btn btn-lg font-16 btn-danger btn-block" value="Submit" id="submit" onclick="submit('+techid+', \''+technicaltype+'\')" ><i class="mdi mdi-plus-circle-outline"></i>Submit</button><button  class="btn btn-info float-right m-1 "style="margin-bottom:3rem;" data-dismiss="modal" class=" btn btn-lg font-16 btn-danger btn-block" value="Cancel" id="cancel" ><i class="mdi mdi-plus-circle-outline"></i>Cancel</button><span id="erroranswer" style="color:  red;"></span>')
+          button2++;
+          }
+        }
+        miscelleneousQuestions = {{miscelleneous_tasks|safe}}
+        for(var miscid in miscelleneousQuestions){
+        var miscelleneoustype = 'Miscelleneous Task';
+        $('#miscelleneous-task-questions').append('<hr style="border-top: 1px dashed red;"><div class="float-right">', '<i style="font-size: 1.5em; color: green" data-toggle = "modal" data-target="#answer" onclick="answerModal('+miscid+',\''+miscelleneoustype+'\')" class="dripicons-document-edit ml-2 float-right"></i>', miscelleneousQuestions[miscid])
+          if(button1 == 0){
+          $('#task-buttons').append('<button style="margin-bottom:3rem;" class=" btn btn-danger float-right m-1" id="submitBtn"  class="btn btn-lg font-16 btn-danger btn-block" value="Submit" id="submit" onclick="submit('+miscid+', \''+miscelleneoustype+'\')" ><i class="mdi mdi-plus-circle-outline"></i>Submit</button><button  class="btn btn-info float-right m-1 "style="margin-bottom:3rem;" data-dismiss="modal" class=" btn btn-lg font-16 btn-danger btn-block" value="Cancel" id="cancel" ><i class="mdi mdi-plus-circle-outline"></i>Cancel</button><span id="erroranswer" style="color:  red;"></span>')
+          button3 ++;
+          }
+        }
 
-        {% for task in personal_tasks %}
-        var personalQuestion = htmlDecode('{{task}}')
-        console.log(personalQuestion);
-        $('#personal-development-questions').append('<hr style="border-top: 1px dashed red;"><div class="float-right">', '<i onclick="answerModal()" style="font-size: 1.5em; color: green" data-toggle = "modal" data-target="#answer" class="dripicons-document-edit ml-2 float-right"></i>', personalQuestion)
+        {% for answer in personal_answers %}
+        $('#personal-answers').append(htmlDecode('{{answer}}'))
         {% endfor %}
-        {% for task in technical_tasks %}
-        var technicalQuestion = htmlDecode('{{task}}')
-        $('#technical-questions').append('<hr style="border-top: 1px dashed red;"><div class="float-right">', '<i style="font-size: 1.5em; color: green" data-toggle = "modal" data-target="#answer" class="dripicons-document-edit ml-2 float-right"></i>', technicalQuestion)
+        {% for answer in miscelleneous_answers %}
+        $('#miscelleneous-answers').append('{{answer}}')
         {% endfor %}
-        {% for task in miscelleneous_tasks %}
-        var miscelleneousQuestion = htmlDecode('{{task}}')
-        $('#miscelleneous-task-questions').append('<hr style="border-top: 1px dashed red;"><div class="float-right">', '<i style="font-size: 1.5em; color: green" data-toggle = "modal" data-target="#answer" class="dripicons-document-edit ml-2 float-right"></i>', miscelleneousQuestion)
+        {% for answer in technical_answers %}
+        $('#technical-answers').append('{{answer}}')
         {% endfor %}
-
 
     </script>
 {% endblock %}

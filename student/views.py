@@ -157,7 +157,6 @@ def wait_for_approval(request, id):
         elif user.admin_approval == 'videocall':
             student = VideocallShedule.objects.get(student=user)
             date_and_time = str(student.date) + " " + str(student.time)
-            print(date_and_time)
             context = {'datetime' : date_and_time}
             return render(request, 'student/waiting-for-approval.html', context)
         else:
@@ -212,20 +211,36 @@ def choose_week(request):
 @payment_required
 @student_status
 def task_specific(request, id):
-    week = Week.objects.get(id=id)
-    tasks = Task.objects.filter(week=week)
-    personal_tasks = []
-    technical_tasks = []
-    miscelleneous_tasks = []
-    for x in tasks:
-        if x.type_of_task == 'Personal Development':
-            personal_tasks.append(x.question)
-        elif x.type_of_task == 'Technical Task':
-            technical_tasks.append(x.question)
-        else:
-            miscelleneous_tasks.append(x.question)
-    context = {'personal_tasks' : personal_tasks, 'technical_tasks' : technical_tasks, 'miscelleneous_tasks' : miscelleneous_tasks}
-    return render(request, 'student/task-specific.html', context)
+    if request.method == 'POST':
+        answer = request.POST['answer']
+        type_of_task = request.POST['type']
+        Task.objects.filter(id=id, type_of_task=type_of_task).update(answer=answer)
+        return JsonResponse('true', safe=False)
+    else:
+        week = Week.objects.get(id=id)
+        miscelleneous_task = Task.objects.filter(week=week, type_of_task='Miscelleneuos Task')
+        personal_development = Task.objects.filter(week=week, type_of_task='Personal Development')
+        technical_task = Task.objects.filter(week=week, type_of_task='Technical Task')
+        miscelleneous_task_dict = {}
+        personal_development_dict = {}
+        technical_task_dict = {}
+        miscelleneous_answers = []
+        technical_answers = []
+        personal_answers = []
+        for x in technical_task:
+            technical_task_dict[x.id] = x.question
+        for x in miscelleneous_task:
+            miscelleneous_task_dict[x.id] = x.question
+        for x in personal_development:
+            personal_development_dict[x.id] = x.question
+        for x in miscelleneous_task:
+            miscelleneous_answers.append(x.answer)
+        for x in technical_task:
+            technical_answers.append(x.answer)
+        for x in personal_development:
+            personal_answers.append(x.answer)
+        context = {'personal_tasks' : personal_development_dict, 'technical_tasks' : technical_task_dict, 'miscelleneous_tasks' : miscelleneous_task_dict, 'personal_answers' : personal_answers, 'technical_answers' : technical_answers, 'miscelleneous_answers' : miscelleneous_answers}
+        return render(request, 'student/task-specific.html', context)
     
 @login_required(login_url='/')
 @payment_required

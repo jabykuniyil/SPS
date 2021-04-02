@@ -427,7 +427,6 @@ if(incrementValue == 0){
   }
 }
 function editSubmit(){
-  console.log("The A",a)
   var editAreaValue = $('.editSummernote').summernote('code')
   let token = '{{csrf_token}}';
   var data = {
