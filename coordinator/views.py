@@ -1,6 +1,6 @@
 from django.shortcuts import render, redirect
-from . models import CoordinatorDetails, Batches, Week, Task
-from student.models import Student
+from . models import CoordinatorDetails, Batches, Week, Task, BatchSettings
+from student.models import Student, Answer
 from django.contrib.auth.hashers import check_password
 from django.core.files import File
 from django.http import JsonResponse
@@ -104,9 +104,40 @@ def batches(request):
     else:
         return redirect(login)
     
-def batch_specific(request):
+def batch_specific(request, name):
     if request.session.has_key('is_coordinator'):
-        return render(request, 'coordinator/batch-specific.html')
+        students = Student.objects.filter(batch__name=name)
+        weeks = BatchSettings.objects.filter(batch__name=name)
+        all_weeks = Week.objects.all()
+        batch = Batches.objects.get(name=name)
+        context = {'students' : students, 'weeks' : weeks, 'batch' : batch, 'all_weeks' : all_weeks}
+        return render(request, 'coordinator/batch-specific.html', context)
+    else:
+        return redirect(login)
+    
+def assign_week(request, id):
+    if request.session.has_key('is_coordinator'):
+        if request.method == 'POST':
+            week_number = request.POST['week']
+            week = Week.objects.get(week=week_number)
+            batch = Batches.objects.get(id=id)
+            week_no = int(week_number)
+            last_week = BatchSettings.objects.filter(batch=batch).last()
+            if BatchSettings.objects.filter(week=week, batch=batch).exists():
+                return JsonResponse('exists', safe=False)
+            elif BatchSettings.objects.filter(batch=batch).count() == 0:
+                if week_no == 0:
+                    BatchSettings.objects.create(week=week, batch=batch)
+                    return JsonResponse('true', safe=False)
+                else:
+                    return JsonResponse('re-assign', safe=False)
+            elif week_no-1 == last_week.week.week:
+                BatchSettings.objects.create(week=week, batch=batch)
+                return JsonResponse('true', safe=False)
+            else:
+                return JsonResponse('false', safe=False)
+        else:
+            return JsonResponse('true', safe=False)
     else:
         return redirect(login)
     
@@ -117,7 +148,7 @@ def add_batch(request):
             coordinator = request.POST['coordinator']
             capacity = request.POST['number']
             start_date = request.POST['startdate']
-            Batches.objects.create(name=name, coordinator=coordinator, capacity=capacity, start_date=start_date)
+            Batches.objects.create(name=name, capacity=capacity, start_date=start_date)
             return JsonResponse('true', safe=False)
         else:
             coordinators = CoordinatorDetails.objects.all()
@@ -126,46 +157,91 @@ def add_batch(request):
     else:
         return redirect(login)
     
-def batch_tasks(request):
+def student_specific(request, id):
     if request.session.has_key('is_coordinator'):
-        batches = Batches.objects.all()
-        context = {'batches' : batches}
-        return render(request, 'coordinator/batch-tasks.html', context)
+        student = Student.objects.get(id=id)
+        student_week = BatchSettings.objects.filter(batch=student.batch)
+        weeks = []
+        for x in student_week:
+            weeks.append(x.week)
+        context = {'student' : student, 'weeks' : weeks}
+        return render(request, 'coordinator/student-specific.html', context)
     else:
         return redirect(login)
-    
-def choose_week(request, id):
+
+def student_task(request, studentid, weekid):
     if request.session.has_key('is_coordinator'):
-        batch = Batches.objects.get(id=id)
-        weeks = Week.objects.filter(batch=batch)
-        context = {'id' : batch.id, 'weeks' : weeks}
+        week = Week.objects.get(id=weekid)
+        miscelleneous_task = Task.objects.filter(week=week, type_of_task='Miscelleneuos Task')
+        personal_development = Task.objects.filter(week=week, type_of_task='Personal Development')
+        technical_task = Task.objects.filter(week=week, type_of_task='Technical Task')
+        miscelleneous_task_dict = {}
+        personal_development_dict = {}
+        technical_task_dict = {}
+        student_answers = Answer.objects.filter(student_id=studentid, task__week=week)
+        student = Student.objects.get(id=studentid)
+        personal_answers = {}
+        technical_answers = {}
+        miscelleneous_answers = {}
+        for x in student_answers:
+            if x.task.type_of_task == 'Miscelleneuos Task':
+                miscelleneous_answers[x.task.id] = x.answer
+            if x.task.type_of_task == 'Personal Development':
+                personal_answers[x.task.id] = x.answer
+            if x.task.type_of_task == 'Technical Task':
+                technical_answers[x.task.id] = x.answer
+        for x in technical_task:
+            technical_task_dict[x.id] = x.question
+        for x in miscelleneous_task:
+            miscelleneous_task_dict[x.id] = x.question
+        for x in personal_development:
+            personal_development_dict[x.id] = x.question
+        context = {
+            'personal_tasks' : personal_development_dict,
+            'technical_tasks' : technical_task_dict,
+            'miscelleneous_tasks' : miscelleneous_task_dict,
+            'personal_answers' : personal_answers,
+            'technical_answers' : technical_answers,
+            'miscelleneous_answers' : miscelleneous_answers,
+            'student' : student,
+            'week' : week
+            }
+        return render(request, 'coordinator/student-task.html', context)
+    else:
+        return redirect(login)
+
+def choose_week(request):
+    if request.session.has_key('is_coordinator'):
+        weeks = Week.objects.all()
+        context = { 'weeks' : weeks}
         return render(request, 'coordinator/choose-week.html', context)
     else:
         return redirect(login)
     
-def add_week(request, id):
+def add_week(request):
     if request.session.has_key('is_coordinator'):
         if request.method == 'POST':
             week = request.POST['week']
-            batch = Batches.objects.get(id=id)
-            Week.objects.create(batch=batch, week=week)
-            return JsonResponse('true', safe=False)
+            if Week.objects.filter(week=week).exists():
+                return JsonResponse('week', safe=False)
+            else:
+                Week.objects.create(week=week)
+                return JsonResponse('true', safe=False)
     else:
         return redirect(login)
     
-def task_specific(request, batchid, weekid):
+def task_specific(request, weekid):
     if request.session.has_key('is_coordinator'):
         if request.method == 'POST':
             qeustion = request.POST['textareaValue']
             type_of_task = request.POST['typeOfTask']
-            Task.objects.create(question=qeustion, week_id=weekid, batch_id=batchid, type_of_task=type_of_task)
+            Task.objects.create(question=qeustion, week_id=weekid, type_of_task=type_of_task)
             return JsonResponse('true', safe=False)
         else:
             week_id = Week.objects.get(id=weekid)
-            batch_id = Batches.objects.get(id=batchid)
-            miscelleneous_task = Task.objects.filter(batch=batch_id, week=week_id, type_of_task='Miscelleneuos Task')
-            personal_development = Task.objects.filter(batch=batch_id, week=week_id, type_of_task='Personal Development')
-            technical_task = Task.objects.filter(batch=batch_id, week=week_id, type_of_task='Technical Task')
+            miscelleneous_task = Task.objects.filter(week=week_id, type_of_task='Miscelleneuos Task')
+            personal_development = Task.objects.filter(week=week_id, type_of_task='Personal Development')
+            technical_task = Task.objects.filter(week=week_id, type_of_task='Technical Task')
             miscelleneous_task_dict = {}
             personal_development_dict = {}
             technical_task_dict = {}
@@ -175,27 +251,27 @@ def task_specific(request, batchid, weekid):
                 miscelleneous_task_dict[x.id] = x.question
             for x in personal_development:
                 personal_development_dict[x.id] = x.question
-            context = {'weekid' : week_id.id, 'batchid' : batch_id.id, 'miscelleneousTask' : miscelleneous_task_dict, 'personalDevelopment' : personal_development_dict, 'technicalTask' : technical_task_dict}
+            context = {'weekid' : week_id.id, 'miscelleneousTask' : miscelleneous_task_dict, 'personalDevelopment' : personal_development_dict, 'technicalTask' : technical_task_dict}
             return render(request, 'coordinator/task-specific.html', context)
     else:
         return redirect(login)
 
-def edit_task(request, weekid, batchid, taskid):
+def edit_task(request, weekid, taskid):
     if request.session.has_key('is_coordinator'):
         if request.method == 'POST':
             question = request.POST['editareaValue']
-            Task.objects.filter(week_id=weekid, batch_id=batchid, id=taskid).update(question=question)
+            Task.objects.filter(week_id=weekid, id=taskid).update(question=question)
             return JsonResponse('true', safe=False)
         else:
             return JsonResponse('true', safe=False)
     else:   
         return redirect(login)
     
-def delete_task(request, batchid, weekid, taskid):
+def delete_task(request, weekid, taskid):
     if request.session.has_key('is_coordinator'):
-        task = Task.objects.filter(batch_id=batchid, week_id=weekid, id=taskid)
+        task = Task.objects.filter(week_id=weekid, id=taskid)
         task.delete()
-        return redirect(task_specific, batchid=batchid, weekid=weekid)
+        return redirect(task_specific, weekid=weekid)
     else:
         return redirect(login)
     

@@ -1,15 +1,15 @@
 from django.db import models
-from coordinator.models import CoordinatorDetails
+from coordinator.models import CoordinatorDetails, Task, Batches
 from django.contrib.auth.models import AbstractUser
 
 # Create your models here.
 
 class Student(AbstractUser):
+    batch = models.ForeignKey(Batches, on_delete=models.CASCADE, null=True, blank=True)
     payment = models.BooleanField(default=False)
     fullname = models.CharField(max_length=30, null=True, blank=True)
     phone = models.BigIntegerField(null=True, blank=True)
     dob = models.DateField(null=True, blank=True)
-    batch = models.CharField(max_length=20, null=True, blank=True)
     age = models.IntegerField(null=True, blank=True)
     gender = models.CharField(max_length=30, null=True, blank=True)
     father = models.CharField(max_length=30, null=True, blank=True)
@@ -51,4 +51,9 @@ class VideocallShedule(models.Model):
     student = models.ForeignKey(Student, on_delete=models.CASCADE)
     date = models.DateField(null=True, blank=True)
     time = models.TimeField(null=True, blank=True)
+    
+class Answer(models.Model):
+    student = models.ForeignKey(Student, on_delete=models.CASCADE)
+    task = models.ForeignKey(Task, on_delete=models.CASCADE)
+    answer = models.TextField(null=True, blank=True)
     

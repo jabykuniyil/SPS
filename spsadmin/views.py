@@ -132,7 +132,7 @@ def student_register(request):
         elif Student.objects.filter(phone=phone).exists():
             return JsonResponse('phone', safe=False)
         else:
-            Student.objects.create_user(fullname=fullname, email=email, phone=phone, batch=batch, age=age, dob=dob, gender=gender, address=address, father=father, mother=mother, domain=domain, photo=photo, username=username, password=password, payment=False, admin_approval='approved')
+            Student.objects.create_user(fullname=fullname, email=email, phone=phone, batch__name=batch, age=age, dob=dob, gender=gender, address=address, father=father, mother=mother, domain=domain, photo=photo, username=username, password=password, payment=False, admin_approval='approved')
             return JsonResponse('true', safe=False)
     else:
         batches = Batches.objects.all()
@@ -165,6 +165,7 @@ def student_specific(request, id):
 def approve_student(request, id):
     if request.method == 'POST':
         batch = request.POST['batch']
+        batch = Batches.objects.get(name=batch)
         Student.objects.filter(admin_approval__in=['pending', 'terminated', 'rejected'], id=id, is_superuser=False).update(admin_approval='approved', batch=batch)
         return JsonResponse('true', safe=False)
     else:

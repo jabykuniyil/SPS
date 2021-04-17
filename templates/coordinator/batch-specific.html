@@ -1,3 +1,198 @@
 {% extends 'coordinator/base.html' %}
 {% block content %}
+<div class="container-fluid">
+<div class="row">
+    <div class="col-12">
+        <div class="page-title-box">
+            <div class="dropdown float-right text-right mt-3">
+                <a href="#" class="dropdown-toggle arrow-none card-drop" data-toggle="dropdown" aria-expanded="false">
+                    <i class="dripicons-view-apps noti-icon"></i>
+                </a>
+                <div class="dropdown-menu dropdown-menu-right">
+                    <a href="" data-target="#batch-settings" data-toggle="modal" id="weekchoose" class="dropdown-item">Batch Settings</a>
+    
+                </div>
+            </div>
+            <h4 class="page-title">{{batch.name}}</h4>
+            
+        </div>
+        
+    </div>
+    
+</div>
+
+<div class="modal fade" id="batch-settings" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">
+    <div class="modal-dialog">
+        <div class="modal-content" >
+            <div class="modal-header">
+                </div>
+                <div class="modal-body" style="margin: auto;">
+                    <h5 style="margin:1rem;">Assign the Week to</h5>
+                    <select class="form-control"  name="weeknumber" id="weeknumber">
+                        <option value="choose...">choose the week...</option>
+                        {% for week in all_weeks %}
+                        <option value="{{week.week}}">{{week.week}}</option>
+                        {% endfor %}
+                    </select>
+                     <span id="errorweek" style="color: red;"></span>
+                </div>
+                <div class="modal-footer">
+                <button type="button" class="btn btn-default" data-dismiss="modal">Close</button>
+                <button class="btn btn-primary" type="button"   id="assignweek">Submit</button>
+            </div>
+        </div>
+    </div>
+</div>
+<div class="row">
+    <div class="col-12">
+        <div class="card">
+            <div class="card-body">
+
+                <!-- Checkout Steps -->
+                <ul class="nav nav-pills bg-nav-pills nav-justified mb-3">
+                    <li class="nav-item">
+                        <a href="#students" data-toggle="tab" aria-expanded="false"
+                            class="nav-link rounded-0 active">
+                            <i class="mdi mdi-account-circle font-18"></i>
+                            <span class="d-none d-lg-block">Students</span>
+                        </a>
+                    </li>
+                    <li class="nav-item">
+                        <a href="#weeksandtasks" data-toggle="tab" aria-expanded="true" class="nav-link rounded-0">
+                            <i class="mdi mdi-laptop font-18"></i>
+                            <span class="d-none d-lg-block">Week and Tasks</span>
+                        </a>
+                    </li>
+                    <li class="nav-item">
+                        <a href="#messages" data-toggle="tab" aria-expanded="false" class="nav-link rounded-0">
+                            <i class="mdi mdi-more font-18"></i>
+                            <span class="d-none d-lg-block">Messages</span>
+                        </a>
+                    </li>
+                </ul>
+
+<div class="tab-content">
+
+    <!-- Billing Content-->
+    <div class="tab-pane show active" id="students">
+       
+
+
+<div class="row">
+    {% for student in students %}
+    <div class="col-xl-4 col-md-6 col-lg-4 col-12">
+        
+        <div class="card text-center">
+            <div class="dropdown float-right text-right m-2">
+                <a href="#" class="dropdown-toggle arrow-none card-drop" data-toggle="dropdown" aria-expanded="false">
+                    <i class="mdi mdi-dots-horizontal"></i>
+                </a>
+                <div class="dropdown-menu dropdown-menu-right">
+                    <a href="/coordinator/student-specific/{{student.id}}/" class="dropdown-item">View</a>
+
+                </div>
+            </div>
+
+            <div class="card-body text-center">
+                
+                <img src="{{ student.student_photo }}" class="rounded-circle avatar-lg img-thumbnail"
+                alt="profile-image">
+
+                <h4 class="mb-0 mt-2">{{student.fullname}}</h4>
+                <p class="text-muted font-14">{{student.username}}</p>
+
+                <a href="/coordinator/edit-student/"><button type="button" class="btn btn-info btn-sm mb-2">Edit</button></a>
+
+                <div class="text-left mt-3">
+
+                    <p class="text-muted mb-2 font-13"><strong>username :</strong> <span class="ml-2">
+                            {{student.username}}</span></p>
+
+                    <p class="text-muted mb-2 font-13"><strong>Mobile :</strong><span class="ml-2"></span>
+                            {{student.phone}}</span></p>
+
+                    <p class="text-muted mb-2 font-13"><strong>Email :</strong> <span class="ml-2 ">{{student.email}}</span></p>
+
+                    <p class="text-muted mb-1 font-13"><strong>Location :</strong> <span class="ml-2">{{student.address}}</span></p>
+                </div>
+
+            </div> <!-- end card-body -->
+        </div> <!-- end card -->
+
+        <!-- Messages-->
+       
+
+</div> 
+<!-- end page title -->
+{% endfor %}
+</div>
+    </div>
+    
+    <!-- Billing Content-->
+    <div class="tab-pane" id="weeksandtasks">
+        <div class="row">
+
+            <div class="col-12">
+                <div class="card widget-inline">
+                    <div class="card-body p-0">
+                        <div class="row no-gutters">
+                            {% for week in weeks %}
+                            <div class="col-sm-6 col-xl-3">
+                                <div class="card shadow-none m-0">
+                                    <div class="card-body text-center">
+                                        <a href="/coordinator/task-specific/{{week.week.id}}/"><i class="dripicons-folder text-muted" style="font-size: 24px;"></i>
+                                        <p class=" font-15 mb-0">Week {{week.week.week}}</p></a>
+                                    </div>
+                                </div>
+                            </div>
+                            {% endfor %}
+        
+        
+                        </div> <!-- end row -->
+                    </div>
+                </div> <!-- end card-box-->
+            </div> <!-- end col-->
+        </div>
+    </div>
+</div> <!-- end card-body-->
+</div> <!-- end card-->
+</div> <!-- end col -->
+</div>
+</div>
+
+<script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.6.0/jquery.min.js" integrity="sha512-894YE6QWD5I59HgZOGReFYm4dnWc1Qt5NtvYSaNcOP+u1T9qYdvdihz0PPSiiqn/+/3e7Jo4EaG7TubfWGUrMQ==" crossorigin="anonymous"></script>
+<script>
+    $('#assignweek').click(function(){
+        var week = $('#weeknumber').val()
+        var data = {
+            'csrfmiddlewaretoken' : '{{csrf_token}}',
+            'week' : week
+        }
+        if(week == 'choose...'){
+            $('#errorweek').html('Please choose a valid number')
+        }
+        else{
+            $.ajax({
+                url : '/coordinator/assign-week/{{batch.id}}/',
+                method : 'POST',
+                data : data,
+                dataType : 'json',
+                success : function(data){
+                    if (data == 'true'){
+                        window.location.reload()
+                    }
+                    if(data == 're-assign'){
+                        $('#errorweek').html("You can't assign this week, please assign the zero'th week")
+                    }
+                    if(data == 'exists'){
+                        $('#errorweek').html('This week already exists for this batch, please choose another one.')
+                    }
+                    if(data == 'false'){
+                        $('#errorweek').html('Please choose a proper week.')
+                    }
+                }
+            })
+        }
+    })
+</script>
 {% endblock %}

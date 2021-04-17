@@ -219,7 +219,7 @@ input:active+.design::after {
                     <!-- Billing Content-->
                     <div class="tab-pane show active" id="personal-development-questions">
                         <div class="row">
-                                     
+
                         </div> <!-- end row-->
                     </div>
                     <!-- End Billing Information Content-->
@@ -250,7 +250,7 @@ input:active+.design::after {
 
 
    <!-- Modal -->
-                    <div class="modal fade" id="questionModal" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">
+                    <div class="modal fade" id="questionModal" data-controls-modal="questionModal" data-backdrop="static" data-keyboard="false" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">
                         <div class="modal-dialog">
                             <div class="modal-content" >
                                 <div class="modal-header">
@@ -291,7 +291,7 @@ input:active+.design::after {
             </div>
         
     
-            <div id="full-width-modal" class="modal fade" tabindex="-1" role="dialog" aria-labelledby="fullWidthModalLabel" aria-hidden="true">
+            <div id="full-width-modal" data-controls-modal="full-width-modal" data-backdrop="static" data-keyboard="false" class="modal fade" tabindex="-1" role="dialog" aria-labelledby="fullWidthModalLabel" aria-hidden="true">
               <div class="modal-dialog modal-full-width">
                   <div class="modal-content">
                       <div class="modal-header">
@@ -329,7 +329,7 @@ input:active+.design::after {
             </div><!-- /.modal-dialog -->
         </div><!-- /.modal -->
 
-        <div id="edit-question" class="modal fade" tabindex="-1" role="dialog" aria-labelledby="fullWidthModalLabel" aria-hidden="true">
+        <div id="edit-question" data-controls-modal="edit-question" data-backdrop="static" data-keyboard="false"  class="modal fade" tabindex="-1" role="dialog" aria-labelledby="fullWidthModalLabel" aria-hidden="true">
           <div class="modal-dialog modal-full-width">
             <div class="modal-content">
               <div class="modal-header">
@@ -350,6 +350,7 @@ input:active+.design::after {
     
     <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.6.0/jquery.min.js" integrity="sha512-894YE6QWD5I59HgZOGReFYm4dnWc1Qt5NtvYSaNcOP+u1T9qYdvdihz0PPSiiqn/+/3e7Jo4EaG7TubfWGUrMQ==" crossorigin="anonymous"></script>
 <script>
+  
   let a;
   function htmlDecode(input){
   var e = document.createElement('div');
@@ -359,7 +360,7 @@ input:active+.design::after {
 var technicalquestion = {{technicalTask|safe}}
 for(var techid in technicalquestion){
   var type = 'Technical Task'
-  $('#technical-questions').append('<hr style="border-top: 1px dashed red;"><div class="float-right"><i data-toggle = "modal" data-target="#edit-question" style="font-size: 1.5em; color: #ffbc00" onclick="edit('+techid+', \''+type+'\')" class="dripicons-document-edit ml-2"></i><a href="/coordinator/{{batchid}}/task-specific/{{weekid}}/delete-task/'+techid+'/"><i data-toggle="modal" data-target="#danger-alert-modal" style="font-size: 1.5em; color: red;  float:right;" class="dripicons-document-delete  ml-2"></i></a></div>')
+  $('#technical-questions').append('<hr style="border-top: 1px dashed red;"><div class="float-right"><i data-toggle = "modal" data-target="#edit-question" style="font-size: 1.5em; color: #ffbc00" onclick="edit('+techid+', \''+type+'\')" class="dripicons-document-edit ml-2"></i><a href="/coordinator/task-specific/{{weekid}}/delete-task/'+techid+'/"><i data-toggle="modal" data-target="#danger-alert-modal" style="font-size: 1.5em; color: red;  float:right;" class="dripicons-document-delete  ml-2"></i></a></div>')
   $('#technical-questions').append(technicalquestion[techid]);
 
 }
@@ -367,14 +368,14 @@ for(var techid in technicalquestion){
 var personalquestion = {{personalDevelopment|safe}}
   for(var persid in personalquestion) {
     var type = 'Personal Development'
-  $('#personal-development-questions').append('<hr style="border-top: 1px dashed red;"><div class="float-right"><i style="font-size: 1.5em; color: #ffbc00" data-toggle = "modal" data-target="#edit-question" onclick="edit('+persid+', \''+type+'\')" class="dripicons-document-edit ml-2"></i><a href="/coordinator/{{batchid}}/task-specific/{{weekid}}/delete-task/'+persid+'/"><i data-toggle="modal" data-target="#danger-alert-modal"style="font-size: 1.5em; float:right; color: red;" class="dripicons-document-delete  ml-2"></i></a></div>')
+  $('#personal-development-questions').append('<hr style="border-top: 1px dashed red;"><div class="float-right"><i style="font-size: 1.5em; color: #ffbc00" data-toggle = "modal" data-target="#edit-question" onclick="edit('+persid+', \''+type+'\')" class="dripicons-document-edit ml-2"></i><a href="/coordinator/task-specific/{{weekid}}/delete-task/'+persid+'/"><i data-toggle="modal" data-target="#danger-alert-modal"style="font-size: 1.5em; float:right; color: red;" class="dripicons-document-delete  ml-2"></i></a></div>')
   $('#personal-development-questions').append(personalquestion[persid]);
   }
   
   var miscelleneousquestion = {{miscelleneousTask|safe}}
   for(var miscid in miscelleneousquestion){
     var type = 'Miscelleneuos Task'
-  $('#miscelleneous-task-questions').append('<hr style="border-top: 1px dashed red;"><div class="float-right"><i onclick="edit('+miscid+', \''+type+'\')" style="font-size: 1.5em; color: #ffbc00" data-toggle = "modal" data-target="#edit-question" class="dripicons-document-edit ml-2"></i><a href="/coordinator/{{batchid}}/task-specific/{{weekid}}/delete-task/'+miscid+'/"><i data-toggle="modal" data-target="#danger-alert-modal" style="font-size: 1.5em; color: red; float:right;" class="dripicons-document-delete  ml-2"></i></a></div>')
+  $('#miscelleneous-task-questions').append('<hr style="border-top: 1px dashed red;"><div class="float-right"><i onclick="edit('+miscid+', \''+type+'\')" style="font-size: 1.5em; color: #ffbc00" data-toggle = "modal" data-target="#edit-question" class="dripicons-document-edit ml-2"></i><a href="/coordinator/task-specific/{{weekid}}/delete-task/'+miscid+'/"><i data-toggle="modal" data-target="#danger-alert-modal" style="font-size: 1.5em; color: red; float:right;" class="dripicons-document-delete  ml-2"></i></a></div>')
   $('#miscelleneous-task-questions').append(miscelleneousquestion[miscid]);
 }
 var typeOfTask;
@@ -398,6 +399,8 @@ if(incrementValue == 0){
        }
     });
  });
+
+
  var personalcount = 0;
  var techcount = 0;
  var miscelleneouscount = 0;
@@ -426,6 +429,8 @@ if(incrementValue == 0){
     console.log('hello');
   }
 }
+
+
 function editSubmit(){
   var editAreaValue = $('.editSummernote').summernote('code')
   let token = '{{csrf_token}}';
@@ -440,7 +445,7 @@ function editSubmit(){
   else{
     $.ajax({
       headers: { "X-CSRFToken": token },
-      url : '/coordinator/{{batchid}}/task-specific/{{weekid}}/edit-task/'+a+'/',
+      url : '/coordinator/task-specific/{{weekid}}/edit-task/'+a+'/',
       type : 'POST',
       data : data,
       dataType : 'json',
@@ -466,7 +471,7 @@ function editSubmit(){
         else{
           $.ajax({
             headers: { "X-CSRFToken": token },
-            url : '/coordinator/{{batchid}}/task-specific/{{weekid}}/',
+            url : '/coordinator/task-specific/{{weekid}}/',
             method : 'POST',
             data : data,
             dataType : 'json',

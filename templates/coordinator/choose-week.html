@@ -1,6 +1,6 @@
 {% extends 'coordinator/base.html' %}
 {% block content %}
-<div class="container-fluid">
+    <div class="container-fluid">
     <!-- start page title -->
     <div class="row">
         <div class="col-12">
@@ -27,11 +27,21 @@
                 <div class="card-body p-0">
                     <div class="row no-gutters">
                         {% for week in weeks %}
+                        
                         <div class="col-sm-6 col-xl-3">
                             <div class="card shadow-none m-0">
                                 <div class="card-body text-center">
-                                    <a href="/coordinator/{{id}}/task-specific/{{week.id}}/"><i class="dripicons-graph-line text-muted" style="font-size: 24px;"></i>
-                                    <h3><span>29</span></h3>
+                                    
+            <!-- <div class="dropdown float-right text-right">
+                <a href="#" class="dropdown-toggle arrow-none card-drop" data-toggle="dropdown" aria-expanded="false">
+                    <i class="dripicons-view-apps noti-icon"></i>
+                </a>
+                <div class="dropdown-menu dropdown-menu-right">
+                    <a href=""  id="delete-week" class="dropdown-item">Delete Week</a>
+    
+                </div>
+            </div> -->
+                                    <a href="/coordinator/task-specific/{{week.id}}/"><i class="dripicons-folder text-muted" style="font-size: 24px;"></i>
                                     <p class=" font-15 mb-0">Week {{week.week}}</p></a>
                                 </div>
                             </div>
@@ -75,13 +85,16 @@
         }
         else{
             $.ajax({
-                url : '/coordinator/add-week/{{id}}/',
+                url : '/coordinator/add-week/',
                 method : 'POST',
                 data : data,
                 dataType : 'json',
                 success : function(data){
                     if (data == 'true'){
                         window.location.reload()
+                    }
+                    if(data == 'week'){
+                        $('#errorweek').html('The Week Already exists')
                     }
                 }
             })

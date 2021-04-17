@@ -14,5 +14,6 @@ urlpatterns = [
     path('dashboard/', views.dashboard, name = 'dashboard'),
     path('choose-week/', views.choose_week, name = 'choose-week'),
     path('task-specific/<int:id>/', views.task_specific, name = 'task-specific'),
+    path('task-specific/edit-answer/<int:id>/',views.edit_answer, name = 'edit-answer'),
     path('logout/', views.logout, name = 'logout')
 ]

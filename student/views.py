@@ -2,7 +2,7 @@ from django.shortcuts import render, redirect
 from django.contrib.auth.models import auth
 from django.contrib.auth.decorators import login_required
 from django.http import JsonResponse, HttpResponseRedirect
-from . models import Student, CautionDeposit, EmailOTP, StudentUUID, InvalidResponse, VideocallShedule
+from . models import Student, CautionDeposit, EmailOTP, StudentUUID, InvalidResponse, VideocallShedule, Answer
 from django.urls import reverse
 from . decorators import payment_required, student_status
 from django.core.mail import send_mail
@@ -11,7 +11,7 @@ import random
 from django.contrib import messages
 import datetime
 from django.conf import settings
-from coordinator.models import Week, Task
+from coordinator.models import Week, Task, BatchSettings
 
 # Create your views here.
 def login(request):
@@ -203,18 +203,24 @@ def feed(request):
 @payment_required
 @student_status
 def choose_week(request):
-    weeks = Week.objects.all()
-    context = {'weeks' : weeks}
+    user = request.user
+    student_batch = Student.objects.get(batch=user.batch)
+    batches = BatchSettings.objects.filter(batch=student_batch.batch)
+    weeks = []
+    for x in batches:
+        weeks.append(x.week)
+    context = {'weeks' : weeks, 'id' : student_batch.batch.id}
     return render(request, 'student/choose-week.html', context)
     
 @login_required(login_url='/')
 @payment_required
 @student_status
 def task_specific(request, id):
+    user = request.user
     if request.method == 'POST':
         answer = request.POST['answer']
-        type_of_task = request.POST['type']
-        Task.objects.filter(id=id, type_of_task=type_of_task).update(answer=answer)
+        task_id = request.POST['taskid']
+        Answer.objects.create(task_id=task_id, answer=answer, student=user)
         return JsonResponse('true', safe=False)
     else:
         week = Week.objects.get(id=id)
@@ -224,23 +230,43 @@ def task_specific(request, id):
         miscelleneous_task_dict = {}
         personal_development_dict = {}
         technical_task_dict = {}
-        miscelleneous_answers = []
-        technical_answers = []
-        personal_answers = []
+        student_answers = Answer.objects.filter(student=user)
+        personal_answers = {}
+        technical_answers = {}
+        miscelleneous_answers = {}
+        for x in student_answers:
+            if x.task.type_of_task == 'Miscelleneuos Task':
+                miscelleneous_answers[x.task.id] = x.answer
+            if x.task.type_of_task == 'Personal Development':
+                personal_answers[x.task.id] = x.answer
+            if x.task.type_of_task == 'Technical Task':
+                technical_answers[x.task.id] = x.answer
         for x in technical_task:
             technical_task_dict[x.id] = x.question
         for x in miscelleneous_task:
             miscelleneous_task_dict[x.id] = x.question
         for x in personal_development:
             personal_development_dict[x.id] = x.question
-        for x in miscelleneous_task:
-            miscelleneous_answers.append(x.answer)
-        for x in technical_task:
-            technical_answers.append(x.answer)
-        for x in personal_development:
-            personal_answers.append(x.answer)
-        context = {'personal_tasks' : personal_development_dict, 'technical_tasks' : technical_task_dict, 'miscelleneous_tasks' : miscelleneous_task_dict, 'personal_answers' : personal_answers, 'technical_answers' : technical_answers, 'miscelleneous_answers' : miscelleneous_answers}
+        context = {
+            'personal_tasks' : personal_development_dict,
+            'technical_tasks' : technical_task_dict,
+            'miscelleneous_tasks' : miscelleneous_task_dict,
+            'personal_answers' : personal_answers,
+            'technical_answers' : technical_answers,
+            'miscelleneous_answers' : miscelleneous_answers
+            }
         return render(request, 'student/task-specific.html', context)
+    
+@login_required(login_url='/')
+@payment_required
+@student_status
+def edit_answer(request, id):
+    if request.method == 'POST':
+        task = Task.objects.get(id=id)
+        answer = request.POST['answer']
+        student = request.user
+        Answer.objects.filter(task=task, student=student).update(answer=answer, student=student)
+        return JsonResponse('true', safe=False)
     
 @login_required(login_url='/')
 @payment_required

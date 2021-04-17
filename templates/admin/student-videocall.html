@@ -1,161 +1,167 @@
 {% extends 'admin/base.html' %}
 {% block content %}
 
- <!-- Start Content-->
- <div class="container-fluid">
+<!-- Start Content-->
+<div class="container-fluid">
     <!-- start page title -->
     <div class="row">
         <div class="col-12">
             <div class="page-title-box">
-                
+
                 <h4 class="page-title">Students are waiting for Videocall</h4>
             </div>
         </div>
-    </div>    
-    
+    </div>
+
     <div class="row">
         {% for student in students %}
         <div class="col-xl-4 col-md-6 col-lg-4 col-12">
-            
+
             <div class="card text-center">
-                
+
                 <div class="dropdown float-right text-right m-2">
-                    <a href="#" class="dropdown-toggle arrow-none card-drop" data-toggle="dropdown" aria-expanded="false">
+                    <a href="#" class="dropdown-toggle arrow-none card-drop" data-toggle="dropdown"
+                        aria-expanded="false">
                         <i class="mdi mdi-dots-horizontal"></i>
                     </a>
                     <div class="dropdown-menu dropdown-menu-right">
-                        <a href="" data-target="#batch" data-toggle="modal" id="batchchoose" class="dropdown-item">Approve</a>
+                        <a href="" data-target="#batch" data-toggle="modal" id="batchchoose"
+                            class="dropdown-item">Approve</a>
                         <a href="/spsadmin/reject-student/{{student.student.id}}/" class="dropdown-item">Reject</a>
                     </div>
-                   
-                
-                    <div class="modal fade" id="batch" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">
-                        <div class="modal-dialog">
-                            <div class="modal-content" >
-                                <div class="modal-header">
-                                    </div>
-                                    <div class="modal-body" style="margin: auto;">
-                                        <h3 style="margin:1rem;">Choose the batch</h3>
-                                        <select class="form-control"  name="batch" id="batchselect">
-                                            <option value="choose...">choose the batch...</option>
-                                            {% for batch in batches %}
-                                            <option value="{{batch.name}}">{{batch.name}}</option>
-                                            {% endfor %}
-                                        </select>         
-                                        <span id="errorbatch" style="color: red;"></span>
-                                    </div>
-                                    <script>
-                                        function batch(id){
-                                            var studentBatch = $('#batch').val()
-                                            var data = {
-                                                'csrfmiddlewaretoken' : "{{csrf_token}}",
-                                                'batch' : studentBatch,
-                                                'id' : '{{student.student.id}}'
-                                            }
-                                            if (studentBatch == 'choose batch...'){
-                                                $('#errorbatch').html('Please choose a batch')
-                                            }
-                                            else{
-                                                $.ajax({
-                                                    url : '/spsadmin/student-videocall/',
-                                                    method : 'POST',
-                                                    data : data,
-                                                    dataType : 'json',
-                                                    success : function(data){
-                                                        if(data == 'true'){
-                                                            window.location.reload()
-                                                        }
-                                                    }
-                                                })
-                                            }
-                                        }
 
-                                    </script>
-                                    <div class="modal-footer">
+
+                    <div class="modal fade" id="batch" tabindex="-1" role="dialog" aria-labelledby="myModalLabel"
+                        aria-hidden="true">
+                        <div class="modal-dialog">
+                            <div class="modal-content">
+                                <div class="modal-header">
+                                </div>
+                                <div class="modal-body" style="margin: auto;">
+                                    <h3 style="margin:1rem;">Choose the batch</h3>
+                                    <select class="form-control" name="batch" id="batchselect">
+                                        <option value="choose...">choose the batch...</option>
+                                        {% for batch in batches %}
+                                        <option value="{{batch.name}}">{{batch.name}}</option>
+                                        {% endfor %}
+                                    </select>
+                                    <span id="errorbatch" style="color: red;"></span>
+                                </div>
+                                <script>
+                                    function batch(id) {
+                                        var studentBatch = $('#batch').val()
+                                        var data = {
+                                            'csrfmiddlewaretoken': "{{csrf_token}}",
+                                            'batch': studentBatch,
+                                            'id': '{{student.student.id}}'
+                                        }
+                                        if (studentBatch == 'choose batch...') {
+                                            $('#errorbatch').html('Please choose a batch')
+                                        }
+                                        else {
+                                            $.ajax({
+                                                url: '/spsadmin/student-videocall/',
+                                                method: 'POST',
+                                                data: data,
+                                                dataType: 'json',
+                                                success: function (data) {
+                                                    if (data == 'true') {
+                                                        window.location.reload()
+                                                    }
+                                                }
+                                            })
+                                        }
+                                    }
+
+                                </script>
+                                <div class="modal-footer">
                                     <button type="button" class="btn btn-default" data-dismiss="modal">Close</button>
-                                    <button class="btn btn-primary" type="button" onclick="batch('{{student.student.id}}')"  id="batchapprove">Select and Approve</button>
+                                    <button class="btn btn-primary" type="button"
+                                        onclick="batch('{{student.student.id}}')" id="batchapprove">Select and
+                                        Approve</button>
                                 </div>
                             </div>
                         </div>
-                    </div> 
-                <div class="card-body text-center">
-                    
-                    <img src="{{ student.student.student_photo }}" class="rounded-circle avatar-lg img-thumbnail"
-                    alt="profile-image">
-
-                    <h4 class="mb-0 mt-2">{{student.student.fullname}}</h4>
-                    <p class="text-muted font-14">{{student.student.username}}</p>
-
-                    <div class="row" style="margin: auto; display:inline-flex;" style="text-align: center;">
-                        <p id="days-{{student.student.id}}" style="color: green; margin-left: 1em;"></p>
-                        <p id="hours-{{student.student.id}}" style="color: green; margin-left: 1em;"></p>
-                        <p id="mins-{{student.student.id}}"style="color: green; margin-left: 1em;"></p>
-                        <p id="secs-{{student.student.id}}"style="color: green; margin-left: 1em;"></p>
-                        <h2 id="end-{{student.student.id}}"style="color: red;"></h2>
                     </div>
-                    <div class="text-left mt-3">
+                    <div class="card-body text-center">
 
-                        <p class="text-muted mb-2 font-13"><strong>username :</strong> <span class="ml-2">
-                                {{student.student.username}}</span></p>
+                        <img src="{{ student.student.student_photo }}" class="rounded-circle avatar-lg img-thumbnail"
+                            alt="profile-image">
 
-                        <p class="text-muted mb-2 font-13"><strong>Mobile :</strong><span class="ml-2"></span>
+                        <h4 class="mb-0 mt-2">{{student.student.fullname}}</h4>
+                        <p class="text-muted font-14">{{student.student.username}}</p>
+
+                        <div class="row" style="margin: auto; display:inline-flex;" style="text-align: center;">
+                            <p id="days-{{student.student.id}}" style="color: green; margin-left: 1em;"></p>
+                            <p id="hours-{{student.student.id}}" style="color: green; margin-left: 1em;"></p>
+                            <p id="mins-{{student.student.id}}" style="color: green; margin-left: 1em;"></p>
+                            <p id="secs-{{student.student.id}}" style="color: green; margin-left: 1em;"></p>
+                            <h2 id="end-{{student.student.id}}" style="color: red;"></h2>
+                        </div>
+                        <div class="text-left mt-3">
+
+                            <p class="text-muted mb-2 font-13"><strong>username :</strong> <span class="ml-2">
+                                    {{student.student.username}}</span></p>
+
+                            <p class="text-muted mb-2 font-13"><strong>Mobile :</strong><span class="ml-2"></span>
                                 {{student.student.phone}}</span></p>
 
-                        <p class="text-muted mb-2 font-13"><strong>Email :</strong> <span class="ml-2 ">{{student.student.email}}</span></p>
+                            <p class="text-muted mb-2 font-13"><strong>Email :</strong> <span
+                                    class="ml-2 ">{{student.student.email}}</span></p>
 
-                        <p class="text-muted mb-1 font-13"><strong>Location :</strong> <span class="ml-2">{{student.student.address}}</span></p>
-                    </div>
+                            <p class="text-muted mb-1 font-13"><strong>Location :</strong> <span
+                                    class="ml-2">{{student.student.address}}</span></p>
+                        </div>
 
-                </div> <!-- end card-body -->
-            </div> <!-- end card -->
+                    </div> <!-- end card-body -->
+                </div> <!-- end card -->
 
-            <!-- Messages-->
-           
+                <!-- Messages-->
 
+
+            </div>
         </div>
-    </div> 
-    <!-- end page title -->
-    {% endfor %}
-    
+        <!-- end page title -->
+        {% endfor %}
 
- </div>
- <script>
-     
 
-     scheduleJson = {{schedules|safe}}
-     for(var id in scheduleJson){
-        var countDownDate = new Date(scheduleJson[id]).getTime();
-     console.log(id, scheduleJson[id])
-// Run myfunc every second
-var myfunc = setInterval(function() {
+    </div>
+    <script>
 
-var now = new Date().getTime();
-var timeleft = countDownDate - now;
-    
-// Calculating the days, hours, minutes and seconds left
-var days = Math.floor(timeleft / (1000 * 60 * 60 * 24));
-var hours = Math.floor((timeleft % (1000 * 60 * 60 * 24)) / (1000 * 60 * 60));
-var minutes = Math.floor((timeleft % (1000 * 60 * 60)) / (1000 * 60));
-var seconds = Math.floor((timeleft % (1000 * 60)) / 1000);
-console.log("days-"+id);
 
-// Result is output to the specific element
-document.getElementById("days-"+id).innerHTML = days + "d "
-document.getElementById("hours-"+id).innerHTML = hours + "h " 
-document.getElementById("mins-"+id).innerHTML = minutes + "m " 
-document.getElementById("secs-"+id).innerHTML = seconds + "s " 
-    
-// Display the message when countdown is over
-if (timeleft < 0) {
-    clearInterval(myfunc);
-    document.getElementById("days-"+id).innerHTML = ""
-    document.getElementById("hours-"+id).innerHTML = "" 
-    document.getElementById("mins-"+id).innerHTML = ""
-    document.getElementById("secs-"+id).innerHTML = ""
-    document.getElementById("end-"+id).innerHTML = "TIME UP!!";
-}
-}, 1000);
-console.log(id);
-}
- </script>
-{% endblock %}
+        scheduleJson = {{ schedules | safe }}
+        for (var id in scheduleJson) {
+            var countDownDate = new Date(scheduleJson[id]).getTime();
+            console.log(id, scheduleJson[id])
+            // Run myfunc every second
+            var myfunc = setInterval(function () {
+
+                var now = new Date().getTime();
+                var timeleft = countDownDate - now;
+
+                // Calculating the days, hours, minutes and seconds left
+                var days = Math.floor(timeleft / (1000 * 60 * 60 * 24));
+                var hours = Math.floor((timeleft % (1000 * 60 * 60 * 24)) / (1000 * 60 * 60));
+                var minutes = Math.floor((timeleft % (1000 * 60 * 60)) / (1000 * 60));
+                var seconds = Math.floor((timeleft % (1000 * 60)) / 1000);
+
+                // Result is output to the specific element
+                document.getElementById("days-" + id).innerHTML = days + "d "
+                document.getElementById("hours-" + id).innerHTML = hours + "h "
+                document.getElementById("mins-" + id).innerHTML = minutes + "m "
+                document.getElementById("secs-" + id).innerHTML = seconds + "s "
+
+                // Display the message when countdown is over
+                if (timeleft < 0) {
+                    clearInterval(myfunc);
+                    document.getElementById("days-" + id).innerHTML = ""
+                    document.getElementById("hours-" + id).innerHTML = ""
+                    document.getElementById("mins-" + id).innerHTML = ""
+                    document.getElementById("secs-" + id).innerHTML = ""
+                    document.getElementById("end-" + id).innerHTML = "TIME UP!!";
+                }
+            }, 1000);
+            console.log(id);
+        }
+    </script>
+    {% endblock %}
