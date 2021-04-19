@@ -56,4 +56,5 @@ class Answer(models.Model):
     student = models.ForeignKey(Student, on_delete=models.CASCADE)
     task = models.ForeignKey(Task, on_delete=models.CASCADE)
     answer = models.TextField(null=True, blank=True)
-    
+    time = models.CharField(max_length=200, null=True, blank=True)
+    editor = models.CharField(max_length=200, null=True, blank=True)   

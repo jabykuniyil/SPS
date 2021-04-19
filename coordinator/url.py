@@ -18,6 +18,7 @@ urlpatterns = [
     path('add-batch/', views.add_batch, name = 'add-batch'),
     path('student-specific/<int:id>/', views.student_specific, name = 'student-specific'),
     path('student-task/<int:weekid>/<int:studentid>/', views.student_task, name = 'student-task'),
+    path('edit-answer/<int:taskid>/<int:studentid>/', views.edit_answer, name = 'edit-answer'),
     path('choose-week/', views.choose_week, name = 'choose-week'),
     path('add-week/', views.add_week, name = 'add-week'),
     path('task-specific/<int:weekid>/', views.task_specific, name = 'task-specific'),

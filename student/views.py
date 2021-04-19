@@ -220,7 +220,8 @@ def task_specific(request, id):
     if request.method == 'POST':
         answer = request.POST['answer']
         task_id = request.POST['taskid']
-        Answer.objects.create(task_id=task_id, answer=answer, student=user)
+        time = datetime.datetime.now().strftime('%Y-%m-%d %H:%M:%S')
+        Answer.objects.create(task_id=task_id, answer=answer, student=user, time=time, editor=user.username)
         return JsonResponse('true', safe=False)
     else:
         week = Week.objects.get(id=id)
@@ -231,6 +232,18 @@ def task_specific(request, id):
         personal_development_dict = {}
         technical_task_dict = {}
         student_answers = Answer.objects.filter(student=user)
+        time = datetime.datetime.now()
+        largest = datetime.datetime(2000,12,2,12,32,21)
+        for x in student_answers:
+            answer_time = datetime.datetime.strptime(x.time, '%Y-%m-%d %H:%M:%S')
+            if answer_time > largest:
+                largest = answer_time
+        editor = Answer.objects.get(time=largest)
+        evaluated = time - largest
+        time_dict = {}
+        time_dict['days'] = evaluated.days
+        time_dict['hours'] = evaluated.seconds//3600
+        time_dict['minutes'] = (evaluated.seconds//60)%60
         personal_answers = {}
         technical_answers = {}
         miscelleneous_answers = {}
@@ -253,7 +266,9 @@ def task_specific(request, id):
             'miscelleneous_tasks' : miscelleneous_task_dict,
             'personal_answers' : personal_answers,
             'technical_answers' : technical_answers,
-            'miscelleneous_answers' : miscelleneous_answers
+            'miscelleneous_answers' : miscelleneous_answers,
+            'time_dict' : time_dict,
+            'editor' : editor
             }
         return render(request, 'student/task-specific.html', context)
     
@@ -265,8 +280,17 @@ def edit_answer(request, id):
         task = Task.objects.get(id=id)
         answer = request.POST['answer']
         student = request.user
-        Answer.objects.filter(task=task, student=student).update(answer=answer, student=student)
+        time = datetime.datetime.now().strftime('%Y-%m-%d %H:%M:%S')
+        Answer.objects.filter(task=task, student=student).update(answer=answer, student=student, time=time, editor=student.username)
         return JsonResponse('true', safe=False)
+    
+@login_required(login_url='/')
+@payment_required
+@student_status
+def delete_answer(request, id):
+    answer = Answer.objects.get(task_id=id)
+    answer.delete()
+    return redirect(choose_week)    
     
 @login_required(login_url='/')
 @payment_required

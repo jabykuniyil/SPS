@@ -4,7 +4,7 @@ from student.models import Student, Answer
 from django.contrib.auth.hashers import check_password
 from django.core.files import File
 from django.http import JsonResponse
-import json
+import json, datetime
 
 # Create your views here.
 
@@ -17,7 +17,7 @@ def login(request):
             password = request.POST['password']
             coordinator_details = CoordinatorDetails.objects.filter(username=username).first()
             if coordinator_details is not None and check_password(password, coordinator_details.password):
-                request.session['is_coordinator'] = True
+                request.session['is_coordinator'] = username
                 return JsonResponse('true', safe=False)
             else:
                 return JsonResponse('false', safe=False)
@@ -183,6 +183,19 @@ def student_task(request, studentid, weekid):
         personal_answers = {}
         technical_answers = {}
         miscelleneous_answers = {}
+        student_answer = Answer.objects.filter(student_id=studentid)
+        time = datetime.datetime.now()
+        largest = datetime.datetime(2000,12,2,12,32,21)
+        for x in student_answer:
+            answer_time = datetime.datetime.strptime(x.time, '%Y-%m-%d %H:%M:%S')
+            if answer_time > largest:
+                largest = answer_time
+        editor = Answer.objects.get(time=largest)
+        evaluated = time - largest
+        time_dict = {}
+        time_dict['days'] = evaluated.days
+        time_dict['hours'] = evaluated.seconds//3600
+        time_dict['minutes'] = (evaluated.seconds//60)%60
         for x in student_answers:
             if x.task.type_of_task == 'Miscelleneuos Task':
                 miscelleneous_answers[x.task.id] = x.answer
@@ -204,7 +217,9 @@ def student_task(request, studentid, weekid):
             'technical_answers' : technical_answers,
             'miscelleneous_answers' : miscelleneous_answers,
             'student' : student,
-            'week' : week
+            'week' : week,
+            'editor' : editor,
+            'time_dict' : time_dict
             }
         return render(request, 'coordinator/student-task.html', context)
     else:
@@ -272,6 +287,18 @@ def delete_task(request, weekid, taskid):
         task = Task.objects.filter(week_id=weekid, id=taskid)
         task.delete()
         return redirect(task_specific, weekid=weekid)
+    else:
+        return redirect(login)
+    
+def edit_answer(request, taskid, studentid):
+    if request.session.has_key('is_coordinator'):
+        if request.method == 'POST':
+            task = Task.objects.get(id=taskid)
+            answer = request.POST['answer']
+            student = Student.objects.get(id=studentid)
+            time = datetime.datetime.now().strftime('%Y-%m-%d %H:%M:%S')
+            Answer.objects.filter(task=task, student=student).update(answer=answer, student=student, time=time, editor=request.session['is_coordinator'])
+            return JsonResponse('true', safe=False)
     else:
         return redirect(login)
     
