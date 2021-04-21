@@ -394,7 +394,16 @@ if(incrementValue == 0){
         $("#basic-preview").append(`<button style="margin-bottom:3rem;" class=" btn btn-danger float-right m-1" id="submitBtn" onclick="submit()" class="btn btn-lg font-16 btn-danger btn-block" value="Submit" id="submit" ><i class="mdi mdi-plus-circle-outline"></i>Submit</button>`);
         $("#basic-preview").append('<button  class="btn btn-info float-right m-1 "style="margin-bottom:3rem;" data-dismiss="modal" class=" btn btn-lg font-16 btn-danger btn-block" value="Cancel" id="cancel" ><i class="mdi mdi-plus-circle-outline"></i>Cancel</button> <br><br><br>');
         $("#basic-preview").append(`<span id="errorquestion" color="red"></span>`);
-        div.summernote().addClass('hello');
+        div.summernote({
+     toolbar : [['style', ['style']],
+  ['font', ['bold', 'underline', 'clear']],
+  ['fontname', ['fontname']],
+  ['color', ['color']],
+  ['para', ['ul', 'ol', 'paragraph']],
+  ['table', ['table']],
+  ['insert', ['link', 'picture', 'video']],
+  ['view', ['fullscreen', 'help']],]
+   }).addClass('hello');
         incrementValue++;
        }
     });
@@ -407,7 +416,16 @@ if(incrementValue == 0){
  function edit(id, typ){
    a=id
    typeOfTask = typ;
-   $("#task-modal").html($('<div>')).summernote().addClass('editSummernote');
+   $("#task-modal").html($('<div>')).summernote({
+     toolbar : [['style', ['style']],
+  ['font', ['bold', 'underline', 'clear']],
+  ['fontname', ['fontname']],
+  ['color', ['color']],
+  ['para', ['ul', 'ol', 'paragraph']],
+  ['table', ['table']],
+  ['insert', ['link', 'picture', 'video']],
+  ['view', ['fullscreen', 'help']],]
+   }).addClass('editSummernote');
   if (typ == 'Personal Development'){
     
     let val1 = personalquestion[id]

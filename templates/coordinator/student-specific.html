@@ -1,7 +1,11 @@
 {% extends 'coordinator/base.html' %}
 {% block content %}
 {% load static %}
+
  <!-- Start Content-->
+
+        <!-- App css -->
+
  <div class="container-fluid">
                         
     <!-- start page title -->
@@ -206,7 +210,18 @@
                     </div>
 
                     <div class="tab-pane" id="review">
-                        
+                       
+                        {% for week in weeks %}
+                        <div class="col-sm-6 col-xl-3 float-left ">
+                            <div class="card shadow-none m-0">
+                                <div class="card-body text-center">
+                                    <a data-target="#review-specific" onclick="week('{{week.id}}')" data-toggle="modal"><i class="dripicons-folder text-muted" style="font-size: 24px;"></i>
+                                        <p class=" font-15 mb-0">Week {{week.week}}</p></a>
+                                        <h6 class="text-muted text-center">To be Conduct</h6>
+                                    </div>
+                                </div>
+                            </div>
+                            {% endfor %}
                     </div>
 
                     
@@ -215,7 +230,7 @@
                         <div class="col-sm-6 col-xl-3 float-left">
                             <div class="card shadow-none m-0">
                                 <div class="card-body text-center">
-                                    <a href="/coordinator/student-task/{{week.id}}/{{student.id}}/"><i class="dripicons-graph-line text-muted" style="font-size: 24px;"></i>
+                                    <a href="/coordinator/student-task/{{week.id}}/{{student.id}}/"><i class="dripicons-folder text-muted" style="font-size: 24px;"></i>
                                         <p class=" font-15 mb-0">Week {{week.week}}</p></a>
                                     </div>
                                 </div>
@@ -228,7 +243,149 @@
             </div> <!-- end card body -->
         </div> <!-- end card -->
     </div> <!-- end col -->
+
+    <div id="review-specific" data-controls-modal="review-specific" data-backdrop="static" data-keyboard="false" class="modal fade" tabindex="-1" role="dialog" aria-labelledby="fullWidthModalLabel" aria-hidden="true">
+        <div class="modal-dialog modal-full-width">
+          <div class="modal-content">
+            <div class="modal-header">
+              <h4 class="modal-title" id="fullWidthModalLabel">Review for {% for week in weeks %} Week {{week.week}}{% endfor %}</h4>
+            </div>
+            <div class="modal-body" id="review-body">
+                <div class="row">
+                    <div class="col-lg-4">
+                <h4 class="modal-title text-center p-3" >Coordinator Review</h4>
+            </div>
+                <div class="col-lg-8 p-2" style="background-color: inherit">
+                    <textarea name="coordinatorReview" id="coordinatorReview" cols="30" rows="6" class="form-control"></textarea>
+                    <span id="errorCoordinatorReview" style="color: red;"></span>
+                </div>
+               
+            </div>
+            <div class="row">
+                <div class="col-lg-4">
+            <h4 class="modal-title text-center p-3" >Admin Review</h4>
+        </div>
+        <div class="col-lg-8 p-2" style="background-color: inherit">
+            <textarea name="adminReview" id="adminReview" cols="30" rows="6" class="form-control"></textarea>
+            <span id="errorAdminReview" style="color: red;"></span>
+        </div>
+       
+        </div>
+        <div class="row">
+            <div class="col-lg-4">
+        <h4 class="modal-title text-center p-3" >Score</h4>
+    </div>
+    <div class="col-lg-1"></div>
+    <div class="col-lg-5">
+    <div class="card">
+        <div class="card-body">
+           
+            <div class="tab-content">
+                <div class="tab-pane show active" id="using-select-preview"> 
+                    <select id="score">
+                        <option value="0">Rejected</option>
+                        <option value="1">Rejected</option>
+                        <option value="2">Rejected</option>
+                        <option value="3">Critical</option>
+                        <option value="4">Critical</option>
+                        <option value="5">Critical</option>
+                        <option value="6">Need to Improve</option>
+                        <option value="7">Need to Improve</option>
+                        <option value="8">Need to Improve</option>
+                        <option value="9">Completed</option>
+                        <option value="10">Completed</option>
+                    </select>
+                    <div class="rateit rateit-mdi" data-rateit-backingfld="#score" data-rateit-mode="font" data-rateit-icon="󰓒"></div>                                     
+                    <br><br>
+                    <span id="errorScore" style="color: red;"></span>
+                </div> <!-- end preview-->
+            
+               
+            </div> <!-- end tab-content-->
+        </div> <!-- end card-body -->
+    </div> <!-- end card-->
+</div>
+<div class="col-lg-2">
+
+</div>
+    </div>
+            </div>
+            <div class="tab-content" id="review-footer">
+                <button type="button" class="btn btn-danger float-right m-1"  id="submitReview">Submit Review</button>
+                <button type="button" class="btn btn-default float-right m-1" data-dismiss="modal">Close</button>
+            </div>
+          </div>
+        </div>
+      </div>
     {% endif %}
 </div>
  </div>
+ 
+<script src="{% static 'assets/js/vendor.min.js' %}"></script>
+
+        <!-- Plgins only -->
+        <script src="{% static 'assets/js/vendor/jquery.rateit.min.js' %}"></script>
+        
+        <script src="{% static 'assets/js/ui/component.rating.js' %}"></script>
+        
+ <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.6.0/jquery.min.js" integrity="sha512-894YE6QWD5I59HgZOGReFYm4dnWc1Qt5NtvYSaNcOP+u1T9qYdvdihz0PPSiiqn/+/3e7Jo4EaG7TubfWGUrMQ==" crossorigin="anonymous"></script>
+
+ <script>
+     var weekId;
+     function week(weekid){
+         weekId = weekid
+     }
+
+     $('#submitReview').click(function(){
+         var coordinatorReview = $('#coordinatorReview').val()
+         var adminReview = $('#adminReview').val()
+         var score = $('#score').val()
+         var data = {
+             'csrfmiddlewaretoken' : '{{csrf_token}}',
+             'coordinator_review' : coordinatorReview,
+             'admin_review' : adminReview,
+             'score' : score
+         }
+         console.log(data);
+         let error =false;
+         if (coordinatorReview.length < 5){
+             $('#errorCoordinatorReview').html('Please type properly')
+             error = true;
+         }
+         else{
+            $('#errorCoordinatorReview').html('')
+         }
+         if(adminReview.length < 5){
+             $('#errorAdminReview').html('Please type Properly')
+             error = true;
+         }
+         else{
+            $('#errorAdminReview').html('')
+         }
+         if(score == 0 || score == null){
+             $('#errorScore').html('Please input a valid score')
+             error = true;
+         }
+         else{
+            $('#errorScore').html('')
+         }
+         if(!error){
+            //  $.ajax({
+            //      url : '/coordinator/student-review/{{student.id}}/'+weekId+'/',
+            //      method : 'POST',
+            //      data : data,
+            //      dataType : 'json',
+            //      success : function(data){
+            //          if(data == 'true'){
+            //              window.location.reload()
+            //          }
+            //      }
+            //  })
+            console.log('manu');
+         }
+     })
+     
+ </script>
+ 
+
 {% endblock %}

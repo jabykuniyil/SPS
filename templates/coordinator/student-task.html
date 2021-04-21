@@ -274,7 +274,16 @@ function answerModal(taskid){
   taskidid = taskid;
     if (count == 0){
     var div = $('<div>').appendTo($("#task-answer"));
-        div.summernote().addClass('summernote');
+        div.summernote({
+     toolbar : [['style', ['style']],
+  ['font', ['bold', 'underline', 'clear']],
+  ['fontname', ['fontname']],
+  ['color', ['color']],
+  ['para', ['ul', 'ol', 'paragraph']],
+  ['table', ['table']],
+  ['insert', ['link', 'picture', 'video']],
+  ['view', ['fullscreen', 'help']],]
+   }).addClass('summernote');
         count++;
     }
 }
@@ -285,7 +294,16 @@ function editAnswer(id, typ){
   console.log('hel', id, typ);
    a=id
    typeOfTask = typ;
-   $("#answer-modal").html($('<div>')).summernote().addClass('editSummernote');
+   $("#answer-modal").html($('<div>')).summernote({
+     toolbar : [['style', ['style']],
+  ['font', ['bold', 'underline', 'clear']],
+  ['fontname', ['fontname']],
+  ['color', ['color']],
+  ['para', ['ul', 'ol', 'paragraph']],
+  ['table', ['table']],
+  ['insert', ['link', 'picture', 'video']],
+  ['view', ['fullscreen', 'help']],]
+   }).addClass('editSummernote');
   
     if (typ == 'Miscelleneous Task'){
     let val3 = miscelleneousAnswer[id]

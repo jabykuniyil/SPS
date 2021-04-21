@@ -1,4 +1,5 @@
 from django.db import models
+from colorfield.fields import ColorField
 
 # Create your models here.
 
@@ -43,3 +44,9 @@ class Task(models.Model):
 class BatchSettings(models.Model):
     batch = models.ForeignKey(Batches, on_delete=models.CASCADE)
     week = models.ForeignKey(Week, on_delete=models.CASCADE)
+    
+class ReviewColors(models.Model):
+    color = ColorField()
+    description = models.CharField(max_length=20, null=True, blank=True)
+    score_from = models.IntegerField(null=True, blank=True)
+    score_to = models.IntegerField(null=True, blank=True)

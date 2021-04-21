@@ -1,0 +1,192 @@
+{% extends 'coordinator/base.html' %}
+{% block content %}
+<div class="container-fluid">
+                        
+    <!-- start page title -->
+    <div class="row">
+        <div class="col-12">
+            <div class="page-title-box">
+                
+                <h4 class="page-title">Search for Student</h4>
+            </div>
+        </div>
+    </div> 
+    
+<div id="add-color" class="modal fade" tabindex="-1" role="dialog" aria-labelledby="fullWidthModalLabel" aria-hidden="true">
+    <div class="modal-dialog modal-full-width">
+      <div class="modal-content">
+        <div class="modal-header">
+          <h4 class="modal-title" id="fullWidthModalLabel">Add New Color</h4>
+        </div>
+        <div class="modal-body" id="color-body">
+            <div class="row">
+                <div class="col-lg-4">
+                    <h4 class="modal-title text-center" >Please choose a Color</h4>
+                <input type="color" class="form-control" name="color" id="color">
+            </div>
+            <div class="col-lg-8">
+                <textarea rows="4" id="description" placeholder="Type a Description here" class="form-control"></textarea>
+                <span id="errordescription" style="color: red;"></span>
+            </div>
+        </div>
+       
+        <div class="row mt-2 p-2">
+            <div class="col-lg-2"></div>
+            <div class="col-lg-4 mt-1">
+                <input type="number" placeholder="Score From" id="scoreFrom" min="0" max="10" class="form-control">
+                <span id="errorscoreFrom" style="color: red;"></span>
+            </div>
+            <div class="col-lg-4 mt-1">
+                <input type="number" min="0" placeholder="Score To" id="scoreTo" max="10" class="form-control">
+                <span id="errorscoreTo" style="color: red;"></span>
+            </div>
+
+            <div class="col-lg-2"></div>
+
+        </div>
+        <span class="mt-1" id="errorscore" style="color: red; margin: auto; display: table;"></span>
+
+        <div class="row mt-2">
+            <div class="col-lg-12 container">
+            <input type="button" class="form-control btn-primary" placeholder="Done" id="done" value="Done">
+        </div>
+        </div>
+        </div>
+        <div class="tab-content" id="color-footer">
+         
+        </div>
+      </div>
+    </div>
+  </div>   
+    <div class="row">
+        <div class="col-12 col-lg-12 container">
+            
+            <div class="page-title-box">
+                <a class="nav-link dropdown-toggle arrow-none" data-toggle="dropdown" href="#" role="button" aria-haspopup="false" aria-expanded="false">
+                    <i class="dripicons-search noti-icon"></i>
+                </a>
+                <div class="dropdown-menu dropdown-menu-animated dropdown-lg p-0">
+                    <form class="p-3">
+                        <input type="search"  class="form-control" placeholder="Search ..." aria-label="Recipient's username">
+                    </form>
+                </div>
+            </div>
+                
+               
+            
+        </div>
+    </div>  
+    <div class="row">
+        <div class="col-12">
+            <div class="page-title-box">
+                <div class="dropdown float-right text-right mt-3">
+                    <a href="#" class="dropdown-toggle arrow-none card-drop" data-toggle="dropdown" aria-expanded="false">
+                        <i class="dripicons-view-apps noti-icon"></i>
+                    </a>
+                    <div class="dropdown-menu dropdown-menu-right">
+                        <a href="" data-target="#add-color" data-toggle="modal"  class="dropdown-item">Add New Color</a>
+        
+                    </div>
+                </div>
+                <h4 class="page-title">Colors</h4>
+            </div>
+        </div>
+    </div>
+    <div class="row container" style="margin: auto; display: inline-flexbox;">
+        {% for color, value in color_dict.items %}
+        <div class="col-3 col-lg-3 p-3 mt-2" style="background-color: {{color}};">
+            
+        </div>
+        <div class="col-6 col-lg-6 text-center mt-5" >
+           <h3 style="color: {{color}};">{{value.0}}</h3> 
+        </div>
+        <div class="col-3 col-lg-3 p-3 text-center mt-3">
+            <table class="table">
+                <thead>
+                  <tr>
+                    <th scope="col">Score From</th>
+                    <th scope="col">Score To</th>
+                  </tr>
+                </thead>
+                <tbody>
+                  <tr>
+                    <td>{{value.2}}</td>
+                    <td>{{value.1}}</td>
+                  </tr>
+                </tbody>
+              </table>
+        </div>
+
+        {% endfor %}
+    </div> 
+   
+       
+</div>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.6.0/jquery.min.js" integrity="sha512-894YE6QWD5I59HgZOGReFYm4dnWc1Qt5NtvYSaNcOP+u1T9qYdvdihz0PPSiiqn/+/3e7Jo4EaG7TubfWGUrMQ==" crossorigin="anonymous"></script>
+
+ <script>
+    $('#done').click(function(){
+        var color = $("#color").val();
+        var description = $('#description').val()
+        var scoreFrom = $('#scoreFrom').val()
+        var scoreTo = $('#scoreTo').val()
+        var data = {
+            'csrfmiddlewaretoken' : '{{csrf_token}}',
+            'color' : color,
+            'description' : description,
+            'score_from' : scoreFrom,
+            'score_to' : scoreTo
+        }
+        let error = false;
+        if(description.length < 5){
+            $('#errordescription').html('Please input valid description')
+            error = true;
+        }
+        else{
+            $('#errordescription').html('')
+        }
+        if(scoreFrom < 0 || scoreFrom >10){
+            $('#errorscoreFrom').html('Please input valid score')
+            error = true;
+        }
+        else{
+            $('#errorscoreFrom').html('')
+        }
+        if(scoreTo < 1 || scoreTo > 10){
+            $('#errorscoreTo').html('Please input valid Score')
+            error = true;
+        }
+        else{
+            $('#errorscoreTo').html('')
+        }
+        if(scoreFrom <= 10 && scoreFrom >= 0 && score_to == ''){
+            
+        }
+        else if(scoreFrom == '' && score_to <= 10 && scoreTo >= 0 ){
+
+        }
+        else if(scoreTo == '' && scoreFrom == ''){
+
+        }
+        if(!error){
+            $.ajax({
+            url : '/coordinator/add-color/',
+            method : 'POST',
+            data : data,
+            dataType : 'json',
+            success : function(data){
+                if(data == 'true'){
+                   window.location.reload()
+                }
+                if(data == 'not_available'){
+                    $('#errorscore').html('The scores or Colors are already applied')
+                }
+                if(data == 'not_comparable'){
+                    $('#errorscore').html('The entered scores are not valid')
+                }
+            }
+        })
+    }
+    })
+</script>
+{% endblock %}

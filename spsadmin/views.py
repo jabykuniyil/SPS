@@ -1,6 +1,5 @@
 from django.shortcuts import render, redirect
 from django.http import JsonResponse
-import requests, json
 from django.contrib.auth.models import auth, User
 from coordinator.models import CoordinatorDetails
 from django.core.files import File
@@ -8,26 +7,23 @@ from django.contrib.auth.hashers import make_password
 from student.models import Student, InvalidResponse, StudentUUID, VideocallShedule
 from coordinator.models import Batches
 from django.contrib.auth.decorators import login_required
-import uuid
-import datetime
+import uuid, datetime, requests, json
 
 # Create your views here.
 
 def login(request):
     if request.user.is_authenticated:
         return redirect(feed)
-    else:
-        if request.method == 'POST':
-            username = request.POST['username']
-            password = request.POST['password']
-            user = auth.authenticate(username=username, password=password)
-            if user is not None and user.is_superuser:
-                if user.is_superuser == True:
-                    auth.login(request, user)
-                    return JsonResponse('true', safe = False)
-            else:
-                return JsonResponse('false', safe = False)
-        return render(request, 'admin/login.html')
+    if request.method == 'POST':
+        username = request.POST['username']
+        password = request.POST['password']
+        user = auth.authenticate(username=username, password=password)
+        if user is not None and user.is_superuser:
+            if user.is_superuser == True:
+                auth.login(request, user)
+                return JsonResponse('true', safe = False)
+        return JsonResponse('false', safe = False)
+    return render(request, 'admin/login.html')
 
 @login_required(login_url='/spsadmin/')
 def phone(request):
@@ -53,10 +49,8 @@ def phone(request):
             otp_id = dict['otp_id']
             request.session['otp_id'] = otp_id
             return JsonResponse('true', safe = False)
-        else:
-            return JsonResponse('false', safe = False)
-    else:
-        return render(request, 'admin/phone.html')
+        return JsonResponse('false', safe = False)
+    return render(request, 'admin/phone.html')
         
 @login_required(login_url='/spsadmin/')
 def otp(request):
@@ -78,13 +72,10 @@ def otp(request):
         status = dict['status']
         if status == 'success':
             return JsonResponse('true', safe = False)
-        else:
-            return JsonResponse('false', safe = False)
-    else:
-        if request.session.has_key('otp_id'):
-            return render(request, 'admin/otp.html')
-        else:
-            return redirect(login)
+        return JsonResponse('false', safe = False)
+    if request.session.has_key('otp_id'):
+        return render(request, 'admin/otp.html')
+    return redirect(login)
         
 @login_required(login_url='/spsadmin/')
 def feed(request):
@@ -131,13 +122,11 @@ def student_register(request):
             return JsonResponse('email', safe=False)
         elif Student.objects.filter(phone=phone).exists():
             return JsonResponse('phone', safe=False)
-        else:
-            Student.objects.create_user(fullname=fullname, email=email, phone=phone, batch__name=batch, age=age, dob=dob, gender=gender, address=address, father=father, mother=mother, domain=domain, photo=photo, username=username, password=password, payment=False, admin_approval='approved')
-            return JsonResponse('true', safe=False)
-    else:
-        batches = Batches.objects.all()
-        context = {'batches' : batches}
-        return render(request, 'admin/student-register.html', context)
+        Student.objects.create_user(fullname=fullname, email=email, phone=phone, batch__name=batch, age=age, dob=dob, gender=gender, address=address, father=father, mother=mother, domain=domain, photo=photo, username=username, password=password, payment=False, admin_approval='approved')
+        return JsonResponse('true', safe=False)
+    batches = Batches.objects.all()
+    context = {'batches' : batches}
+    return render(request, 'admin/student-register.html', context)
 
 @login_required(login_url='/spsadmin/')
 def students_requests(request):
@@ -168,8 +157,7 @@ def approve_student(request, id):
         batch = Batches.objects.get(name=batch)
         Student.objects.filter(admin_approval__in=['pending', 'terminated', 'rejected'], id=id, is_superuser=False).update(admin_approval='approved', batch=batch)
         return JsonResponse('true', safe=False)
-    else:
-        return JsonResponse('true', safe=False)
+    return JsonResponse('true', safe=False)
 
 @login_required(login_url='/spsadmin/')
 def approve_videocall(request, id):
@@ -180,8 +168,7 @@ def approve_videocall(request, id):
         Student.objects.filter(id=id, admin_approval='pending').update(admin_approval='videocall')
         VideocallShedule.objects.create(student=student, date=date, time=time)
         return JsonResponse('true', safe=False)
-    else:
-        return JsonResponse('true', safe=False)
+    return JsonResponse('true', safe=False)
 
 @login_required(login_url='/spsadmin/')
 def reject_student(request, id):
@@ -200,8 +187,7 @@ def invalid_request(request, id):
         uuid_expiry = today + datetime.timedelta(days=1)
         StudentUUID.objects.create(student=student, student_uuid=student_uuid, uuid_expiry=uuid_expiry)
         return JsonResponse('true', safe=False)
-    else:
-        return JsonResponse('true', safe=False)
+    return JsonResponse('true', safe=False)
     
 @login_required(login_url='/spsadmin/')
 def terminate_student(request, id):
@@ -221,17 +207,16 @@ def student_videocall(request):
         batch = request.POST['batch']
         Student.objects.filter(admin_approval='videocall', id = id).update(admin_approval='approved', batch=batch)
         return JsonResponse('true', safe=False)
-    else:
-        pending_students = VideocallShedule.objects.filter(student__admin_approval='videocall')
-        schedule_list = {}
-        for student in pending_students:
-            videocall_date = str(student.date)
-            videocall_time = str(student.time)
-            date_and_time = videocall_date +" "+ videocall_time
-            schedule_list[student.student.id] = date_and_time
-        batches = Batches.objects.all()
-        context = {'students' : pending_students, 'schedules' : schedule_list, 'batches' : batches}
-        return render(request, 'admin/student-videocall.html', context)
+    pending_students = VideocallShedule.objects.filter(student__admin_approval='videocall')
+    schedule_list = {}
+    for student in pending_students:
+        videocall_date = str(student.date)
+        videocall_time = str(student.time)
+        date_and_time = videocall_date +" "+ videocall_time
+        schedule_list[student.student.id] = date_and_time
+    batches = Batches.objects.all()
+    context = {'students' : pending_students, 'schedules' : schedule_list, 'batches' : batches}
+    return render(request, 'admin/student-videocall.html', context)
     
 @login_required(login_url='/spsadmin/')
 def staffs(request):
@@ -260,11 +245,9 @@ def staff_register(request):
             return JsonResponse('username', safe=False)
         elif CoordinatorDetails.objects.filter(email=email).exists():
             return JsonResponse('email', safe=False)
-        else:
-            CoordinatorDetails.objects.create(name=name, email=email, phone=phone, salary=salary, age=age, dob=dob, gender=gender, father=father, mother=mother, address=address, education=education, photo=photo, username=username, password=make_password(password))
-            return JsonResponse('true', safe=False)
-    else:
-        return render(request, 'admin/staff-register.html')
+        CoordinatorDetails.objects.create(name=name, email=email, phone=phone, salary=salary, age=age, dob=dob, gender=gender, father=father, mother=mother, address=address, education=education, photo=photo, username=username, password=make_password(password))
+        return JsonResponse('true', safe=False)
+    return render(request, 'admin/staff-register.html')
 
 @login_required(login_url='/spsadmin/')
 def edit_coordinator(request, id):
@@ -282,10 +265,9 @@ def edit_coordinator(request, id):
         coordinator_details.gender = request.POST['gender']
         coordinator_details.save()
         return JsonResponse('true', safe=False)
-    else:
-        coordinator_details = CoordinatorDetails.objects.get(id=id)
-        context = {'coordinator_details' : coordinator_details}
-        return render(request, 'admin/edit-coordinator.html', context)
+    coordinator_details = CoordinatorDetails.objects.get(id=id)
+    context = {'coordinator_details' : coordinator_details}
+    return render(request, 'admin/edit-coordinator.html', context)
 
 @login_required(login_url='/spsadmin/')
 def delete_coordinator(request, id):

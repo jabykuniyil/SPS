@@ -1,5 +1,5 @@
 from django.db import models
-from coordinator.models import CoordinatorDetails, Task, Batches
+from coordinator.models import CoordinatorDetails, Task, Batches, ReviewColors, Week
 from django.contrib.auth.models import AbstractUser
 
 # Create your models here.
@@ -58,3 +58,16 @@ class Answer(models.Model):
     answer = models.TextField(null=True, blank=True)
     time = models.CharField(max_length=200, null=True, blank=True)
     editor = models.CharField(max_length=200, null=True, blank=True)   
+    
+class Review(models.Model):
+    student = models.ForeignKey(Student, on_delete=models.CASCADE)
+    color = models.ForeignKey(ReviewColors, on_delete=models.CASCADE)
+    week = models.ForeignKey(Week, on_delete=models.CASCADE, null=True, blank=True)
+    coordinator = models.CharField(max_length=30, null=True, blank=True)
+    coordinator_review = models.TextField(null=True, blank=True)
+    admin_review = models.TextField(null=True, blank=True)
+    score = models.IntegerField(null=True, blank=True)
+    coordinator_date = models.DateField(auto_now_add=True)
+    admin_date = models.DateField(auto_now_add=True)
+    
+    
