@@ -168,14 +168,23 @@ input:active+.design::after {
 </style>
 <div class="container-fluid">
   <div class="row">
-    <div class="col-12 col-lg-6">
-        <div class="page-title-box">
-            <h4 class="page-title">{{student.fullname}} - Week {{week.week}}</h4>
-        </div>
-    </div>
-        <div class="col-12 col-lg-6 p-3">
-        <h6 class=" float-right">Last edited by {{editor.editor}} at {% for mode, value in time_dict.items %}{{value}} {{mode}} {% endfor %} ago</h6>
-        </div>
+    <div class="col-12">
+      <div class="page-title-box">
+          <div class="dropdown float-right text-right mt-3">
+              <a href="#" class="dropdown-toggle arrow-none card-drop" data-toggle="dropdown" aria-expanded="false">
+                  <i class="dripicons-view-apps noti-icon"></i>
+              </a>
+              <div class="dropdown-menu dropdown-menu-right">
+                  <a href=""><h6 class=" text-center text-muted">Edit History</h6></a>
+                  <a href="" data-target="#week" data-toggle="modal" id="weekchoose" class="dropdown-item">{{editor.editor}} at {% for mode, value in time_dict.items %}{{value}} {{mode}} {% endfor %} ago</a>
+  
+              </div>
+          </div>
+          <h4 class="page-title">{{student.fullname}} - Week {{week.week}}</h4>
+          
+      </div>
+      
+  </div>
 </div>
     
     <div class="row">

@@ -13,7 +13,7 @@
         <div class="col-12">
             <div class="page-title-box">
                 
-                <h4 class="page-title">{{student.fullname}}</h4>
+                <h4 class="page-title">{{student.fullname}} ({{student.batch.name}})</h4>
             </div>
         </div>
     </div>     
@@ -215,9 +215,9 @@
                         <div class="col-sm-6 col-xl-3 float-left ">
                             <div class="card shadow-none m-0">
                                 <div class="card-body text-center">
-                                    <a data-target="#review-specific" onclick="week('{{week.id}}')" data-toggle="modal"><i class="dripicons-folder text-muted" style="font-size: 24px;"></i>
+                                    <a {% if week.is_review != True %} data-target="#review-specific"  onclick="week('{{week.id}}', '{{week.week}}')" data-toggle="modal" {% endif %}{% if week.is_review == True %} data-target="#review-done-{{week.id}}" data-toggle="modal" {% endif %}><i class="dripicons-folder text-muted" style="font-size: 24px;"></i>
                                         <p class=" font-15 mb-0">Week {{week.week}}</p></a>
-                                        <h6 class="text-muted text-center">To be Conduct</h6>
+                                        <h6 class="text-center" {% if week.is_review == True %} id="student-description-{{week.week}}" {% endif %} >{% if week.is_review != True %} To be Conduct {% endif %}</h6>
                                     </div>
                                 </div>
                             </div>
@@ -231,7 +231,7 @@
                             <div class="card shadow-none m-0">
                                 <div class="card-body text-center">
                                     <a href="/coordinator/student-task/{{week.id}}/{{student.id}}/"><i class="dripicons-folder text-muted" style="font-size: 24px;"></i>
-                                        <p class=" font-15 mb-0">Week {{week.week}}</p></a>
+                                        <p class=" font-15 mb-0" style="color: slategrey;" id="week-name-{{week.week}}">Week {{week.week}}</p></a>
                                     </div>
                                 </div>
                             </div>
@@ -244,11 +244,118 @@
         </div> <!-- end card -->
     </div> <!-- end col -->
 
+
+    <div id="review-added" class="modal fade" tabindex="-1" role="dialog" aria-hidden="true">
+        <div class="modal-dialog modal-sm">
+            <div id="bg-color" class="modal-content modal-filled" >
+                <div class="modal-body p-4">
+                    <div class="text-center">
+                        <i class="dripicons-checkmark h1"></i>
+                        <h4 class="mt-2" id="description-input"></h4>
+                        <button type="button" id="ok" onclick="done()" class="btn btn-light my-2" data-dismiss="modal">OK</button>
+                    </div>
+                </div>
+            </div><!-- /.modal-content -->
+        </div><!-- /.modal-dialog -->
+    </div><!-- /.modal -->
+
+
+    {% for review in review %}
+    <div id="review-done-{{review.week.id}}" data-controls-modal="review-done" data-backdrop="static" data-keyboard="false" class="modal fade" tabindex="-1" role="dialog" aria-labelledby="fullWidthModalLabel" aria-hidden="true">
+        <div class="modal-dialog modal-full-width">
+          <div class="modal-content">
+            <div class="modal-header">
+              <h4 class="modal-title" id="week-heading">{{review.student.fullname}} - Week {{review.week.week}}</h4>
+
+            </div>
+            <div class="modal-body" id="review-body">
+                <div class="row">
+                    <div class="col-lg-4">
+                <h4 class="modal-title text-center p-3" >Coordinator Review</h4>
+            </div>
+                <div class="col-lg-6 p-2" style="background-color: inherit">
+                    <textarea name="coordinatorReview" readonly="readonly" id="coordinatorReviewEdited-{{review.week.week}}" cols="30" rows="6" class="form-control">{{review.coordinator_review}}</textarea>
+                    <span id="errorCoordinatorReviewEdited-{{review.week.week}}" style="color: red;"></span>
+                </div>
+                <div class="col-lg-2 text-center p-3">
+                    {{review.coordinator_date}}
+                </div>
+               
+            </div>
+            <div class="row">
+                <div class="col-lg-4">
+            <h4 class="modal-title text-center p-3" >Admin Review</h4>
+        </div>
+        <div class="col-lg-6 p-2" style="background-color: inherit">
+            <textarea name="adminReviewEdited" readonly="readonly" id="adminReviewEdited-{{review.week.week}}" cols="30" rows="6" class="form-control">{{review.admin_review}}</textarea>
+            <span id="errorAdminReviewEdited-{{review.week.week}}" style="color: red;"></span>
+        </div>
+        <div class="col-lg-2 text-center p-3">
+            {{review.admin_date}}
+        </div>
+       
+        </div>
+        <div class="row">
+            <div class="col-lg-4">
+        <h4 class="modal-title text-center p-3" >Score</h4>
+    </div>
+    <div id="hidden-{{review.week.week}}" style="margin: auto; display: contents;">
+    <div class="col-lg-2 text-center p-3" id="score-div-{{review.week.week}}">
+        {{review.score}}
+    </div>
+    <div class="col-lg-4 text-center p-3" id="color-div-{{review.week.week}}" style="color: seashell; background-color: {{review.color.color}};">
+        {{review.color.description}}
+    </div>
+    <div class="card" style="display: none;" id="rating-{{review.week.week}}">
+        <div class="card-body">
+           
+            <div class="tab-content">
+                <div class="tab-pane show active" id="using-select-preview"> 
+                    <select id="scoreEdited-{{review.week.week}}" >
+                        <option value="0">Rejected</option>
+                        <option value="1">Rejected</option>
+                        <option value="2">Rejected</option>
+                        <option value="3">Critical</option>
+                        <option value="4">Critical</option>
+                        <option value="5">Critical</option>
+                        <option value="6">Need to Improve</option>
+                        <option value="7">Need to Improve</option>
+                        <option value="8">Need to Improve</option>
+                        <option value="9">Completed</option>
+                        <option value="10">Completed</option>
+                    </select>
+                    <div class="rateit rateit-mdi" data-rateit-backingfld="#scoreEdited-{{review.week.week}}" data-rateit-mode="font"  data-rateit-icon="󰓒"></div>                                     
+                    <br><br>
+                    <span id="errorScoreEdited-{{review.week.week}}" style="color: red;"></span>
+                </div> <!-- end preview-->
+            
+               
+            </div> <!-- end tab-content-->
+        </div> <!-- end card-body -->
+    </div> <!-- end card-->
+</div>
+    
+    <div class="col-lg-2">
+
+    </div>
+
+    </div>
+            </div>
+            <div class="tab-content" id="review-footer">
+                <button type="button" class="btn btn-default float-right m-1" data-dismiss="modal">Close</button>
+                <input type="button" class="btn btn-info float-right m-1" onclick="editReview('{{review.week.week}}')" id="editReview-{{review.week.week}}" value="Edit Review">
+            </div>
+          </div>
+        </div>
+      </div>
+      {% endfor %}
+
+
     <div id="review-specific" data-controls-modal="review-specific" data-backdrop="static" data-keyboard="false" class="modal fade" tabindex="-1" role="dialog" aria-labelledby="fullWidthModalLabel" aria-hidden="true">
         <div class="modal-dialog modal-full-width">
           <div class="modal-content">
             <div class="modal-header">
-              <h4 class="modal-title" id="fullWidthModalLabel">Review for {% for week in weeks %} Week {{week.week}}{% endfor %}</h4>
+              <h4 class="modal-title" id="week-heading"></h4>
             </div>
             <div class="modal-body" id="review-body">
                 <div class="row">
@@ -332,8 +439,9 @@
 
  <script>
      var weekId;
-     function week(weekid){
+     function week(weekid, week){
          weekId = weekid
+         $('#week-heading').html('Review for Week ' + week)
      }
 
      $('#submitReview').click(function(){
@@ -346,7 +454,6 @@
              'admin_review' : adminReview,
              'score' : score
          }
-         console.log(data);
          let error =false;
          if (coordinatorReview.length < 5){
              $('#errorCoordinatorReview').html('Please type properly')
@@ -362,7 +469,7 @@
          else{
             $('#errorAdminReview').html('')
          }
-         if(score == 0 || score == null){
+         if(score <= 0 || score == null){
              $('#errorScore').html('Please input a valid score')
              error = true;
          }
@@ -370,21 +477,98 @@
             $('#errorScore').html('')
          }
          if(!error){
-            //  $.ajax({
-            //      url : '/coordinator/student-review/{{student.id}}/'+weekId+'/',
-            //      method : 'POST',
-            //      data : data,
-            //      dataType : 'json',
-            //      success : function(data){
-            //          if(data == 'true'){
-            //              window.location.reload()
-            //          }
-            //      }
-            //  })
-            console.log('manu');
+             $.ajax({
+                 url : '/coordinator/student-review/{{student.id}}/'+weekId+'/',
+                 method : 'POST',
+                 data : data,
+                 dataType : 'json',
+                 success : function(data){
+                     if(data == 'true'){
+                         window.location.reload()
+                     }
+                     if(data.status == 'review'){
+                         $('#review-specific').hide()
+                        $('#review-added').modal()
+                        document.getElementById('bg-color').style.backgroundColor = data.color
+                        document.getElementById('description-input').append(data.description)
+                     }
+                 }
+             })
          }
      })
      
+     function done(){
+         window.location.reload()
+     }
+
+     {% for review in review %}
+     document.getElementById('week-name-{{review.week.week}}').style.color = '{{review.color.color}}'
+     document.getElementById('student-description-{{review.week.week}}').append('{{review.color.description}}')
+     document.getElementById('student-description-{{review.week.week}}').style.color = '{{review.color.color}}'
+     
+     {% endfor %}
+
+     function editReview(week){
+        document.getElementById('score-div-'+week).style.display = 'none';
+        document.getElementById('color-div-'+week).style.display = 'none';
+        document.getElementById('rating-'+week).style.margin = 'auto';
+        document.getElementById('rating-'+week).style.display = '';
+        document.getElementById('editReview-'+week).value = 'Submit Review'
+        $('#coordinatorReviewEdited-'+week).attr('readonly', false);
+        $('#adminReviewEdited-'+week).attr('readonly', false);
+        $(document).ready(function () {
+        $('input[value="Submit Review"]').on('click', function(){
+            console.log('hello');
+            var coordinatorEditedReview = $('#coordinatorReviewEdited-'+week).val()
+            var adminEditedReview = $('#adminReviewEdited-'+week).val()
+            var scoreEdited = $('#scoreEdited-'+week).val()
+            var data = {
+                'csrfmiddlewaretoken' : '{{csrf_token}}',
+                'admin_review' : adminEditedReview,
+                'coordinator_review' : coordinatorEditedReview,
+                'score' : scoreEdited
+            }
+        let error = false;
+        if(coordinatorEditedReview.length < 5){
+            $('#errorCoordinatorReviewEdited-'+week).html('Please enter valid input')
+            error = true;
+        }
+        else{
+            $('#errorCoordinatorReviewEdited-'+week).html('')
+        }
+        if(adminEditedReview.length < 5){
+            $('#errorAdminReviewEdited-'+week).html('')
+            error = true
+        }
+        else{
+            $('#errorAdminReviewEdited-'+week).html('')
+        }
+        if(scoreEdited <= 0 || scoreEdited == null){
+            $('#errorScoreEdited-'+week).html('Please input valid score')
+            error = true
+        }
+        else{
+            $('#errorScoreEdited-'+week).html('')
+        }
+        if(!error){
+            console.log(week);
+            $.ajax({
+                url : '/coordinator/edit-review/{{student.id}}/'+week+'/',
+                method : 'POST',
+                data : data,
+                dataType : 'json',
+                success : function(data){
+                    if(data == 'true'){
+                        window.location.reload()
+                    }
+                }
+            })
+        }
+        });
+    });
+    }
+        
+
  </script>
  
 

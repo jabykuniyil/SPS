@@ -69,5 +69,3 @@ class Review(models.Model):
     score = models.IntegerField(null=True, blank=True)
     coordinator_date = models.DateField(auto_now_add=True)
     admin_date = models.DateField(auto_now_add=True)
-    
-    

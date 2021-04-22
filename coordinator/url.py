@@ -4,6 +4,7 @@ from . import views
 
 
 urlpatterns = [
+    path('', views.coordinator, name = 'coordinator'),
     path('login/', views.login, name = 'coordinator-login'),
     path('feed/', views.feed, name = 'feed'),
     path('dashboard/', views.dashboard, name = 'dashboard'),
@@ -18,6 +19,8 @@ urlpatterns = [
     path('add-batch/', views.add_batch, name = 'add-batch'),
     path('student-specific/<int:id>/', views.student_specific, name = 'student-specific'),
     path('student-task/<int:weekid>/<int:studentid>/', views.student_task, name = 'student-task'),
+    path('student-review/<int:studentid>/<int:weekid>/', views.student_review, name = 'student-review'),
+    path('edit-review/<int:studentId>/<int:week>/', views.edit_review, name = 'edit-review'),
     path('edit-answer/<int:taskid>/<int:studentid>/', views.edit_answer, name = 'edit-answer'),
     path('choose-week/', views.choose_week, name = 'choose-week'),
     path('add-week/', views.add_week, name = 'add-week'),

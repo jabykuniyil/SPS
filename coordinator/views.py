@@ -11,6 +11,11 @@ import json, datetime
 
 # Create your views here.
 
+def coordinator(request):
+    if is_logged_in(request):
+        return redirect(feed)
+    return redirect(login)
+
 def login(request):
     if is_logged_in(request):
         return redirect(feed)
@@ -134,10 +139,18 @@ def add_batch(request):
 def student_specific(request, id):
     student = Student.objects.get(id=id)
     student_week = BatchSettings.objects.filter(batch=student.batch)
+    student_review = Review.objects.filter(student_id=id)
+    review = []
+    for x in student_review:
+        review.append(x)
     weeks = []
     for x in student_week:
         weeks.append(x.week)
-    context = {'student' : student, 'weeks' : weeks}
+        for y in student_review:
+            if y.week.week == x.week.week:
+                x.week.is_review = True
+                break
+    context = {'student' : student, 'weeks' : weeks, 'review' : review}
     return render(request, 'coordinator/student-specific.html', context)
 
 @login_required
@@ -195,12 +208,29 @@ def student_task(request, studentid, weekid):
     return render(request, 'coordinator/student-task.html', context)
 
 @login_required    
-def student_review(request):
+def student_review(request, studentid, weekid):
     if request.method == 'POST':
         coordinator_review = request.POST['coordinator_review']
         admin_review = request.POST['admin_review']
         score = request.POST['score']
-
+        int_score = int(score)
+        review_color = ReviewColors.objects.filter(score_from__lte=int_score, score_to__gte=int_score).first()
+        Review.objects.create(coordinator_review=coordinator_review, admin_review=admin_review, coordinator=request.session['is_coordinator'], score=int_score, student_id=studentid, week_id=weekid, color_id=review_color.id)
+        color = {'status' : 'review', 'color' : review_color.color, 'description' : review_color.description}
+        return JsonResponse(color)
+    
+@login_required
+def edit_review(request, studentId, week):
+    if request.method == 'POST':
+        coordinator_review = request.POST['coordinator_review']
+        admin_review = request.POST['admin_review']
+        score = request.POST['score']
+        int_score = int(score)
+        review_color = ReviewColors.objects.filter(score_from__lte=int_score, score_to__gte=int_score).first()
+        Review.objects.filter(student_id=studentId, week__week=week).update(coordinator_review=coordinator_review, admin_review=admin_review, score=score, color=review_color)
+        return JsonResponse('true', safe=False)
+    return JsonResponse('true', safe=False)
+            
 @login_required
 def choose_week(request):
     weeks = Week.objects.all()
@@ -275,9 +305,14 @@ def add_color(request):
         description = request.POST['description']
         post_score_from = request.POST['score_from']
         post_score_to = request.POST['score_to']
+        review = ReviewColors.objects.all()
+        if post_score_from == '' and post_score_to == '':
+            ReviewColors.objects.create(color=color, description=description)
+            modal = ReviewColors.objects.filter(color=color).last()
+            modal_context = {'status' : 'modal', 'color' : modal.color}
+            return JsonResponse(modal_context)
         score_from = int(post_score_from)
         score_to = int(post_score_to)
-        review = ReviewColors.objects.all()
         if score_from > score_to:
             return JsonResponse('not_comparable', safe=False)
         if ReviewColors.objects.filter(Q(score_from__gte=score_from, score_to__lte=score_to) | Q(color=color)).exists():
