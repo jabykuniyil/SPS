@@ -1,0 +1,129 @@
+{% extends 'student/base.html' %}
+{% block content %}
+<div class="container-fluid">
+    <!-- start page title -->
+    <div class="row">
+        <div class="col-12">
+            <div class="page-title-box">
+                <h4 class="page-title">Review</h4>
+                
+            </div>
+            
+        </div>
+        
+    </div>  
+    <div class="row">
+        <div class="col-12">
+            <div class="card widget-inline">
+                <div class="card-body p-0">
+                    <div class="row no-gutters">
+                        {% for week in weeks %}
+                        <div class="col-sm-6 col-xl-3">
+                            <div class="card shadow-none m-0">
+                                <div class="card-body text-center">
+                                    <i data-target="#show-review-{{week.week.week}}" data-toggle="modal" class="dripicons-folder text-muted" style="font-size: 24px;"></i>
+                                    <p class="text-uppercase font-15 mb-0" style="color: {{week.color.color}};">Week {{week.week.week}}</p>
+                                </div>
+                            </div>
+                        </div>
+                        {% endfor %}
+    
+    
+                    </div> <!-- end row -->
+                </div>
+            </div> <!-- end card-box-->
+        </div> <!-- end col-->
+    </div>
+
+</div>
+
+{% for review in weeks %}
+<div id="show-review-{{review.week.week}}" data-controls-modal="show-review-{{review.week.week}}" data-backdrop="static" data-keyboard="false" class="modal fade" tabindex="-1" role="dialog" aria-labelledby="fullWidthModalLabel" aria-hidden="true">
+        <div class="modal-dialog modal-full-width">
+          <div class="modal-content">
+            <div class="modal-header">
+              <h4 class="modal-title" id="week-heading">{{review.student.fullname}} - Week {{review.week.week}}</h4>
+
+            </div>
+            <div class="modal-body" id="review-body">
+                <div class="row">
+                    <div class="col-lg-4">
+                <h4 class="modal-title text-center p-3" >Coordinator Review</h4>
+            </div>
+                <div class="col-lg-6 p-2" style="background-color: inherit">
+                    <textarea name="coordinatorReview" readonly="readonly" id="coordinatorReviewEdited-{{review.week.week}}" cols="30" rows="6" class="form-control">{{review.coordinator_review}}</textarea>
+                    <span id="errorCoordinatorReviewEdited-{{review.week.week}}" style="color: red;"></span>
+                </div>
+                <div class="col-lg-2 text-center p-3">
+                    {{review.coordinator_date}}
+                </div>
+               
+            </div>
+            <div class="row">
+                <div class="col-lg-4">
+            <h4 class="modal-title text-center p-3" >Admin Review</h4>
+        </div>
+        <div class="col-lg-6 p-2" style="background-color: inherit">
+            <textarea name="adminReviewEdited" readonly="readonly" id="adminReviewEdited-{{review.week.week}}" cols="30" rows="6" class="form-control">{{review.admin_review}}</textarea>
+            <span id="errorAdminReviewEdited-{{review.week.week}}" style="color: red;"></span>
+        </div>
+        <div class="col-lg-2 text-center p-3">
+            {{review.admin_date}}
+        </div>
+       
+        </div>
+        <div class="row">
+            <div class="col-lg-4">
+        <h4 class="modal-title text-center p-3" >Score</h4>
+    </div>
+    <div id="hidden-{{review.week.week}}" style="margin: auto; display: contents;">
+    <div class="col-lg-2 text-center p-3" id="score-div-{{review.week.week}}">
+        {{review.score}}
+    </div>
+    <div class="col-lg-4 text-center p-3" id="color-div-{{review.week.week}}" style="color: seashell; background-color: {{review.color.color}};">
+        {{review.color.description}}
+    </div>
+    <div class="card" style="display: none;" id="rating-{{review.week.week}}">
+        <div class="card-body">
+           
+            <div class="tab-content">
+                <div class="tab-pane show active" id="using-select-preview"> 
+                    <select id="scoreEdited-{{review.week.week}}" >
+                        <option value="0">Rejected</option>
+                        <option value="1">Rejected</option>
+                        <option value="2">Rejected</option>
+                        <option value="3">Critical</option>
+                        <option value="4">Critical</option>
+                        <option value="5">Critical</option>
+                        <option value="6">Need to Improve</option>
+                        <option value="7">Need to Improve</option>
+                        <option value="8">Need to Improve</option>
+                        <option value="9">Completed</option>
+                        <option value="10">Completed</option>
+                    </select>
+                    <div class="rateit rateit-mdi" data-rateit-backingfld="#scoreEdited-{{review.week.week}}" data-rateit-mode="font"  data-rateit-icon="󰓒"></div>                                     
+                    <br><br>
+                    <span id="errorScoreEdited-{{review.week.week}}" style="color: red;"></span>
+                </div> <!-- end preview-->
+            
+               
+            </div> <!-- end tab-content-->
+        </div> <!-- end card-body -->
+    </div> <!-- end card-->
+</div>
+    
+    <div class="col-lg-2">
+
+    </div>
+
+    </div>
+            </div>
+            <div class="tab-content" id="review-footer">
+                <input type="button" class="btn btn-info float-right m-3" data-dismiss="modal"  value="Done">
+            </div>
+          </div>
+        </div>
+      </div>
+      {% endfor %}
+
+{% endblock %}

@@ -171,12 +171,14 @@ input:active+.design::after {
     <div class="col-12">
       <div class="page-title-box">
           <div class="dropdown float-right text-right mt-3">
-              <a href="#" class="dropdown-toggle arrow-none card-drop" data-toggle="dropdown" aria-expanded="false">
+              <a href="#" class="dropdown-toggle arrow-none card-drop " data-toggle="dropdown" aria-expanded="false">
                   <i class="dripicons-view-apps noti-icon"></i>
               </a>
-              <div class="dropdown-menu dropdown-menu-right">
+              <div class="dropdown-menu dropdown-menu-right bg-light">
                   <a href=""><h6 class=" text-center text-muted">Edit History</h6></a>
-                  <a href="" data-target="#week" data-toggle="modal" id="weekchoose" class="dropdown-item">{{editor.editor}} at {% for mode, value in time_dict.items %}{{value}} {{mode}} {% endfor %} ago</a>
+                  {% for x in edit %}
+                  <a data-target="#weekly-task" data-toggle="modal" id="weekchoose" class="dropdown-item"> {{x.editor}} at {{x.day}} days {{x.hour}} hours {{x.minute}} minutes ago</a>
+                  {% endfor %}
   
               </div>
           </div>
@@ -240,6 +242,79 @@ input:active+.design::after {
         </div> <!-- end card-->
     </div> <!-- end col -->
 </div>
+
+<div id="weekly-task" data-controls-modal="weekly-task" data-backdrop="static" data-keyboard="false" class="modal fade" tabindex="-1" role="dialog" aria-labelledby="fullWidthModalLabel" aria-hidden="true">
+  <div class="modal-dialog modal-full-width m-2">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h4 class="modal-title" id="edit-history">Edit History</h4>
+      </div>
+      <div class="modal-body" id="history-body">
+        <div class="card-body">
+
+          <!-- Checkout Steps -->
+          <ul class="nav nav-pills bg-nav-pills nav-justified">
+              <li class="nav-item">
+                  <a href="#personal-development-questions-edit" data-toggle="tab" aria-expanded="false"
+                      class="nav-link rounded-0 active">
+                      <i class="mdi mdi-account-circle font-18"></i>
+                      <span class="d-none d-lg-block">Personal Development</span>
+                  </a>
+              </li>
+              <li class="nav-item">
+                  <a href="#technical-questions-edit" data-toggle="tab" aria-expanded="true" class="nav-link rounded-0">
+                      <i class="mdi mdi-laptop font-18"></i>
+                      <span class="d-none d-lg-block">Technical Tasks</span>
+                  </a>
+              </li>
+              <li class="nav-item">
+                  <a href="#miscelleneous-task-questions-edit" data-toggle="tab" aria-expanded="false" class="nav-link rounded-0">
+                      <i class="mdi mdi-more font-18"></i>
+                      <span class="d-none d-lg-block">Miscelleneuos Tasks</span>
+                  </a>
+              </li>
+          </ul>
+
+          <!-- Steps Information -->
+          <div class="tab-content">
+
+              <!-- Billing Content-->
+              <div class="tab-pane show active" id="personal-development-questions-edit">
+                <div class="row">
+                  
+                </div>
+              </div>
+              <!-- Shipping Content-->
+              <div class="tab-pane" id="technical-questions-edit">
+                <div class="row">
+                  
+                </div>
+              </div>
+              <!-- End Shipping Information Content-->
+
+              <!-- Payment Content-->
+              <div class="tab-pane" id="miscelleneous-task-questions-edit">
+                <div class="row">
+                  
+                </div>
+              </div>
+              <!-- End Payment Information Content-->
+
+          </div> <!-- end tab content-->
+
+      </div> <!-- end card-body-->
+      </div>
+      <div class="tab-content" id="history-buttons">
+        <button type="button" class="btn btn-default float-right m-1 bg-danger" style="color: snow;" data-dismiss="modal">Close</button>
+            
+      </div>
+    </div>
+  </div>
+</div>
+<!-- end weekly-task modal -->
+
+
+
 <div id="edit-answer" class="modal fade" tabindex="-1" role="dialog" aria-labelledby="fullWidthModalLabel" aria-hidden="true">
   <div class="modal-dialog modal-full-width">
     <div class="modal-content">

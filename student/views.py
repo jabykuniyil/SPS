@@ -2,7 +2,7 @@ from django.shortcuts import render, redirect
 from django.contrib.auth.models import auth
 from django.contrib.auth.decorators import login_required
 from django.http import JsonResponse, HttpResponseRedirect
-from . models import Student, CautionDeposit, EmailOTP, StudentUUID, InvalidResponse, VideocallShedule, Answer
+from . models import Student, CautionDeposit, EmailOTP, StudentUUID, InvalidResponse, VideocallShedule, Answer, Review
 from django.urls import reverse
 from . decorators import payment_required, student_status
 from django.core.mail import send_mail
@@ -268,7 +268,18 @@ def edit_answer(request, id):
 def delete_answer(request, id):
     answer = Answer.objects.get(task_id=id)
     answer.delete()
-    return redirect(choose_week)    
+    return redirect(choose_week)  
+
+@login_required(login_url='/')
+@payment_required
+@student_status
+def review(request):
+    review = Review.objects.filter(student_id=request.user.id)
+    week_list = []
+    for x in review:
+        week_list.append(x)
+    context = {'weeks' : week_list}
+    return render(request, 'student/review.html', context)  
     
 @login_required(login_url='/')
 @payment_required

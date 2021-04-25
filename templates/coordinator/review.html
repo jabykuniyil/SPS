@@ -1,5 +1,6 @@
 {% extends 'coordinator/base.html' %}
 {% block content %}
+{% load static %}
 <div class="container-fluid">
                         
     <!-- start page title -->
@@ -80,8 +81,11 @@
                     <i class="dripicons-search noti-icon"></i>
                 </a>
                 <div class="dropdown-menu dropdown-menu-animated dropdown-lg p-0">
+                    <!-- <div class="dropdown-menu dropdown-menu-right dropdown-menu-animated dropdown-lg"> -->
                     <form class="p-3">
-                        <input type="search"  class="form-control" placeholder="Search ..." aria-label="Recipient's username">
+                        <input type="search" autocomplete="off" onkeyup="search()" id="search-student"  class="form-control" placeholder="Search ..." aria-label="Recipient's username">
+                        <div id="searched-students" class="pt-3" style="margin: auto;  display: table; padding: 1em; font-size: larger;">
+                        </div>
                     </form>
                 </div>
             </div>
@@ -228,6 +232,28 @@
 
     function ok(){
        window.location.reload()
+    }
+
+    function search(){
+        var letter = $('#search-student').val()
+        var data = {
+            'letter' : letter
+        }
+        $.ajax({
+            url : '/coordinator/search-student/',
+            method : 'GET',
+            data : data, 
+            dataType : 'json',
+            success : function(data){
+                if(data.status == 'true'){
+                    var obj = JSON.parse(data.students);
+                    $('#searched-students').html('')
+                    for(i = 0; i < obj.length; i++){
+                        $('#searched-students').append('<a href="/coordinator/student-specific/'+obj[i].pk+'/" class="dropdown-item"><div class=" row" style="margin-left: -2em;"><div class="col-lg-3 col-3"><img src="/media/'+obj[i].fields.photo+'" style="height: 2em; width: 2em;" class="img-fluid rounded-circle" alt="" /></div><div class="col-lg-9 col-9  text-center"><p class="notify-details">'+obj[i].fields.fullname+'</p></div></div></a>')
+                    }
+                }
+            }
+        })
     }
 
 </script>

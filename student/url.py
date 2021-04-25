@@ -16,5 +16,6 @@ urlpatterns = [
     path('task-specific/<int:id>/', views.task_specific, name = 'task-specific'),
     path('task-specific/edit-answer/<int:id>/',views.edit_answer, name = 'edit-answer'),
     path('task-specific/delete-answer/<int:id>/', views.delete_answer, name = 'delete-answer'),
+    path('review/', views.review, name = 'review'),
     path('logout/', views.logout, name = 'logout')
 ]

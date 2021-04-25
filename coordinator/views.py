@@ -7,6 +7,7 @@ from django.http import JsonResponse
 from . decorators import login_required
 from . utils import is_logged_in
 from django.db.models import Q
+from django.core import serializers
 import json, datetime
 
 # Create your views here.
@@ -169,17 +170,19 @@ def student_task(request, studentid, weekid):
     miscelleneous_answers = {}
     student_answer = Answer.objects.filter(student_id=studentid)
     time = datetime.datetime.now()
-    largest = datetime.datetime(2000,12,2,12,32,21)
+    edit_dict = {}
     for x in student_answer:
         answer_time = datetime.datetime.strptime(x.time, '%Y-%m-%d %H:%M:%S')
-        if answer_time > largest:
-            largest = answer_time
-    editor = Answer.objects.get(time=largest)
-    evaluated = time - largest
-    time_dict = {}
-    time_dict['days'] = evaluated.days
-    time_dict['hours'] = evaluated.seconds//3600
-    time_dict['minutes'] = (evaluated.seconds//60)%60
+        edit_dict[answer_time] = x
+    date_time_keys = edit_dict.keys()
+    key_editor = Answer.objects.filter(time__in=date_time_keys).order_by('-time')
+    editor_date_time = {}
+    for x in key_editor:
+        x_time = datetime.datetime.strptime(x.time, '%Y-%m-%d %H:%M:%S')
+        time_dif = time - x_time
+        x.day = time_dif.days
+        x.hour = time_dif.seconds//3600
+        x.minute = (time_dif.seconds//60)%60
     for x in student_answers:
         if x.task.type_of_task == 'Miscelleneuos Task':
             miscelleneous_answers[x.task.id] = x.answer
@@ -202,8 +205,7 @@ def student_task(request, studentid, weekid):
         'miscelleneous_answers' : miscelleneous_answers,
         'student' : student,
         'week' : week,
-        'editor' : editor,
-        'time_dict' : time_dict
+        'edit' : key_editor
         }
     return render(request, 'coordinator/student-task.html', context)
 
@@ -328,6 +330,15 @@ def review(request):
         color_dict[x.color] = [x.description, x.score_to, x.score_from]
     context = {'color_dict' : color_dict}
     return render(request, 'coordinator/review.html', context)
+
+@login_required
+def search_student(request):
+    if request.method == 'GET':
+        letter = request.GET['letter']
+        student = Student.objects.filter(fullname__icontains=letter)
+        students = serializers.serialize("json", student)
+        context = {'students' : students, 'status' : 'true'}
+        return JsonResponse(context)
     
 def logout(request):
     if is_logged_in(request):

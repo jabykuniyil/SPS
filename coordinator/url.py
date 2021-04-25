@@ -29,5 +29,6 @@ urlpatterns = [
     path('task-specific/<int:weekid>/edit-task/<int:taskid>/', views.edit_task, name = 'edit-task'),
     path('add-color/', views.add_color, name = 'add-color'),
     path('review/', views.review, name = 'review'),
+    path('search-student/', views.search_student, name = 'search-student'),
     path('logout/', views.logout, name = 'logout')
 ]
