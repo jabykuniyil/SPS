@@ -4,9 +4,10 @@ from django.contrib.auth.models import auth, User
 from coordinator.models import CoordinatorDetails
 from django.core.files import File
 from django.contrib.auth.hashers import make_password
-from student.models import Student, InvalidResponse, StudentUUID, VideocallShedule
-from coordinator.models import Batches
+from student.models import Student, InvalidResponse, StudentUUID, VideocallShedule, Review
+from coordinator.models import Batches, BatchSettings
 from django.contrib.auth.decorators import login_required
+from django.core import serializers
 import uuid, datetime, requests, json
 
 # Create your views here.
@@ -82,16 +83,27 @@ def feed(request):
     return render(request, 'admin/feed.html')
 
 @login_required(login_url='/spsadmin/')
+def search(request):
+    if request.method == 'GET':
+        letter = request.GET['letter']
+        student_dict = {}
+        student = Student.objects.filter(fullname__icontains=letter)
+        for x in student:
+            student_dict[x.batch.id] = x.batch.name
+        students = serializers.serialize("json", student)
+        serialized_student = json.loads(students)
+        for x in serialized_student:
+            x['fields']['batch_name'] = student_dict[x['fields']['batch']]
+        context = {'students' : json.dumps(serialized_student), 'status' : 'true'}
+        return JsonResponse(context)
+
+@login_required(login_url='/spsadmin/')
 def profile(request):
     return render(request, 'admin/profile.html')
 
 @login_required(login_url='/spsadmin/')
 def dashboard(request):
     return render(request, 'admin/dashboard.html')
-
-@login_required(login_url='/spsadmin/')
-def students_placed(request):
-    return render(request, 'admin/students-placed.html')
 
 @login_required(login_url='/spsadmin/')
 def students(request):
@@ -147,7 +159,19 @@ def invalid_student_requests(request):
 @login_required(login_url='/spsadmin/')
 def student_specific(request, id):
     student = Student.objects.get(id=id)
-    context = {'student' : student}
+    student_week = BatchSettings.objects.filter(batch=student.batch)
+    student_review = Review.objects.filter(student_id=id)
+    review = []
+    for x in student_review:
+        review.append(x)
+    weeks = []
+    for x in student_week:
+        weeks.append(x.week)
+        for y in student_review:
+            if y.week.week == x.week.week:
+                x.week.is_review = True
+                break
+    context = {'student' : student, 'weeks' : weeks, 'review' : review}
     return render(request, 'admin/student-specific.html', context)
     
 @login_required(login_url='/spsadmin/')
@@ -217,6 +241,10 @@ def student_videocall(request):
     batches = Batches.objects.all()
     context = {'students' : pending_students, 'schedules' : schedule_list, 'batches' : batches}
     return render(request, 'admin/student-videocall.html', context)
+
+@login_required(login_url='/spsadmin/')
+def students_placed(request):
+    return render(request, 'admin/students-placed.html')
     
 @login_required(login_url='/spsadmin/')
 def staffs(request):
@@ -274,6 +302,17 @@ def delete_coordinator(request, id):
     coordinator_details = CoordinatorDetails.objects.get(id=id)
     coordinator_details.delete()
     return redirect(staffs)
+
+@login_required(login_url='/spsadmin/')
+def coordinator_specific(request, id):
+    coordinator = CoordinatorDetails.objects.get(id=id)
+    context = {'coordinator' : coordinator}
+    return render(request, 'admin/coordinator-specific.html', context)
+
+@login_required(login_url='/spsadmin/')
+def suspend_coordinator(request, id):
+    CoordinatorDetails.objects.filter(id=id).update(status='suspended')
+    return redirect(coordinator_specific, id)
    
 @login_required(login_url='/spsadmin/')
 def host_meeting(request):
@@ -287,9 +326,3 @@ def branches(request):
 def logout(request):
     auth.logout(request)
     return redirect(login)
-    
-@login_required(login_url='/spsadmin/')
-def tasks(request):
-    coordinator_details = CoordinatorDetails.objects.all()
-    context = {'count' : coordinator_details}
-    return render(request, 'admin/tasks.html', context)

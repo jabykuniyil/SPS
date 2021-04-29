@@ -35,21 +35,21 @@
 
 
                         <li class="side-nav-item">
-                            <a href="/coordinator/dashboard/" class="side-nav-link">
+                            <a href="/dashboard/" class="side-nav-link">
                                 <i class="uil-home-alt"></i>
                                 <span> Dashboard </span>
                             </a>
                             
                         </li>
                         <li class="side-nav-item">
-                            <a href="/coordinator/profile/" class="side-nav-link">
+                            <a href="/profile/" class="side-nav-link">
                                 <i class="dripicons-user"></i>
                                 <span> Profile </span>
                             </a>
                         </li>
                         
                         <li class="side-nav-item">
-                            <a href="/coordinator/feed/" class="side-nav-link">
+                            <a href="/feed/" class="side-nav-link">
                                 <i class="uil-rss"></i>
                                 <span> Social Feed </span>
                             </a>
@@ -259,11 +259,11 @@
                                 <a class="nav-link dropdown-toggle nav-user arrow-none mr-0" data-toggle="dropdown" href="#" role="button" aria-haspopup="false"
                                     aria-expanded="false">
                                     <span class="account-user-avatar"> 
-                                        <img src="{% static 'assets/images/users/avatar-1.jpg' %}" alt="user-image" class="rounded-circle">
+                                        <img src="{{request.user.student_photo}}" alt="user-image" class="rounded-circle">
                                     </span>
                                     <span>
-                                        <span class="account-user-name">Dominic Keller</span>
-                                        <span class="account-position">Founder</span>
+                                        <span class="account-user-name">{{request.user.fullname}}</span>
+                                        <span class="account-position">Student</span>
                                     </span>
                                 </a>
                                 <div class="dropdown-menu dropdown-menu-right dropdown-menu-animated topbar-dropdown-menu profile-dropdown">

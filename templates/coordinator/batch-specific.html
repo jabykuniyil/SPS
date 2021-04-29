@@ -1,5 +1,7 @@
 {% extends 'coordinator/base.html' %}
 {% block content %}
+
+
 <div class="container-fluid">
 <div class="row">
     <div class="col-12">
@@ -29,12 +31,11 @@
                 <div class="modal-body" style="margin: auto;">
                     <h5 style="margin:1rem;">Assign the Week to</h5>
                     <select class="form-control"  name="weeknumber" id="weeknumber">
-                        <option value="choose...">choose the week...</option>
+                        <option value="choose the week...">choose the week...</option>
                         {% for week in all_weeks %}
                         <option value="{{week.week}}">{{week.week}}</option>
                         {% endfor %}
                     </select>
-                     <span id="errorweek" style="color: red;"></span>
                 </div>
                 <div class="modal-footer">
                 <button type="button" class="btn btn-default" data-dismiss="modal">Close</button>
@@ -43,6 +44,22 @@
         </div>
     </div>
 </div>
+
+<div id="error-assign" class="modal fade" tabindex="-1" role="dialog" aria-hidden="true">
+    <div class="modal-dialog modal-sm">
+        <div class="modal-content modal-filled bg-danger">
+            <div class="modal-body p-4">
+                <div class="text-center">
+                    <i class="dripicons-wrong h1"></i>
+                    <h4 class="mt-2">Error!</h4>
+                    <p id="errorweek" class="mt-3"></p>
+                    <button type="button" class="btn btn-light my-2" onclick="ok()" data-dismiss="modal">OK</button>
+                </div>
+            </div>
+        </div><!-- /.modal-content -->
+    </div><!-- /.modal-dialog -->
+</div><!-- /.modal -->
+
 <div class="row">
     <div class="col-12">
         <div class="card">
@@ -139,6 +156,18 @@
                             {% for week in weeks %}
                             <div class="col-sm-6 col-xl-3">
                                 <div class="card shadow-none m-0">
+                                    {% if forloop.last %}
+                                    <div class="dropdown">
+                                        <a href="#" class="dropdown-toggle arrow-none card-drop" data-toggle="dropdown" aria-expanded="false">
+                                            <i class="mdi mdi-dots-horizontal m-3"></i>
+                                        </a>
+                                        <div class="dropdown-menu dropdown-menu-left" style="position: absolute;
+                                        will-change: transform; top: 2em; left: 21em; transform: translate3d(-41px, -111px, 0px);">
+                                            <!-- item-->
+                                            <a href="/coordinator/edit-week-assign/{{week.week.id}}/{{batch.id}}/" class="dropdown-item">Remove</a>
+                                        </div>
+                                    </div>
+                                    {% endif %}
                                     <div class="card-body text-center">
                                         <a href="/coordinator/task-specific/{{week.week.id}}/"><i class="dripicons-folder text-muted" style="font-size: 24px;"></i>
                                         <p class=" font-15 mb-0">Week {{week.week.week}}</p></a>
@@ -161,14 +190,20 @@
 </div>
 
 <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.6.0/jquery.min.js" integrity="sha512-894YE6QWD5I59HgZOGReFYm4dnWc1Qt5NtvYSaNcOP+u1T9qYdvdihz0PPSiiqn/+/3e7Jo4EaG7TubfWGUrMQ==" crossorigin="anonymous"></script>
+<script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.4.1/js/bootstrap.min.js"></script>
+
 <script>
-    $('#assignweek').click(function(){
+    $('#assignweek').click(function(event){
         var week = $('#weeknumber').val()
         var data = {
             'csrfmiddlewaretoken' : '{{csrf_token}}',
             'week' : week
         }
-        if(week == 'choose...'){
+        if(week == 'choose the week...'){
+            event.preventDefault();
+            jQuery.noConflict();
+            $('#error-assign').modal('show');
+            $('#batch-settings').hide()
             $('#errorweek').html('Please choose a valid number')
         }
         else{
@@ -182,17 +217,34 @@
                         window.location.reload()
                     }
                     if(data == 're-assign'){
+                        event.preventDefault();
+                        jQuery.noConflict();
+                        $('#error-assign').modal('show');
+                        $('#batch-settings').hide()
                         $('#errorweek').html("You can't assign this week, please assign the zero'th week")
                     }
                     if(data == 'exists'){
+                        event.preventDefault();
+                        jQuery.noConflict();
+                        $('#error-assign').modal('show');
+                        $('#batch-settings').hide()
                         $('#errorweek').html('This week already exists for this batch, please choose another one.')
                     }
                     if(data == 'false'){
+                        event.preventDefault();
+                        jQuery.noConflict();
+                        $('#error-assign').modal('show');
+                        $('#batch-settings').hide()
                         $('#errorweek').html('Please choose a proper week.')
                     }
                 }
             })
         }
     })
+
+    function ok(){
+        $('#batch-settings').show()
+    }
+
 </script>
 {% endblock %}

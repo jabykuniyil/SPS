@@ -11,6 +11,7 @@ urlpatterns = [
     path('wait-for-approval/<int:id>/', views.wait_for_approval, name = 'wait-for-approval'),
     path('edit-registration/<str:id>/', views.edit_registration, name = 'edit-registration'),
     path('feed/', views.feed, name = 'student-feed'),
+    path('profile/', views.profile, name = 'profile'),
     path('dashboard/', views.dashboard, name = 'dashboard'),
     path('choose-week/', views.choose_week, name = 'choose-week'),
     path('task-specific/<int:id>/', views.task_specific, name = 'task-specific'),

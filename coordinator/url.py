@@ -1,11 +1,13 @@
 from django.contrib import admin
 from django.urls import path
 from . import views
+from . import context_processors
 
 
 urlpatterns = [
     path('', views.coordinator, name = 'coordinator'),
     path('login/', views.login, name = 'coordinator-login'),
+    path('search/', views.search, name = 'search'),
     path('feed/', views.feed, name = 'feed'),
     path('dashboard/', views.dashboard, name = 'dashboard'),
     path('profile/', views.profile, name = 'profile'),
@@ -16,6 +18,7 @@ urlpatterns = [
     path('batches/', views.batches, name = 'batches'),
     path('batch-tasks/batch-specific/<str:name>/', views.batch_specific, name = 'batch-specific'),
     path('assign-week/<int:id>/', views.assign_week, name = 'assign-week'),
+    path('edit-week-assign/<int:weekid>/<int:batchid>/', views.edit_week_assign, name = "edit-week-assign"),
     path('add-batch/', views.add_batch, name = 'add-batch'),
     path('student-specific/<int:id>/', views.student_specific, name = 'student-specific'),
     path('student-task/<int:weekid>/<int:studentid>/', views.student_task, name = 'student-task'),
@@ -29,6 +32,5 @@ urlpatterns = [
     path('task-specific/<int:weekid>/edit-task/<int:taskid>/', views.edit_task, name = 'edit-task'),
     path('add-color/', views.add_color, name = 'add-color'),
     path('review/', views.review, name = 'review'),
-    path('search-student/', views.search_student, name = 'search-student'),
     path('logout/', views.logout, name = 'logout')
 ]

@@ -31,6 +31,21 @@ def login(request):
     return render(request, 'coordinator/login.html')
 
 @login_required
+def search(request):
+    if request.method == 'GET':
+        letter = request.GET['letter']
+        student_dict = {}
+        student = Student.objects.filter(fullname__icontains=letter)
+        for x in student:
+            student_dict[x.batch.id] = x.batch.name
+        students = serializers.serialize("json", student)
+        serialized_student = json.loads(students)
+        for x in serialized_student:
+            x['fields']['batch_name'] = student_dict[x['fields']['batch']]
+        context = {'students' : json.dumps(serialized_student), 'status' : 'true'}
+        return JsonResponse(context)
+
+@login_required
 def feed(request):
     return render(request, 'coordinator/feed.html')
     
@@ -122,6 +137,12 @@ def assign_week(request, id):
             return JsonResponse('true', safe=False)
         return JsonResponse('false', safe=False)
     return JsonResponse('true', safe=False)
+
+@login_required
+def edit_week_assign(request, weekid, batchid):
+    BatchSettings.objects.filter(week_id=weekid, batch_id=batchid).delete()
+    batch = Batches.objects.get(id=batchid)
+    return redirect(batch_specific, batch.name)
         
 @login_required  
 def add_batch(request):
@@ -205,7 +226,7 @@ def student_task(request, studentid, weekid):
         'miscelleneous_answers' : miscelleneous_answers,
         'student' : student,
         'week' : week,
-        'edit' : key_editor
+        'edit' : key_editor,
         }
     return render(request, 'coordinator/student-task.html', context)
 
@@ -330,15 +351,6 @@ def review(request):
         color_dict[x.color] = [x.description, x.score_to, x.score_from]
     context = {'color_dict' : color_dict}
     return render(request, 'coordinator/review.html', context)
-
-@login_required
-def search_student(request):
-    if request.method == 'GET':
-        letter = request.GET['letter']
-        student = Student.objects.filter(fullname__icontains=letter)
-        students = serializers.serialize("json", student)
-        context = {'students' : students, 'status' : 'true'}
-        return JsonResponse(context)
     
 def logout(request):
     if is_logged_in(request):

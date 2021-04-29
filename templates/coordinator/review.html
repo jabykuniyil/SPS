@@ -2,16 +2,7 @@
 {% block content %}
 {% load static %}
 <div class="container-fluid">
-                        
-    <!-- start page title -->
-    <div class="row">
-        <div class="col-12">
-            <div class="page-title-box">
-                
-                <h4 class="page-title">Search for Student</h4>
-            </div>
-        </div>
-    </div> 
+   
 
     <div id="color-added" class="modal fade" tabindex="-1" role="dialog" aria-hidden="true">
         <div class="modal-dialog modal-sm">
@@ -72,28 +63,9 @@
         </div>
       </div>
     </div>
-  </div>   
-    <div class="row">
-        <div class="col-12 col-lg-12 container">
-            
-            <div class="page-title-box">
-                <a class="nav-link dropdown-toggle arrow-none" data-toggle="dropdown" href="#" role="button" aria-haspopup="false" aria-expanded="false">
-                    <i class="dripicons-search noti-icon"></i>
-                </a>
-                <div class="dropdown-menu dropdown-menu-animated dropdown-lg p-0">
-                    <!-- <div class="dropdown-menu dropdown-menu-right dropdown-menu-animated dropdown-lg"> -->
-                    <form class="p-3">
-                        <input type="search" autocomplete="off" onkeyup="search()" id="search-student"  class="form-control" placeholder="Search ..." aria-label="Recipient's username">
-                        <div id="searched-students" class="pt-3" style="margin: auto;  display: table; padding: 1em; font-size: larger;">
-                        </div>
-                    </form>
-                </div>
-            </div>
-                
-               
-            
-        </div>
-    </div>  
+  </div>  
+
+
     <div class="row">
         <div class="col-12">
             <div class="page-title-box">
@@ -136,6 +108,7 @@
               </table>
         </div>
         {% endif %}
+
         {% if  value.1 == None and value.2 == None %}
         <div class="col-3 col-lg-3 p-3 text-center mt-3">
             <table class="table">
@@ -234,27 +207,7 @@
        window.location.reload()
     }
 
-    function search(){
-        var letter = $('#search-student').val()
-        var data = {
-            'letter' : letter
-        }
-        $.ajax({
-            url : '/coordinator/search-student/',
-            method : 'GET',
-            data : data, 
-            dataType : 'json',
-            success : function(data){
-                if(data.status == 'true'){
-                    var obj = JSON.parse(data.students);
-                    $('#searched-students').html('')
-                    for(i = 0; i < obj.length; i++){
-                        $('#searched-students').append('<a href="/coordinator/student-specific/'+obj[i].pk+'/" class="dropdown-item"><div class=" row" style="margin-left: -2em;"><div class="col-lg-3 col-3"><img src="/media/'+obj[i].fields.photo+'" style="height: 2em; width: 2em;" class="img-fluid rounded-circle" alt="" /></div><div class="col-lg-9 col-9  text-center"><p class="notify-details">'+obj[i].fields.fullname+'</p></div></div></a>')
-                    }
-                }
-            }
-        })
-    }
+   
 
 </script>
 {% endblock %}

@@ -5,6 +5,7 @@ from . import views
 urlpatterns = [
     path('', views.login, name = 'admin-login'),
     path('phone/', views.phone, name = 'phone'),
+    path('search/', views.search, name = 'search'),
     path('feed/', views.feed, name = 'admin-feed'),
     path('profile/', views.profile, name = 'profile'),
     path('dashboard/', views.dashboard, name = 'dashboard'),
@@ -14,6 +15,8 @@ urlpatterns = [
     path('edit-coordinator/<int:id>/', views.edit_coordinator, name = 'edit-coordinator'),
     path('delete-coordinator/<int:id>/', views.delete_coordinator, name = 'delete-coordinator'),
     path('staff-register/', views.staff_register, name = 'staff-register'),
+    path('coordinator-specific/<int:id>/', views.coordinator_specific, name = 'coordinator-specific'),
+    path('suspend-coordinator/<int:id>/', views.suspend_coordinator, name = 'suspend-coordinator'),
     path('students-requests/', views.students_requests, name = 'students-requests'),
     path('student-specific/<int:id>/', views.student_specific, name = 'student-specific'),
     path('approve-student/<int:id>/', views.approve_student, name = 'approve-student'),
@@ -28,5 +31,4 @@ urlpatterns = [
     path('branches/', views.branches, name = 'branches'),
     path('student-register/', views.student_register, name = 'student-register'),
     path('logout/', views.logout, name = 'logout'),
-    path('tasks/', views.tasks, name = 'tasks'),
 ]

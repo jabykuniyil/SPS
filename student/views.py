@@ -181,6 +181,16 @@ def feed(request):
 @login_required(login_url='/')
 @payment_required
 @student_status
+def profile(request):
+    if request.method == 'POST':
+        text = request.POST['text']
+        print(text)
+        return JsonResponse('true', safe=False)
+    return render(request, 'student/profile.html')
+
+@login_required(login_url='/')
+@payment_required
+@student_status
 def choose_week(request):
     user = request.user
     student_batch = Student.objects.get(batch=user.batch)
