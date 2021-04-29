@@ -31,6 +31,6 @@ urlpatterns = [
     path('task-specific/<int:weekid>/delete-task/<int:taskid>/', views.delete_task, name = 'delete-task'),
     path('task-specific/<int:weekid>/edit-task/<int:taskid>/', views.edit_task, name = 'edit-task'),
     path('add-color/', views.add_color, name = 'add-color'),
-    path('review/', views.review, name = 'review'),
+    path('colors/', views.colors, name = 'colors'),
     path('logout/', views.logout, name = 'logout')
 ]

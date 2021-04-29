@@ -234,11 +234,10 @@ def student_task(request, studentid, weekid):
 def student_review(request, studentid, weekid):
     if request.method == 'POST':
         coordinator_review = request.POST['coordinator_review']
-        admin_review = request.POST['admin_review']
         score = request.POST['score']
         int_score = int(score)
         review_color = ReviewColors.objects.filter(score_from__lte=int_score, score_to__gte=int_score).first()
-        Review.objects.create(coordinator_review=coordinator_review, admin_review=admin_review, coordinator=request.session['is_coordinator'], score=int_score, student_id=studentid, week_id=weekid, color_id=review_color.id)
+        Review.objects.create(coordinator_review=coordinator_review, coordinator=request.session['is_coordinator'], score=int_score, student_id=studentid, week_id=weekid, color_id=review_color.id)
         color = {'status' : 'review', 'color' : review_color.color, 'description' : review_color.description}
         return JsonResponse(color)
     
@@ -246,11 +245,11 @@ def student_review(request, studentid, weekid):
 def edit_review(request, studentId, week):
     if request.method == 'POST':
         coordinator_review = request.POST['coordinator_review']
-        admin_review = request.POST['admin_review']
         score = request.POST['score']
         int_score = int(score)
+        date = datetime.date.today()
         review_color = ReviewColors.objects.filter(score_from__lte=int_score, score_to__gte=int_score).first()
-        Review.objects.filter(student_id=studentId, week__week=week).update(coordinator_review=coordinator_review, admin_review=admin_review, score=score, color=review_color)
+        Review.objects.filter(student_id=studentId, week__week=week).update(coordinator_review=coordinator_review, score=score, color=review_color, coordinator_date=date)
         return JsonResponse('true', safe=False)
     return JsonResponse('true', safe=False)
             
@@ -344,13 +343,13 @@ def add_color(request):
         return JsonResponse('true', safe=False)
 
 @login_required   
-def review(request):
+def colors(request):
     colors = ReviewColors.objects.all()
     color_dict = {}
     for x in colors:
         color_dict[x.color] = [x.description, x.score_to, x.score_from]
     context = {'color_dict' : color_dict}
-    return render(request, 'coordinator/review.html', context)
+    return render(request, 'coordinator/colors.html', context)
     
 def logout(request):
     if is_logged_in(request):

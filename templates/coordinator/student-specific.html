@@ -446,12 +446,10 @@
 
      $('#submitReview').click(function(){
          var coordinatorReview = $('#coordinatorReview').val()
-         var adminReview = $('#adminReview').val()
          var score = $('#score').val()
          var data = {
              'csrfmiddlewaretoken' : '{{csrf_token}}',
              'coordinator_review' : coordinatorReview,
-             'admin_review' : adminReview,
              'score' : score
          }
          let error =false;
@@ -462,13 +460,7 @@
          else{
             $('#errorCoordinatorReview').html('')
          }
-         if(adminReview.length < 5){
-             $('#errorAdminReview').html('Please type Properly')
-             error = true;
-         }
-         else{
-            $('#errorAdminReview').html('')
-         }
+         
          if(score <= 0 || score == null){
              $('#errorScore').html('Please input a valid score')
              error = true;
@@ -515,16 +507,12 @@
         document.getElementById('rating-'+week).style.display = '';
         document.getElementById('editReview-'+week).value = 'Submit Review'
         $('#coordinatorReviewEdited-'+week).attr('readonly', false);
-        $('#adminReviewEdited-'+week).attr('readonly', false);
         $(document).ready(function () {
         $('input[value="Submit Review"]').on('click', function(){
-            console.log('hello');
             var coordinatorEditedReview = $('#coordinatorReviewEdited-'+week).val()
-            var adminEditedReview = $('#adminReviewEdited-'+week).val()
             var scoreEdited = $('#scoreEdited-'+week).val()
             var data = {
                 'csrfmiddlewaretoken' : '{{csrf_token}}',
-                'admin_review' : adminEditedReview,
                 'coordinator_review' : coordinatorEditedReview,
                 'score' : scoreEdited
             }
@@ -536,13 +524,7 @@
         else{
             $('#errorCoordinatorReviewEdited-'+week).html('')
         }
-        if(adminEditedReview.length < 5){
-            $('#errorAdminReviewEdited-'+week).html('')
-            error = true
-        }
-        else{
-            $('#errorAdminReviewEdited-'+week).html('')
-        }
+        
         if(scoreEdited <= 0 || scoreEdited == null){
             $('#errorScoreEdited-'+week).html('Please input valid score')
             error = true
