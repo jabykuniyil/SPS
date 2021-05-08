@@ -69,3 +69,9 @@ class Review(models.Model):
     score = models.IntegerField(null=True, blank=True)
     coordinator_date = models.DateField(auto_now_add=True)
     admin_date = models.DateField(auto_now_add=True)
+    
+class CommentAnswer(models.Model):
+    student = models.ForeignKey(Student, on_delete=models.CASCADE)
+    task = models.ForeignKey(Task, on_delete=models.CASCADE)
+    coordinator = models.CharField(max_length=20, null=True, blank=True)
+    comment = models.TextField(null=False, blank=False)

@@ -247,6 +247,8 @@ input:active+.design::after {
     </div>
   </div>
 </div>
+
+
 <div id="answer" data-controls-modal="answer" data-backdrop="static" data-keyboard="false" class="modal fade" tabindex="-1" role="dialog" aria-labelledby="fullWidthModalLabel" aria-hidden="true">
     <div class="modal-dialog modal-full-width">
       <div class="modal-content">
@@ -261,10 +263,68 @@ input:active+.design::after {
       </div>
     </div>
 </div>
+
+
+<div class="modal fade" id="comment-answer" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">
+  <div class="modal-dialog">
+      <div class="modal-content" >
+          <div class="modal-header">
+            <h4 class="modal-title" id="fullWidthModalLabel">Comments</h4>
+              </div>
+              <div class="modal-body" style="margin: auto;">
+
+              <textarea readonly='readonly' class="form-control" name="comment" id="comment" cols="40" rows="4"></textarea>
+              <h4 class="modal-title" id="no-comments" style="display: none; text-align: center;"></h4>
+              
+            </div>
+
+            <div class="modal-footer" style="margin: auto;">
+            <button type="button"  class="btn btn-danger mt-3 float-right" data-dismiss="modal">Close</button>
+            </div>
+      </div>
+  </div>
+</div>
+
+
+
 <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.6.0/jquery.min.js" integrity="sha512-894YE6QWD5I59HgZOGReFYm4dnWc1Qt5NtvYSaNcOP+u1T9qYdvdihz0PPSiiqn/+/3e7Jo4EaG7TubfWGUrMQ==" crossorigin="anonymous"></script>
     <!-- <button class="btn btn-lg font-16 btn-danger btn-block" type="button" id="submit">Submit</button> -->
     
     <script>
+      
+function comment(id){
+
+        send(id)
+      }
+
+      function send(id){
+        var task = id;
+        var data = {
+          'csrfmiddlewaretoken' : '{{csrf_token}}',
+          'task_id' : task
+        }
+
+        $.ajax({
+          url : '/task-id/',
+          method : 'GET',
+          data : data,
+          dataType : 'json',
+          success : function(data){
+            if(data.status == 'true'){
+              $('#comment-answer').modal()
+              $('#comment').show().html(data.comment)
+              $('#no-comments').hide()
+            }
+            if(data.status == 'false'){
+              $('#comment-answer').modal()
+              $('#comment').hide()
+              $('#no-comments').show().html(data.comment)
+            }
+          }
+        })
+      }
+
+
         function htmlDecode(input){
   var e = document.createElement('div');
   e.innerHTML = input;
@@ -297,6 +357,7 @@ function submit(){
         'answer' : answerValue,
         'taskid' : taskidid
       }
+      console.log(answerValue);
       if(answerValue.length < 15){
         $('#erroranswer').html('Please input valid answer')
       }
@@ -387,10 +448,10 @@ function editSubmit(){
         else{
           console.log('answer');
       }
-      $('#personal-development-questions').append(personalQuestions[persid])
+      $('#personal-development-questions').append('<h3 style="margin-top:1em; margin-bottom:2em;">Question</h3>', personalQuestions[persid])
           if(personalAnswer[persid] != undefined){
             
-          $('#personal-development-questions').append('<hr style="border-top: 1px dashed secondary;">', '<div class="float-right"><i style="font-size: 1.5em; color: #ffbc00" data-toggle = "modal" data-target="#edit-answer" onclick = "edit('+persid+',personaltype)" class="dripicons-document-edit ml-2"></i><a href="/task-specific/delete-answer/'+persid+'/"><i data-toggle="modal" data-target="#danger-alert-modal" style="font-size: 1.5em; color: red; float:right;" class="dripicons-document-delete  ml-2"></i></a></div>, <h3 style="margin-top:-1em; margin-bottom:2em;">Answer</h3>', personalAnswer[persid], '<hr style="border-top: 1px dashed secondary;">')
+          $('#personal-development-questions').append('<hr style="border-top: 1px dashed secondary;">', '<div class="float-right"><i class="dripicons-message mr-2" onclick="comment('+persid+')"  style="font-size: 1.5em;  color: lightblue;"></i><i style="font-size: 1.5em; color: #ffbc00" data-toggle = "modal" data-target="#edit-answer" onclick = "edit('+persid+',personaltype)" class="dripicons-document-edit ml-2"></i><a href="/task-specific/delete-answer/'+persid+'/"><i data-toggle="modal" data-target="#danger-alert-modal" style="font-size: 1.5em; color: red; float:right;" class="dripicons-document-delete  ml-2"></i></a></div>, <h3 style="margin-top:-1em; margin-bottom:2em;">Answer</h3>', personalAnswer[persid], '<hr style="border-top: 1px dashed secondary;">')
         
       }
      
@@ -412,10 +473,10 @@ function editSubmit(){
         else{
           console.log('answer');
       }
-      $('#technical-questions').append(technicalQuestions[techid])
+      $('#technical-questions').append('<h3 style="margin-top:1em; margin-bottom:2em;">Question</h3>',technicalQuestions[techid])
 
         if(technicalanswer[techid] != undefined){
-          $('#technical-questions').append('<hr style="border-top: 1px dashed secondary;">', '<div class="float-right"><i style="font-size: 1.5em; color: #ffbc00" data-toggle = "modal" data-target="#edit-answer" onclick = "edit('+techid+',technicaltype)" class="dripicons-document-edit ml-2"></i><i data-toggle="modal" data-target="#danger-alert-modal" style="font-size: 1.5em; color: red; float:right;" class="dripicons-document-delete  ml-2"></i></div>, <h3 style="margin-top:-1em; margin-bottom:2em;">Answer</h3>',  technicalanswer[techid])
+          $('#technical-questions').append('<hr style="border-top: 1px dashed secondary;">', '<div class="float-right"><i class="dripicons-message mr-2" data-toggle = "modal" data-target="#comment-answer" onclick="comment('+techid+')"  style="font-size: 1.5em;  color: lightblue;"></i><i style="font-size: 1.5em; color: #ffbc00" data-toggle = "modal" data-target="#edit-answer" onclick = "edit('+techid+',technicaltype)" class="dripicons-document-edit ml-2"></i><i data-toggle="modal" data-target="#danger-alert-modal" style="font-size: 1.5em; color: red; float:right;" class="dripicons-document-delete  ml-2"></i></div>, <h3 style="margin-top:-1em; margin-bottom:2em;">Answer</h3>',  technicalanswer[techid])
         }
         else{
           $('#technical-questions').append('')
@@ -438,10 +499,10 @@ function editSubmit(){
         else{
         console.log('hellloo');
       }
-      $('#miscelleneous-task-questions').append(miscelleneousQuestions[miscid])
+      $('#miscelleneous-task-questions').append('<h3 style="margin-top:1em; margin-bottom:2em;">Question</h3>',miscelleneousQuestions[miscid])
 
           if(miscelleneousAnswer[miscid] != undefined){
-          $('#miscelleneous-task-questions').append('<hr style="border-top: 1px dashed secondary;">', '<div class="float-right"><i style="font-size: 1.5em; color: #ffbc00" data-toggle = "modal" data-target="#edit-answer"  onclick = "edit('+miscid+', miscelleneoustype)" class="dripicons-document-edit ml-2"></i><i data-toggle="modal" data-target="#danger-alert-modal" style="font-size: 1.5em; color: red; float:right;" class="dripicons-document-delete  ml-2"></i></div>, <h3 style="margin-top:-1em; margin-bottom:2em;">Answer</h3>',  miscelleneousAnswer[miscid])
+          $('#miscelleneous-task-questions').append('<hr style="border-top: 1px dashed secondary;">', '<div class="float-right"><i class="dripicons-message mr-2" data-toggle = "modal" data-target="#comment-answer" onclick="comment('+miscid+')"  style="font-size: 1.5em;  color: lightblue;"></i><i style="font-size: 1.5em; color: #ffbc00" data-toggle = "modal" data-target="#edit-answer"  onclick = "edit('+miscid+', miscelleneoustype)" class="dripicons-document-edit ml-2"></i><i data-toggle="modal" data-target="#danger-alert-modal" style="font-size: 1.5em; color: red; float:right;" class="dripicons-document-delete  ml-2"></i></div>, <h3 style="margin-top:-1em; margin-bottom:2em;">Answer</h3>',  miscelleneousAnswer[miscid])
         }
         else{
           $('#miscelleneous-task-questions').append('')

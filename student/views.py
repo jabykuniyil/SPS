@@ -2,7 +2,7 @@ from django.shortcuts import render, redirect
 from django.contrib.auth.models import auth
 from django.contrib.auth.decorators import login_required
 from django.http import JsonResponse, HttpResponseRedirect
-from . models import Student, CautionDeposit, EmailOTP, StudentUUID, InvalidResponse, VideocallShedule, Answer, Review
+from . models import Student, CautionDeposit, EmailOTP, StudentUUID, InvalidResponse, VideocallShedule, Answer, Review, CommentAnswer
 from django.urls import reverse
 from . decorators import payment_required, student_status
 from django.core.mail import send_mail
@@ -13,9 +13,10 @@ from coordinator.models import Week, Task, BatchSettings
 import random, datetime
 
 # Create your views here.
+
 def login(request):
     if request.user.is_authenticated:
-        return redirect(feed)
+        return redirect(profile)
     if request.method == 'POST':
         username = request.POST['username']
         password = request.POST['password']
@@ -62,7 +63,7 @@ def dashboard(request):
     
 def register(request):
     if request.user.is_authenticated:
-        return redirect(feed)
+        return redirect(profile)
     if request.method == 'POST':
         fullname = request.POST['fullname']
         email = request.POST['email']
@@ -90,7 +91,7 @@ def register(request):
         
 def verify_email(request, backend='django.contrib.auth.backends.ModelBackend'):
     if request.user.is_authenticated:
-        return redirect(feed)
+        return redirect(profile)
     if request.session.has_key('email'):
         if request.method == 'POST':
             otp = request.POST['otp']
@@ -171,12 +172,6 @@ def edit_registration(request, id):
     student_context = StudentUUID.objects.filter(student=student, student_uuid=id).first()
     context = {'student' : student_context}
     return render(request, 'student/edit-registration.html', context)
-        
-@login_required(login_url='/')
-@payment_required
-@student_status
-def feed(request):
-    return render(request, 'student/feed.html')
 
 @login_required(login_url='/')
 @payment_required
@@ -184,7 +179,6 @@ def feed(request):
 def profile(request):
     if request.method == 'POST':
         text = request.POST['text']
-        print(text)
         return JsonResponse('true', safe=False)
     return render(request, 'student/profile.html')
 
@@ -193,7 +187,7 @@ def profile(request):
 @student_status
 def choose_week(request):
     user = request.user
-    student_batch = Student.objects.get(batch=user.batch)
+    student_batch = Student.objects.filter(batch_id=user.batch.id).first()
     batches = BatchSettings.objects.filter(batch=student_batch.batch)
     weeks = []
     for x in batches:
@@ -226,12 +220,6 @@ def task_specific(request, id):
         answer_time = datetime.datetime.strptime(x.time, '%Y-%m-%d %H:%M:%S')
         if answer_time > largest:
             largest = answer_time
-    editor = Answer.objects.get(time=largest)
-    evaluated = time - largest
-    time_dict = {}
-    time_dict['days'] = evaluated.days
-    time_dict['hours'] = evaluated.seconds//3600
-    time_dict['minutes'] = (evaluated.seconds//60)%60
     personal_answers = {}
     technical_answers = {}
     miscelleneous_answers = {}
@@ -248,18 +236,52 @@ def task_specific(request, id):
         miscelleneous_task_dict[x.id] = x.question
     for x in personal_development:
         personal_development_dict[x.id] = x.question
-    context = {
+    comments = CommentAnswer.objects.filter(student=request.user)
+    comments_list = []
+    for x in comments:
+        comments_list.append(x)
+    if Answer.objects.filter(student=user).exists():
+        editor = Answer.objects.get(time=largest)
+        evaluated = time - largest
+        time_dict = {}
+        time_dict['days'] = evaluated.days
+        time_dict['hours'] = evaluated.seconds//3600
+        time_dict['minutes'] = (evaluated.seconds//60)%60
+        context = {
+            'personal_tasks' : personal_development_dict,
+            'technical_tasks' : technical_task_dict,
+            'miscelleneous_tasks' : miscelleneous_task_dict,
+            'personal_answers' : personal_answers,
+            'technical_answers' : technical_answers,
+            'miscelleneous_answers' : miscelleneous_answers,
+            'time_dict' : time_dict,
+            'editor' : editor,
+            'comments' : comments_list
+            }
+    else:
+        context = {
         'personal_tasks' : personal_development_dict,
         'technical_tasks' : technical_task_dict,
         'miscelleneous_tasks' : miscelleneous_task_dict,
         'personal_answers' : personal_answers,
         'technical_answers' : technical_answers,
         'miscelleneous_answers' : miscelleneous_answers,
-        'time_dict' : time_dict,
-        'editor' : editor
+        'comments' : comments_list
         }
     return render(request, 'student/task-specific.html', context)
-    
+
+@login_required(login_url='/')
+@payment_required
+@student_status
+def task_id(request):
+    task_id = request.GET['task_id']
+    comment = CommentAnswer.objects.filter(task_id=task_id, student=request.user).first()
+    if comment == None:
+        context = {'comment' : 'There are no comments', 'status' : 'false'}
+        return JsonResponse(context)
+    context = {'comment' : comment.comment, 'status' : 'true'}
+    return JsonResponse(context)
+
 @login_required(login_url='/')
 @payment_required
 @student_status
@@ -276,7 +298,7 @@ def edit_answer(request, id):
 @payment_required
 @student_status
 def delete_answer(request, id):
-    answer = Answer.objects.get(task_id=id)
+    answer = Answer.objects.filter(task_id=id, student=request.user)
     answer.delete()
     return redirect(choose_week)  
 

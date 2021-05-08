@@ -14,7 +14,7 @@ import uuid, datetime, requests, json
 
 def login(request):
     if request.user.is_authenticated:
-        return redirect(feed)
+        return redirect(dashboard)
     if request.method == 'POST':
         username = request.POST['username']
         password = request.POST['password']
@@ -77,10 +77,6 @@ def otp(request):
     if request.session.has_key('otp_id'):
         return render(request, 'admin/otp.html')
     return redirect(login)
-        
-@login_required(login_url='/spsadmin/')
-def feed(request):
-    return render(request, 'admin/feed.html')
 
 @login_required(login_url='/spsadmin/')
 def search(request):
@@ -96,10 +92,6 @@ def search(request):
             x['fields']['batch_name'] = student_dict[x['fields']['batch']]
         context = {'students' : json.dumps(serialized_student), 'status' : 'true'}
         return JsonResponse(context)
-
-@login_required(login_url='/spsadmin/')
-def profile(request):
-    return render(request, 'admin/profile.html')
 
 @login_required(login_url='/spsadmin/')
 def dashboard(request):
@@ -244,7 +236,9 @@ def student_videocall(request):
 
 @login_required(login_url='/spsadmin/')
 def students_placed(request):
-    return render(request, 'admin/students-placed.html')
+    students = Student.objects.filter(admin_approval='placed')
+    context = {'students' : students}
+    return render(request, 'admin/students-placed.html', context)
     
 @login_required(login_url='/spsadmin/')
 def staffs(request):
@@ -313,14 +307,6 @@ def coordinator_specific(request, id):
 def suspend_coordinator(request, id):
     CoordinatorDetails.objects.filter(id=id).update(status='suspended')
     return redirect(coordinator_specific, id)
-   
-@login_required(login_url='/spsadmin/')
-def host_meeting(request):
-    return render(request, 'admin/host-meeting.html')
-
-@login_required(login_url='/spsadmin/')
-def branches(request):
-    return render(request, 'admin/branches.html')
 
 @login_required(login_url='/spsadmin/')
 def logout(request):

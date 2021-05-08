@@ -264,6 +264,28 @@ input:active+.design::after {
 </div>
 
 
+<div class="modal fade" id="comment-answer" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">
+  <div class="modal-dialog">
+      <div class="modal-content" >
+          <div class="modal-header">
+            <h4 class="modal-title" id="fullWidthModalLabel">Comment</h4>
+              </div>
+              <div class="modal-body" style="margin: auto;">
+                
+              <form action="" method="post">
+                {% csrf_token %}
+                {{ form }}
+              <button class="btn btn-primary mt-3 float-right" type="submit"   id="commented">Submit</button>
+              <button type="button"  class="btn btn-default mt-3 float-right" data-dismiss="modal">Close</button>
+            </form>
+            
+          </div>
+      </div>
+  </div>
+</div>
+
+
+
 <div id="answer" data-controls-modal="answer" data-backdrop="static" data-keyboard="false" class="modal fade" tabindex="-1" role="dialog" aria-labelledby="fullWidthModalLabel" aria-hidden="true">
     <div class="modal-dialog modal-full-width">
       <div class="modal-content">
@@ -285,6 +307,31 @@ input:active+.design::after {
 <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.6.0/jquery.min.js" integrity="sha512-894YE6QWD5I59HgZOGReFYm4dnWc1Qt5NtvYSaNcOP+u1T9qYdvdihz0PPSiiqn/+/3e7Jo4EaG7TubfWGUrMQ==" crossorigin="anonymous"></script>
 
     <script>
+
+
+      function comment(id){
+        send(id)
+      }
+
+      function send(id){
+        var task = id;
+        var data = {
+          'csrfmiddlewaretoken' : '{{csrf_token}}',
+          'task_id' : task
+        }
+        console.log(task);
+        $.ajax({
+          url : '/coordinator/task-id/{{student.id}}/',
+          method : 'GET',
+          data : data,
+          dataType : 'json',
+          success : function(data){
+            if(data == 'true'){
+              console.log('he');
+            }
+          }
+        })
+      }
 
 
         function htmlDecode(input){
@@ -388,7 +435,7 @@ function submit(){
       $('#personal-development-questions').append('<h3 style="margin-top:1em; margin-bottom:2em;">Question</h3>',personalQuestions[persid])
           if(personalAnswer[persid] != undefined){
             
-          $('#personal-development-questions').append('<hr style="border-top: 1px dashed secondary;">', '<div class="float-right"><i style="font-size: 1.5em;  color: #ffbc00" data-toggle = "modal" data-target="#edit-answer" onclick="editAnswer('+persid+', personaltype)" class="dripicons-document-edit ml-2"></i><i data-toggle="modal" data-target="#danger-alert-modal" style="font-size: 1.5em; color: red; float:right;" class="dripicons-document-delete  ml-2"></i></div>, <h3 style="margin-top:-1em; margin-bottom:2em;">Answer</h3>', personalAnswer[persid])
+          $('#personal-development-questions').append('<hr style="border-top: 1px dashed secondary;">', '<div class="float-right"><i class="dripicons-message mr-2" data-toggle = "modal" data-target="#comment-answer" onclick="comment('+persid+')"  style="font-size: 1.5em;  color: lightblue;"></i><i style="font-size: 1.5em;  color: #ffbc00" data-toggle = "modal" data-target="#edit-answer" onclick="editAnswer('+persid+', personaltype)" class="dripicons-document-edit ml-2"></i><i data-toggle="modal" data-target="#danger-alert-modal" style="font-size: 1.5em; color: red; float:right;" class="dripicons-document-delete  ml-2"></i></div>, <h3 style="margin-top:-1em; margin-bottom:2em;">Answer</h3>', personalAnswer[persid])
         
       }
       else{
@@ -415,7 +462,7 @@ function submit(){
       $('#technical-questions').append('<h3 style="margin-top:1em; margin-bottom:2em;">Question</h3>',technicalQuestions[techid])
 
         if(technicalanswer[techid] != undefined){
-          $('#technical-questions').append('<hr style="border-top: 1px dashed secondary;">', '<div class="float-right"><i onclick="editAnswer('+techid+', technicaltype)" style="font-size: 1.5em; color: #ffbc00" data-toggle = "modal" data-target="#edit-answer" class="dripicons-document-edit ml-2"></i><i data-toggle="modal" data-target="#danger-alert-modal" style="font-size: 1.5em; color: red; float:right;" class="dripicons-document-delete  ml-2"></i></div>, <h3 style="margin-top:-1em; margin-bottom:2em;">Answer</h3>', technicalanswer[techid])
+          $('#technical-questions').append('<hr style="border-top: 1px dashed secondary;">', '<div class="float-right"><i class="dripicons-message mr-2" data-toggle = "modal" data-target="#comment-answer" onclick="comment('+techid+')"  style="font-size: 1.5em;  color: lightblue;"></i><i onclick="editAnswer('+techid+', technicaltype)" style="font-size: 1.5em; color: #ffbc00" data-toggle = "modal" data-target="#edit-answer" class="dripicons-document-edit ml-2"></i><i data-toggle="modal" data-target="#danger-alert-modal" style="font-size: 1.5em; color: red; float:right;" class="dripicons-document-delete  ml-2"></i></div>, <h3 style="margin-top:-1em; margin-bottom:2em;">Answer</h3>', technicalanswer[techid])
         }
         else{
           $('#technical-questions').append('')
@@ -439,7 +486,7 @@ function submit(){
       $('#miscelleneous-task-questions').append('<h3 style="margin-top:1em; margin-bottom:2em;">Question</h3>',miscelleneousQuestions[miscid])
 
           if(miscelleneousAnswer[miscid] != undefined){
-          $('#miscelleneous-task-questions').append('<hr style="border-top: 1px dashed secondary;">', '<div class="float-right"><i onclick="editAnswer('+miscid+', miscelleneoustype)" style="font-size: 1.5em; color: #ffbc00" data-toggle = "modal" data-target="#edit-answer" class="dripicons-document-edit ml-2"></i><i data-toggle="modal" data-target="#danger-alert-modal" style="font-size: 1.5em; color: red; float:right;" class="dripicons-document-delete  ml-2"></i></div>, <h3 style="margin-top:-1em; margin-bottom:2em;">Answer</h3>', miscelleneousAnswer[miscid])
+          $('#miscelleneous-task-questions').append('<hr style="border-top: 1px dashed secondary;">', '<div class="float-right"><i class="dripicons-message mr-2" data-toggle = "modal" data-target="#comment-answer" onclick="comment('+miscid+')"  style="font-size: 1.5em;  color: lightblue;"></i><i onclick="editAnswer('+miscid+', miscelleneoustype)" style="font-size: 1.5em; color: #ffbc00" data-toggle = "modal" data-target="#edit-answer" class="dripicons-document-edit ml-2"></i><i data-toggle="modal" data-target="#danger-alert-modal" style="font-size: 1.5em; color: red; float:right;" class="dripicons-document-delete  ml-2"></i></div>, <h3 style="margin-top:-1em; margin-bottom:2em;">Answer</h3>', miscelleneousAnswer[miscid])
         }
         else{
           $('#miscelleneous-task-questions').append('')

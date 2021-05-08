@@ -43,7 +43,6 @@ INSTALLED_APPS = [
     'django.contrib.staticfiles',
     'social_django',
     'colorfield',
-    'rest_framework'
 ]
 
 MIDDLEWARE = [

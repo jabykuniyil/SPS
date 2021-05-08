@@ -6,8 +6,6 @@ urlpatterns = [
     path('', views.login, name = 'admin-login'),
     path('phone/', views.phone, name = 'phone'),
     path('search/', views.search, name = 'search'),
-    path('feed/', views.feed, name = 'admin-feed'),
-    path('profile/', views.profile, name = 'profile'),
     path('dashboard/', views.dashboard, name = 'dashboard'),
     path('students-placed/', views.students_placed, name = 'students-placed'),
     path('students/', views.students, name = 'students'),
@@ -27,8 +25,6 @@ urlpatterns = [
     path('rejected-requests/', views.rejected_requests, name = 'rejected-requests'),
     path('invalid-students-requests/', views.invalid_student_requests, name = 'invalid-students-requests'),
     path('student-videocall/', views.student_videocall, name = 'student=videocall'),
-    path('host-meeting/', views.host_meeting, name = 'host-meeting'),
-    path('branches/', views.branches, name = 'branches'),
     path('student-register/', views.student_register, name = 'student-register'),
     path('logout/', views.logout, name = 'logout'),
 ]

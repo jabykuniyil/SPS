@@ -1,6 +1,6 @@
 from django.shortcuts import render, redirect
 from . models import CoordinatorDetails, Batches, Week, Task, BatchSettings, ReviewColors
-from student.models import Student, Answer, Review
+from student.models import Student, Answer, Review, CommentAnswer
 from django.contrib.auth.hashers import check_password
 from django.core.files import File
 from django.http import JsonResponse
@@ -8,18 +8,20 @@ from . decorators import login_required
 from . utils import is_logged_in
 from django.db.models import Q
 from django.core import serializers
+from . forms import CommentForm
+from django.http import HttpResponse
 import json, datetime
 
 # Create your views here.
 
 def coordinator(request):
     if is_logged_in(request):
-        return redirect(feed)
+        return redirect(profile)
     return redirect(login)
 
 def login(request):
     if is_logged_in(request):
-        return redirect(feed)
+        return redirect(profile)
     if request.method == 'POST':
         username = request.POST['username']
         password = request.POST['password']
@@ -44,10 +46,6 @@ def search(request):
             x['fields']['batch_name'] = student_dict[x['fields']['batch']]
         context = {'students' : json.dumps(serialized_student), 'status' : 'true'}
         return JsonResponse(context)
-
-@login_required
-def feed(request):
-    return render(request, 'coordinator/feed.html')
     
 @login_required
 def dashboard(request):
@@ -55,7 +53,9 @@ def dashboard(request):
     
 @login_required
 def profile(request):
-    return render(request, 'coordinator/profile.html')
+    coordinator = CoordinatorDetails.objects.get(username=request.session['is_coordinator'])
+    context = {'coordinator' : coordinator}
+    return render(request, 'coordinator/profile.html', context)
     
 @login_required
 def students(request):
@@ -159,6 +159,10 @@ def add_batch(request):
 
 @login_required   
 def student_specific(request, id):
+    if request.method == 'POST':
+        days = request.POST['days']
+        Student.objects.filter(id=id).update(admin_approval='suspended')
+        return redirect(student_specific, id)
     student = Student.objects.get(id=id)
     student_week = BatchSettings.objects.filter(batch=student.batch)
     student_review = Review.objects.filter(student_id=id)
@@ -172,11 +176,54 @@ def student_specific(request, id):
             if y.week.week == x.week.week:
                 x.week.is_review = True
                 break
-    context = {'student' : student, 'weeks' : weeks, 'review' : review}
+    batches = Batches.objects.all()
+    batches_list = []
+    for x in batches:
+        if x.name == student.batch.name:
+            batches_list.append(x)
+            batches_list.remove(student.batch)
+        else:
+            batches_list.append(x)
+    context = {'student' : student, 'weeks' : weeks, 'review' : review, 'batches' : batches_list}
     return render(request, 'coordinator/student-specific.html', context)
 
 @login_required
+def remove_suspension(request, id):
+    Student.objects.filter(id=id, admin_approval='suspended').update(admin_approval='approved')
+    return redirect(student_specific, id)
+
+@login_required
+def terminate_student(request, id):
+    Student.objects.filter(id=id).update(admin_approval='terminated')
+    return redirect(student_specific, id)
+
+@login_required
+def remove_termination(request, id):
+    Student.objects.filter(id=id).update(admin_approval='approved')
+    return redirect(student_specific, id)
+
+@login_required
+def student_placed(request, id):
+    if request.method == 'POST':
+        Student.objects.filter(id=id).update(admin_approval='placed')
+        return redirect(student_specific, id)
+
+@login_required
+def task_id(request, id):
+    task_id = request.GET['task_id']
+    student = Student.objects.get(id=id)
+    student.task_id = task_id
+    request.session['task_id'] = student.task_id
+    return JsonResponse('true', safe=False)
+
+@login_required
 def student_task(request, studentid, weekid):
+    if request.method == 'POST':
+        form = CommentForm(request.POST)
+        if form.is_valid():
+            CommentAnswer.objects.create(comment=request.POST['comment'], student_id=studentid, task_id=request.session['comment_task_id'], coordinator=request.session['is_coordinator'])
+            return redirect(student_task, studentid=studentid, weekid=weekid)
+    form = CommentForm()
     week = Week.objects.get(id=weekid)
     miscelleneous_task = Task.objects.filter(week=week, type_of_task='Miscelleneuos Task')
     personal_development = Task.objects.filter(week=week, type_of_task='Personal Development')
@@ -227,6 +274,7 @@ def student_task(request, studentid, weekid):
         'student' : student,
         'week' : week,
         'edit' : key_editor,
+        'form' : form
         }
     return render(request, 'coordinator/student-task.html', context)
 
@@ -252,6 +300,13 @@ def edit_review(request, studentId, week):
         Review.objects.filter(student_id=studentId, week__week=week).update(coordinator_review=coordinator_review, score=score, color=review_color, coordinator_date=date)
         return JsonResponse('true', safe=False)
     return JsonResponse('true', safe=False)
+
+@login_required
+def shift_batch(request, id):
+    if request.method == 'POST':
+        batch = request.POST['batch']
+        student = Student.objects.filter(id=id).update(batch_id=batch)
+        return JsonResponse('true', safe=False)
             
 @login_required
 def choose_week(request):

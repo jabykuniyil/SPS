@@ -44,6 +44,10 @@
                         <h4 class="mt-0">Not Valid</h4>
                         <p class="text-muted mb-4">Your request for registration is not approved. Please check it out on this link. <a href="/edit-registration/{{student_uuid}}/">Click here</a> </p>
                         {% endif %}
+                        {% if request.user.admin_approval == 'suspended' %}
+                        <h4 class="mt-0">Suspended</h4>
+                        <p class="text-muted mb-4">We are temporarily suspended you sorry. </p>
+                        {% endif %}
                         {% if request.user.admin_approval == 'videocall' %}
                         <div class="row" style="margin: auto; display:inline-flex;" style="text-align: center;">
                             <p id="days" style="color: green; margin-left: 1em;"></p>

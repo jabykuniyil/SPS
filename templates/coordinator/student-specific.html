@@ -13,7 +13,7 @@
         <div class="col-12">
             <div class="page-title-box">
                 
-                <h4 class="page-title">{{student.fullname}} ({{student.batch.name}})</h4>
+                <h4 class="page-title">{{student.fullname}} ({{student.batch.name}}) {% if student.admin_approval == 'terminated' %} <div class="float-right"><a href="/coordinator/remove-termination/{{student.id}}/"><button class="float-right btn btn-primary m-3" type="button"   id="remove-termination">Remove</button></a><h3 class="mt-1 float-right text-danger page-title">Terminated</h3></div>{% endif %}</h4>
             </div>
         </div>
     </div>     
@@ -24,20 +24,7 @@
     <div class="col-xl-4 col-lg-5">
         <div class="card">
             <div class="card-body">
-                <div class="dropdown float-right">
-                    <a href="#" class="dropdown-toggle arrow-none card-drop" data-toggle="dropdown" aria-expanded="false">
-                        <i class="mdi mdi-dots-horizontal"></i>
-                    </a>
-                    <div class="dropdown-menu dropdown-menu-right">
-                        <!-- item-->
-                        <a href="javascript:void(0);" class="dropdown-item">View full</a>
-                        <!-- item-->
-                        <a href="javascript:void(0);" class="dropdown-item">Edit Contact Info</a>
-                        <!-- item-->
-                        <a href="javascript:void(0);" class="dropdown-item">Remove</a>
-                    </div>
-                </div>
-
+               
                 <div class="mt-3 text-center">
                     <img src="{{student.student_photo}}" alt="{{student.username}}"
                         class="img-thumbnail avatar-lg rounded-circle" />
@@ -61,15 +48,89 @@
                     <p class="mt-3 mb-1"><strong><i class='uil uil-globe'></i> Languages:</strong></p>
                     <p>English, German, Spanish</p>
 
-                    <p class="mt-3 mb-2"><strong><i class='uil uil-users-alt'></i> Groups:</strong></p>
-                    <p>
-                        <span class="badge badge-success-lighten p-1 font-14">Work</span>
-                        <span class="badge badge-primary-lighten p-1 font-14">Friends</span>
-                    </p>
+
+                    <p class="mt-3 mb-2"><strong><i class='mdi mdi-dots-horizontal'></i> Manage:</strong></p>
+                    <div class="row">
+                        <div class="col-lg-3 col-3">
+                            <span data-toggle="modal" data-target="#shift-batch" class="badge badge-primary-lighten p-1 font-14">Shift Batch</span>
+                        </div>
+                        <div class="col-lg-3 col-3">
+                            <span data-toggle="modal" data-target="#suspension" class="badge badge-info-lighten p-1 font-14">Suspend</span>
+                        </div>
+                        <div class="col-lg-3 col-3">
+                            <a href="/coordinator/terminate-student/{{student.id}}"><span class="badge badge-danger-lighten p-1 font-14">Terminate</span></a>
+                        </div>
+                        <div class="col-lg-3 col-3">
+                            <a href=""><span class="badge badge-success-lighten p-1 font-14">Placed</span></a>
+                        </div>
+                    </div>
                 </div>
             </div> <!-- end card-body -->
         </div> <!-- end card-->
     </div> <!-- end col -->
+
+
+    <div class="modal fade" id="shift-batch" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">
+        <div class="modal-dialog">
+            <div class="modal-content" >
+                <div class="modal-header">
+                    </div>
+                    <div class="modal-body" style="margin: auto;">
+                        <h5 style="margin:1rem;">Shift the Batch</h5>
+                        <select class="form-control"  name="batchname" id="batchname">
+                            <option value="choose the Batch..." disabled>choose the Batch...</option>
+                            {% for batch in batches %}
+                            <option value="{{batch.id}}">{{batch.name}}</option>
+                            {% endfor %}
+                        </select>
+                    </div>
+                    <div class="modal-footer">
+                    <button type="button" class="btn btn-default" data-dismiss="modal">Close</button>
+                    <button class="btn btn-primary" type="button"   id="shifted-batch">Submit</button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+
+    <div class="modal fade" id="suspension" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">
+        <div class="modal-dialog">
+            <div class="modal-content" >
+                <div class="modal-header">
+                    </div>
+                   
+                        {% if student.admin_approval != 'suspended' %}
+                        <div class="modal-body" style="margin: auto;">
+                        <h5 style="margin:1rem;">Suspend {{student.fullname}} </h5>
+
+                        <form  method="POST">
+                            {% csrf_token %}
+                        <input type="number" name="days" placeholder="Input number of days" step="1" id="days" class="form-control m-2">
+                    </div>
+                    <div class="modal-footer">
+                    <button type="button" class="btn btn-default" data-dismiss="modal">Close</button>
+                    <button class="btn btn-primary" type="submit"   id="suspended">Submit</button>
+                </div>
+                    </form>
+                
+                        {% endif %}
+                        {% if student.admin_approval == 'suspended' %}
+                        <div class="modal-body" style="margin: auto;">
+                        <h5 style="margin:1rem;"> {{student.fullname}} is already on Suspension</h5>
+
+                        <h3 class="m-3 text-center">Remove Suspension !</h3>
+                            
+                    <div class="modal-footer">
+                    <button type="button" class="btn btn-default" data-dismiss="modal">Cancel</button>
+                    <a href="/coordinator/remove-suspension/{{student.id}}/"><button class="btn btn-primary" type="button"   id="suspended">Done</button></a>
+                </div>
+            </div>
+                    {% endif %}
+                </div> 
+        </div>
+    </div>
+
+    
     {% if student.admin_approval != 'pending' or student.admin_approval != 'rejected' or student.admin_approval == 'invalid' %}
     <div class="col-xl-8 col-lg-7">
         <div class="card">
@@ -550,6 +611,27 @@
     });
     }
         
+
+    $('#shifted-batch').click(function(){
+        console.log('batch');
+        var batch = $('#batchname').val()
+        var data = {
+            'csrfmiddlewaretoken' : '{{csrf_token}}',
+            'batch' : batch
+        }
+        
+        $.ajax({
+            url : '/coordinator/shift-batch/{{student.id}}/',
+            method : 'POST',
+            data : data,
+            dataType : 'json',
+            success : function(data){
+                if(data == 'true'){
+                    window.location.reload()
+                }
+            }
+        })
+    })
 
  </script>
  
