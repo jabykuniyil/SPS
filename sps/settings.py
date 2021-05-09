@@ -86,7 +86,7 @@ AUTHENTICATION_BACKENDS = (
     'django.contrib.auth.backends.ModelBackend',
 )
 
-LOGIN_REDIRECT_URL = '/spsadmin/feed/'
+LOGIN_REDIRECT_URL = '/spsadmin/dashboard/'
 
 WSGI_APPLICATION = 'sps.wsgi.application'
 
@@ -98,7 +98,7 @@ DATABASES = {
     'default': {
         'ENGINE': 'django.db.backends.postgresql',
         'NAME': 'sps',
-        'USER' : 'postgres',
+        'USER' : 'jaby',
         'PASSWORD' : 'jaby',
         'HOST' : 'localhost'
     }
