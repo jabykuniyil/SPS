@@ -16,7 +16,7 @@ import json, datetime
 
 def coordinator(request):
     if is_logged_in(request):
-        return redirect(profile)
+        return redirect(dashboard)
     return redirect(login)
 
 def login(request):
