@@ -24,9 +24,9 @@ BASE_DIR = Path(__file__).resolve().parent.parent
 SECRET_KEY = '5p9ma(y9s&#ltnt2oy$%c6hmf9^lr_+#0a@yu3!%+$ct_6rr$d'
 
 # SECURITY WARNING: don't run with debug turned on in production!
-DEBUG = False
+DEBUG = True
 
-ALLOWED_HOSTS = ['167.99.126.166']
+ALLOWED_HOSTS = ['*']
 
 
 # Application definition
@@ -86,7 +86,7 @@ AUTHENTICATION_BACKENDS = (
     'django.contrib.auth.backends.ModelBackend',
 )
 
-LOGIN_REDIRECT_URL = '/spsadmin/feed/'
+LOGIN_REDIRECT_URL = '/spsadmin/dashboard/'
 
 WSGI_APPLICATION = 'sps.wsgi.application'
 
@@ -162,5 +162,5 @@ EMAIL_BACKEND = 'django.core.mail.backends.smtp.EmailBackend'
 EMAIL_HOST = 'smtp.gmail.com'
 EMAIL_USE_TLS = True
 EMAIL_PORT = 587
-EMAIL_HOST_USER = 'mohdjabiran112@gmail.com'
-EMAIL_HOST_PASSWORD = 'fuckyoubro'
+EMAIL_HOST_USER = os.environ.get('mohdjabiran112@gmail.com')
+EMAIL_HOST_PASSWORD = os.environ.get('fuckyoubro')
