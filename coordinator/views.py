@@ -52,12 +52,6 @@ def dashboard(request):
     return render(request, 'coordinator/dashboard.html')
     
 @login_required
-def profile(request):
-    coordinator = CoordinatorDetails.objects.get(username=request.session['is_coordinator'])
-    context = {'coordinator' : coordinator}
-    return render(request, 'coordinator/profile.html', context)
-    
-@login_required
 def students(request):
     students = Student.objects.filter(is_superuser=False)
     context = {'students' : students}
