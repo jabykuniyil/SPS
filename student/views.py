@@ -59,7 +59,10 @@ def payment(request):
 @login_required(login_url='/')
 @payment_required
 def dashboard(request):
-    return render(request, 'student/dashboard.html')
+    week = BatchSettings.objects.filter(batch=request.user.batch).first()
+    review = Review.objects.filter(student=request.user)
+    context = {'weeks' : week.week, 'review' : review}
+    return render(request, 'student/dashboard.html', context)
     
 def register(request):
     if request.user.is_authenticated:

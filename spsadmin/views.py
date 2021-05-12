@@ -95,7 +95,11 @@ def search(request):
 
 @login_required(login_url='/spsadmin/')
 def dashboard(request):
-    return render(request, 'admin/dashboard.html')
+    students = Student.objects.filter(is_superuser=False)
+    staffs = CoordinatorDetails.objects.all()
+    batches = Batches.objects.all()
+    context = {'coordinators' : staffs, 'students' : students, 'batches' : batches}
+    return render(request, 'admin/dashboard.html', context)
 
 @login_required(login_url='/spsadmin/')
 def students(request):

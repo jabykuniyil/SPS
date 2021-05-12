@@ -1,3 +1,67 @@
 {% extends 'student/base.html' %}
 {% block content %}
+{% load static %}
+<!-- Start Content-->
+                    <div class="container-fluid">
+                        
+                        <!-- start page title -->
+                        <div class="row">
+                            <div class="col-12">
+                                <div class="page-title-box">
+                                    
+                                    <h4 class="page-title">Dashboard</h4>
+                                </div>
+                            </div>
+                        </div>     
+                        <!-- end page title --> 
+
+                        <div class="row">
+                            <div class="col-12">
+                                <div class="card widget-inline">
+                                    <div class="card-body p-0">
+                                        <div class="row no-gutters">
+                                            <div class="col-sm-6 col-xl-6 col-12">
+                                                <div class="card shadow-none m-0">
+                                                    <div class="card-body text-center">
+                                                        <i class="dripicons-folder text-muted" style="font-size: 24px;"></i>
+                                                        <h3><span>{{weeks.week}} <small class="mb-2 text-bold">th</small> </span></h3>
+                                                        <p class="text-muted font-15 mb-0">Week</p>
+                                                    </div>
+                                                </div>
+                                            </div>
+                
+                                            
+                
+                                            <div class="col-sm-6 col-xl-6 col-12">
+                                                <div class="card shadow-none m-0 border-left">
+                                                    <div class="card-body text-center">
+                                                        <i class="dripicons-pencil text-muted" style="font-size: 24px;"></i>
+                                                        <h3><span>{% if review is defined %}{{review.week}} <small class="mb-2 text-bold">th</small>{% endif %}{% if review is not defined %}Review to be conduct{% endif %}</span></h3>
+                                                        <p class="text-muted font-15 mb-0">Review Done</p>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                            
+                
+                                        </div> <!-- end row -->
+                                    </div>
+                                </div> <!-- end card-box-->
+                            </div> <!-- end col-->
+                        </div>
+                        <!-- end row-->
+
+
+
+                        
+                        
+                    </div> <!-- container -->
+
+                </div> <!-- content -->
+
+                
+            </div>
+
+            <!-- ============================================================== -->
+            <!-- End Page content -->
+            <!-- ============================================================== -->
 {% endblock %}

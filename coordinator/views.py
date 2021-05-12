@@ -49,7 +49,11 @@ def search(request):
     
 @login_required
 def dashboard(request):
-    return render(request, 'coordinator/dashboard.html')
+    students = Student.objects.filter(is_superuser=False)
+    colors = ReviewColors.objects.all()
+    batches = Batches.objects.all()
+    context = {'colors' : colors, 'students' : students, 'batches' : batches}
+    return render(request, 'coordinator/dashboard.html', context)
     
 @login_required
 def students(request):
